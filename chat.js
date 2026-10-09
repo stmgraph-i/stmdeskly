@@ -563,6 +563,9 @@
 
   (async function init(){
     try {
+      if ('scrollRestoration' in history) {
+        history.scrollRestoration = 'manual';
+      }
       if (!window.DB || !DB.ready) { showMissing(); return; }
 
       if (!DB.currentUser()) {
