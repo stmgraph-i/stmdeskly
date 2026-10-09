@@ -7801,3 +7801,16 @@ body.pattern-rings .content-band{
   object-fit: cover !important;
   cursor: pointer !important;
 }
+/* ============================================================
+   CHAT · Invisible spacer at end of chat log
+   Prevents the last message from hiding behind the composer.
+   ============================================================ */
+
+.chat-log::after {
+  content: "";
+  display: block;
+  height: 12px;
+  width: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
