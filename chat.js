@@ -1,6 +1,7 @@
 /* ============================================================
    DESKLY · SINGLE CONVERSATION
-   Includes: presence, typing, reply, reactions, soft delete
+   Includes: presence, typing, reply, reactions, soft delete,
+             delivery status symbols
    ============================================================ */
 
 (function initChat(){
@@ -52,7 +53,6 @@
 
   const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
 
-  /* Business reaction set — replace here to change emojis everywhere */
   const REACTION_EMOJIS = {
     thumbsup:  '👍',
     handshake: '🤝',
@@ -76,6 +76,7 @@
   let presenceTimer = null;
   let typingConnected = false;
   let replyToId = null;
+  let otherIsOnline = false;
 
   function showMissing(){
     if (loading) loading.style.display = 'none';
@@ -136,7 +137,8 @@
       (m.deleted_at || '') + ':' +
       (Array.isArray(m.deleted_for) ? m.deleted_for.join(',') : '') + ':' +
       (m.reactions ? m.reactions.length : 0) + ':' +
-      (m.read_at || '')
+      (m.read_at || '') + ':' +
+      (otherIsOnline ? '1' : '0')
     ).join('|');
   }
 
@@ -190,8 +192,15 @@
         if (dot) dot.style.display = 'none';
         headStatus.textContent = otherUser.role || '';
         headStatus.classList.remove('presence-text', 'offline');
+        if (otherIsOnline !== false) {
+          otherIsOnline = false;
+          renderMessages(false);
+        }
         return;
       }
+
+      const wasOnline = otherIsOnline;
+      otherIsOnline = !!p.online;
 
       if (p.online) {
         if (dot) dot.style.display = '';
@@ -202,6 +211,11 @@
         if (dot) dot.style.display = 'none';
         headStatus.textContent = PRESENCE.formatLastSeen(p.lastSeen);
         headStatus.classList.add('presence-text', 'offline');
+      }
+
+      /* Re-render delivery circles if presence changed */
+      if (wasOnline !== otherIsOnline) {
+        renderMessages(false);
       }
     } catch(e) { /* silent */ }
   }
@@ -279,6 +293,28 @@
     replyToId = null;
     const bar = $('chatReplyBar');
     if (bar) bar.remove();
+  }
+
+  /* DELIVERY STATUS */
+  function buildDeliveryStatus(msg, mine){
+    if (!mine) return null;
+    if (msg.deleted_at) return null;
+
+    const el = document.createElement('span');
+    el.className = 'chat-delivery';
+
+    if (msg.read_at) {
+      el.classList.add('chat-delivery-seen');
+      el.title = 'Seen';
+    } else if (otherIsOnline) {
+      el.classList.add('chat-delivery-online');
+      el.title = 'Sent — they are online';
+    } else {
+      el.classList.add('chat-delivery-offline');
+      el.title = 'Sent';
+    }
+
+    return el;
   }
 
   /* RENDER */
@@ -361,8 +397,13 @@
 
       const meta = document.createElement('div');
       meta.className = 'chat-bubble-meta';
-      meta.textContent = formatTime(msg.created_at);
-      if (mine && msg.read_at) meta.textContent += ' ✓✓';
+      const timeSpan = document.createElement('span');
+      timeSpan.textContent = formatTime(msg.created_at);
+      meta.appendChild(timeSpan);
+
+      const delivery = buildDeliveryStatus(msg, mine);
+      if (delivery) meta.appendChild(delivery);
+
       bubble.appendChild(meta);
 
       attachLongPress(bubble, msg);
@@ -465,7 +506,6 @@
     const menu = document.createElement('div');
     menu.className = 'chat-ctx-menu';
 
-    /* Reply */
     const replyBtn = document.createElement('button');
     replyBtn.type = 'button';
     replyBtn.className = 'chat-ctx-item';
@@ -478,7 +518,6 @@
     });
     menu.appendChild(replyBtn);
 
-    /* Reactions */
     const reactWrap = document.createElement('div');
     reactWrap.className = 'chat-ctx-reactions';
     Object.keys(REACTION_EMOJIS).forEach(emojiKey => {
@@ -500,7 +539,6 @@
     });
     menu.appendChild(reactWrap);
 
-    /* Copy */
     if (msg.body) {
       const copyBtn = document.createElement('button');
       copyBtn.type = 'button';
@@ -515,7 +553,6 @@
       menu.appendChild(copyBtn);
     }
 
-    /* Delete for me */
     const delMe = document.createElement('button');
     delMe.type = 'button';
     delMe.className = 'chat-ctx-item chat-ctx-item-danger';
@@ -535,7 +572,6 @@
     });
     menu.appendChild(delMe);
 
-    /* Delete for everyone */
     if (canDeleteEveryone) {
       const delAll = document.createElement('button');
       delAll.type = 'button';
@@ -702,7 +738,6 @@
 
     realtimeUnsub = DB.subscribeToThreadMessages(threadId, (record) => {
       if (!record || !record.id) return;
-
       refreshMessages();
 
       if (record.sender_id && record.sender_id !== me.id && !record.deleted_at) {
