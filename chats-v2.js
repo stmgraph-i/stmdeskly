@@ -1,8 +1,7 @@
 /* ============================================================
-   DESKLY · CHATS INBOX
-   Chats tab: accepted + my outgoing pending
-   Requests tab: incoming pending only
-   Shows unread count per row
+   STMDESKLY · INBOX
+   Tabs: Inbox, Requests, Updates, Archived, + (add)
+   Sliding pill indicator behind active tab.
    ============================================================ */
 
 (function initChats(){
@@ -16,6 +15,7 @@
   const emptyBtn  = document.getElementById('chatsEmptyBtn');
   const listEl    = document.getElementById('chatsList');
   const tabsEl    = document.getElementById('chatsTabs');
+  const pill      = document.getElementById('chatsPill');
   const chatsBadge= document.getElementById('chatsBadge');
   const reqBadge  = document.getElementById('requestsBadge');
 
@@ -160,7 +160,7 @@
               const diff = totalUnread - lastTotalUnread;
               NOTIFY.show(
                 'New message' + (diff > 1 ? 's' : ''),
-                diff + ' new message' + (diff > 1 ? 's' : '') + ' on Deskly',
+                diff + ' new message' + (diff > 1 ? 's' : '') + ' on STMDeskly',
                 { threadId: null }
               );
             }
@@ -200,7 +200,7 @@
         const diff = totalUnread - lastTotalUnread;
         NOTIFY.show(
           'New message' + (diff > 1 ? 's' : ''),
-          diff + ' new message' + (diff > 1 ? 's' : '') + ' on Deskly',
+          diff + ' new message' + (diff > 1 ? 's' : '') + ' on STMDeskly',
           { threadId: null }
         );
       }
@@ -253,9 +253,23 @@
 
     if (currentTab === 'chats') {
       renderList(cls.chats, 'chats');
-    } else {
+    } else if (currentTab === 'requests') {
       renderList(cls.requests, 'requests');
+    } else if (currentTab === 'updates') {
+      renderPlaceholder('Updates', 'Notifications about your Desk, gigs and reviews will appear here.');
+    } else if (currentTab === 'archived') {
+      renderPlaceholder('Archived', 'Conversations you archive will appear here.');
+    } else {
+      renderList(cls.chats, 'chats');
     }
+  }
+
+  function renderPlaceholder(title, subtitle){
+    listEl.innerHTML = '';
+    emptyEl.hidden = false;
+    emptyTitle.textContent = title;
+    emptySub.textContent = subtitle;
+    emptyBtn.hidden = true;
   }
 
   function renderList(items, mode){
@@ -361,10 +375,10 @@
 
     const unreadCount = unreadCache[thread.id] || 0;
     if (unreadCount > 0) {
-      const pill = document.createElement('span');
-      pill.className = 'chat-row-unread';
-      pill.textContent = String(unreadCount > 99 ? '99+' : unreadCount);
-      row.appendChild(pill);
+      const pillEl = document.createElement('span');
+      pillEl.className = 'chat-row-unread';
+      pillEl.textContent = String(unreadCount > 99 ? '99+' : unreadCount);
+      row.appendChild(pillEl);
     }
 
     if (kind === 'incoming') {
@@ -417,14 +431,57 @@
     return row;
   }
 
+  /* ============================================================
+     TAB SWITCHING + SLIDING PILL
+     ============================================================ */
+
+  function movePill(target){
+    if (!pill || !target) return;
+    const tabRect = target.getBoundingClientRect();
+    const containerRect = tabsEl.getBoundingClientRect();
+    const left = tabRect.left - containerRect.left + tabsEl.scrollLeft;
+    const width = tabRect.width;
+
+    pill.style.width = width + 'px';
+    pill.style.transform = 'translateX(' + left + 'px)';
+  }
+
+  function initPill(){
+    const active = tabsEl.querySelector('.chats-tab.active');
+    if (active) {
+      requestAnimationFrame(() => movePill(active));
+    }
+  }
+
   tabsEl.addEventListener('click', (e) => {
+    const addBtn = e.target.closest('.chats-tab-add');
+    if (addBtn) {
+      /* Placeholder — wired in a later step */
+      return;
+    }
+
     const btn = e.target.closest('.chats-tab');
     if (!btn) return;
+
     tabsEl.querySelectorAll('.chats-tab').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
+    movePill(btn);
+
     currentTab = btn.getAttribute('data-tab') || 'chats';
     render();
   });
+
+  window.addEventListener('resize', () => {
+    const active = tabsEl.querySelector('.chats-tab.active');
+    if (active) movePill(active);
+  });
+
+  setTimeout(initPill, 100);
+  window.addEventListener('load', initPill);
+
+  /* ============================================================
+     INIT
+     ============================================================ */
 
   (async function init(){
     if (!window.DB || !DB.ready) {
@@ -446,10 +503,10 @@
 
     const params = new URLSearchParams(location.search);
     const tabParam = params.get('tab');
-    if (tabParam === 'requests') {
-      currentTab = 'requests';
+    if (tabParam) {
+      currentTab = tabParam;
       tabsEl.querySelectorAll('.chats-tab').forEach(b => {
-        b.classList.toggle('active', b.getAttribute('data-tab') === 'requests');
+        b.classList.toggle('active', b.getAttribute('data-tab') === tabParam);
       });
     }
 
