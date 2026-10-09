@@ -579,15 +579,31 @@
         headers: {
           'apikey': c.anonKey,
           'Authorization': 'Bearer ' + token,
-          'Prefer': 'return=minimal'
+          'Prefer': 'return=representation'
         }
       });
+
+      const body = await res.text();
+      alert('Delete debug:\nStatus: ' + res.status + '\nBody: ' + (body || '(empty)'));
+
       if (!res.ok) throw new Error('Could not delete.');
-      currentMessages = currentMessages.filter(m => m.id !== msgId);
-      renderMessages(false);
+
+      /* Only remove from local list if server confirmed */
+      let deleted = false;
+      try {
+        const parsed = JSON.parse(body);
+        deleted = Array.isArray(parsed) && parsed.length > 0;
+      } catch(e) { /* ignore */ }
+
+      if (deleted) {
+        currentMessages = currentMessages.filter(m => m.id !== msgId);
+        renderMessages(false);
+      } else {
+        alert('Server returned success but no row was deleted. RLS is blocking.');
+      }
     } catch(e) {
       console.error(e);
-      alert('Could not delete that message.');
+      alert('Delete error: ' + e.message);
     }
   }
 
@@ -651,7 +667,6 @@
   async function fetchMessages(){
     if (!threadId) return [];
     try {
-      /* Try the meta version first (includes reactions + replies) */
       if (typeof DB.getChatMessagesWithMeta === 'function') {
         try {
           const metaMsgs = await DB.getChatMessagesWithMeta(threadId);
@@ -662,7 +677,6 @@
           console.warn('getChatMessagesWithMeta failed, falling back:', e);
         }
       }
-      /* Fallback to the plain version */
       const msgs = await DB.getChatMessages(threadId);
       return msgs || [];
     } catch(e) {
