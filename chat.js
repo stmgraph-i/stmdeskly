@@ -1,7 +1,7 @@
 /* ============================================================
    DESKLY · SINGLE CONVERSATION
    Includes: presence, typing, reply, reactions, soft delete,
-             delivery status symbols
+             delivery status, loading state
    ============================================================ */
 
 (function initChat(){
@@ -77,6 +77,7 @@
   let typingConnected = false;
   let replyToId = null;
   let otherIsOnline = false;
+  let messagesLoaded = false;
 
   function showMissing(){
     if (loading) loading.style.display = 'none';
@@ -194,7 +195,7 @@
         headStatus.classList.remove('presence-text', 'offline');
         if (otherIsOnline !== false) {
           otherIsOnline = false;
-          renderMessages(false);
+          if (messagesLoaded) renderMessages(false);
         }
         return;
       }
@@ -213,8 +214,7 @@
         headStatus.classList.add('presence-text', 'offline');
       }
 
-      /* Re-render delivery circles if presence changed */
-      if (wasOnline !== otherIsOnline) {
+      if (wasOnline !== otherIsOnline && messagesLoaded) {
         renderMessages(false);
       }
     } catch(e) { /* silent */ }
@@ -323,6 +323,17 @@
     log.innerHTML = '';
 
     if (!currentMessages.length) {
+      if (!messagesLoaded) {
+        const loadingEl = document.createElement('div');
+        loadingEl.className = 'chat-loading-inline';
+        loadingEl.innerHTML =
+          '<span class="chat-loading-dot"></span>' +
+          '<span class="chat-loading-dot"></span>' +
+          '<span class="chat-loading-dot"></span>';
+        log.appendChild(loadingEl);
+        return;
+      }
+
       const empty = document.createElement('div');
       empty.className = 'chat-empty';
       empty.innerHTML = '<p>Say hi 👋</p>';
@@ -715,6 +726,7 @@
     if (key !== lastStateKey) {
       lastStateKey = key;
       currentMessages = msgs;
+      messagesLoaded = true;
       renderMessages(true);
     }
 
@@ -985,6 +997,9 @@
 
       me = DB.currentUser();
 
+      /* Show loading animation immediately */
+      renderMessages(false);
+
       if (threadId) {
         const ok = await loadExistingThread();
         if (!ok) { showMissing(); return; }
@@ -993,6 +1008,7 @@
         renderHeader();
 
         currentMessages = await fetchMessages();
+        messagesLoaded = true;
         lastStateKey = stateKey(currentMessages);
         renderMessages(true);
 
@@ -1015,6 +1031,7 @@
 
         if (threadId) {
           currentMessages = await fetchMessages();
+          messagesLoaded = true;
           lastStateKey = stateKey(currentMessages);
           renderMessages(true);
           try { await DB.markThreadRead(threadId); } catch(e) {}
@@ -1023,6 +1040,7 @@
           startPresencePolling();
           startTypingChannel();
         } else {
+          messagesLoaded = true;
           renderMessages(true);
         }
 
