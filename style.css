@@ -384,3 +384,932 @@ a:focus:not(:focus-visible) {
   }
   html { scroll-behavior: auto; }
   }
+
+/* ============================================================
+   7. FORM PAGES · shells, cards, inputs
+   ============================================================ */
+
+/* ---- Page background with dot pattern ---- */
+
+.page-form {
+  background-color: var(--bg);
+  background-image: var(--dots);
+  background-size: var(--dots-size);
+  background-position: 0 0;
+  background-attachment: scroll;
+  display: block;
+  padding: 0;
+}
+
+/* Signed-in pages sit flat (no dots) */
+.page-form.signed-in {
+  background-image: none;
+}
+
+/* ---- Shell ---- */
+
+.form-shell {
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  padding: 28px var(--gutter) 100px;
+}
+
+/* ---- Back pill (glassy) ---- */
+
+.back-pill,
+.page-back {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  color: var(--ink);
+  box-shadow: var(--shadow-xs);
+  transition: background 0.18s ease, transform 0.12s ease, box-shadow 0.18s ease;
+}
+.back-pill:hover,
+.page-back:hover {
+  background: var(--surface-elevated);
+  box-shadow: var(--shadow-sm);
+}
+.back-pill:active,
+.page-back:active {
+  transform: scale(0.94);
+}
+.back-pill svg,
+.page-back svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---- Form head ---- */
+
+.form-head {
+  text-align: center;
+  margin: 40px 0 30px;
+}
+
+.form-head-title {
+  font-family: var(--display);
+  font-size: clamp(1.85rem, 6.5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.form-head-sub {
+  font-size: 15px;
+  font-weight: 400;
+  color: var(--ink-3);
+  line-height: 1.5;
+  max-width: 400px;
+  margin: 0 auto;
+  letter-spacing: -0.005em;
+}
+
+/* Left-aligned variant (used on how.html, terms.html, test.html) */
+.form-head[style*="text-align:left"] .form-head-title,
+.form-head[style*="text-align:left"] .form-head-sub {
+  text-align: left;
+}
+
+/* ---- Form ---- */
+
+.form {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Type cards (signup, start, post-gig) ---- */
+
+.type-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.type-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--surface-elevated);
+  border-radius: var(--r-lg);
+  border: 1.5px solid transparent;
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  transition:
+    background 0.2s ease,
+    transform 0.15s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* iOS-style chevron on the right */
+.type-card::after {
+  content: "";
+  width: 7px;
+  height: 7px;
+  border-right: 2px solid var(--ink-3);
+  border-bottom: 2px solid var(--ink-3);
+  transform: rotate(-45deg);
+  margin-left: auto;
+  opacity: 0.35;
+  flex-shrink: 0;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.type-card:hover {
+  background: var(--surface);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+.type-card:hover::after {
+  opacity: 0.8;
+  transform: rotate(-45deg) translateX(2px);
+}
+
+.type-card:active {
+  transform: scale(0.995);
+}
+
+.type-card.active {
+  border-color: var(--accent);
+  background: var(--accent-soft);
+  box-shadow:
+    0 0 0 4px rgba(46, 110, 68, 0.08),
+    var(--shadow-sm);
+}
+.type-card.active::after {
+  opacity: 1;
+  border-color: var(--accent);
+}
+
+.type-badge {
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.type-badge svg {
+  width: 20px;
+  height: 20px;
+}
+.type-card.active .type-badge {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+.type-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+  flex: 1;
+}
+
+.type-title {
+  font-family: var(--display);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.type-sub {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-3);
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+}
+
+/* ---- Form fields container ---- */
+
+.form-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  margin-top: 28px;
+  padding: 26px 22px;
+  background: var(--surface-elevated);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  animation: formFieldsIn 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes formFieldsIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- Individual group ---- */
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ---- Label ---- */
+
+.form-label {
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  line-height: 1.3;
+}
+
+/* ---- Inputs ---- */
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  border: 1.5px solid var(--line);
+  background: var(--surface-2);
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 400;
+  color: var(--ink);
+  outline: none;
+  transition:
+    border-color 0.18s ease,
+    box-shadow 0.18s ease,
+    background 0.18s ease;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.form-input:focus {
+  background: var(--surface-elevated);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.form-input::placeholder {
+  color: #A29B8E;
+  opacity: 1;
+}
+
+textarea.form-input {
+  resize: vertical;
+  min-height: 90px;
+  line-height: 1.5;
+}
+
+/* Help text ---- */
+.form-help {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--ink-3);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   8. LINK PREVIEW (signup "your link")
+   ============================================================ */
+
+.link-preview {
+  display: flex;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--surface-2);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  font-size: 15px;
+  overflow: hidden;
+  transition: border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.link-preview:focus-within {
+  background: var(--surface-elevated);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.link-prefix {
+  color: var(--ink-3);
+  font-weight: 500;
+  flex-shrink: 0;
+}
+
+.link-input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  outline: none;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.01em;
+  padding: 0;
+}
+.link-input:focus {
+  box-shadow: none;
+}
+
+/* ============================================================
+   9. ROLE CHIPS (signup)
+   ============================================================ */
+
+.role-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.role-chip {
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  letter-spacing: -0.005em;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease;
+}
+.role-chip:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+.role-chip:active {
+  transform: scale(0.97);
+}
+
+/* ============================================================
+   10. COLOR GRID (signup + settings)
+   ============================================================ */
+
+.color-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.color-dot {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 50%;
+  border: 3px solid transparent;
+  padding: 0;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: inset 0 0 0 1px rgba(31, 27, 20, 0.08);
+}
+.color-dot:hover {
+  transform: scale(1.08);
+}
+.color-dot.active {
+  border-color: var(--ink);
+  transform: scale(1.1);
+  box-shadow:
+    inset 0 0 0 1px rgba(31, 27, 20, 0.08),
+    0 0 0 3px rgba(255, 255, 255, 0.9);
+}
+
+/* ============================================================
+   11. OCCUPATION SUGGESTION (signup + settings role field)
+   ============================================================ */
+
+.occ-slot {
+  margin-top: 12px;
+}
+
+.occ-block {
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 20px 22px;
+}
+
+.occ-title {
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 6px;
+  line-height: 1.25;
+}
+
+.occ-tagline {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.occ-about {
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--ink-3);
+  margin-bottom: 14px;
+  line-height: 1.55;
+}
+
+.occ-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+
+.occ-services {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+.occ-services li {
+  font-size: 13.5px;
+  color: var(--ink-2);
+  line-height: 1.5;
+  padding-left: 14px;
+  position: relative;
+}
+.occ-services li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.occ-hint {
+  font-size: 12.5px;
+  color: var(--accent);
+  font-weight: 600;
+  margin-top: 12px;
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   12. PASSWORD WRAP + TOGGLE + METER
+   ============================================================ */
+
+.pw-wrap {
+  position: relative;
+  display: block;
+}
+.pw-wrap .form-input {
+  padding-right: 52px;
+}
+
+.pw-toggle {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: var(--r-sm);
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+  background: transparent;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.pw-toggle:hover {
+  color: var(--ink);
+  background: rgba(31, 27, 20, 0.05);
+}
+.pw-toggle:active {
+  transform: translateY(-50%) scale(0.94);
+}
+.pw-toggle svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.pw-toggle .icon-eye-off { display: none; }
+.pw-toggle[data-state="hidden"] .icon-eye { display: none; }
+.pw-toggle[data-state="hidden"] .icon-eye-off { display: block; }
+
+/* Meter */
+.pw-meter {
+  margin-top: 10px;
+}
+
+.pw-meter-bars {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.pw-bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--line);
+  transition: background 0.2s ease;
+}
+
+.pw-meter-label {
+  font-size: 12.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  color: var(--ink-3);
+}
+
+.pw-meter[data-score="1"] .pw-bar:nth-child(1) { background: #B8865B; }
+.pw-meter[data-score="1"] .pw-meter-label { color: #B8865B; }
+
+.pw-meter[data-score="2"] .pw-bar:nth-child(1),
+.pw-meter[data-score="2"] .pw-bar:nth-child(2) { background: #C8A252; }
+.pw-meter[data-score="2"] .pw-meter-label { color: #9C7B2F; }
+
+.pw-meter[data-score="3"] .pw-bar:nth-child(1),
+.pw-meter[data-score="3"] .pw-bar:nth-child(2),
+.pw-meter[data-score="3"] .pw-bar:nth-child(3) { background: #6FA374; }
+.pw-meter[data-score="3"] .pw-meter-label { color: #4C8451; }
+
+.pw-meter[data-score="4"] .pw-bar { background: var(--accent); }
+.pw-meter[data-score="4"] .pw-meter-label {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* ============================================================
+   13. REMEMBER ROW (login)
+   ============================================================ */
+
+.remember-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 4px 0 6px;
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--ink-2);
+  letter-spacing: -0.005em;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.remember-row input[type="checkbox"] {
+  width: 20px;
+  height: 20px;
+  accent-color: var(--accent);
+  cursor: pointer;
+  flex-shrink: 0;
+  margin: 0;
+}
+
+/* ============================================================
+   14. ACCOUNT CARDS (login "continue as")
+   ============================================================ */
+
+.accounts-box {
+  margin-bottom: 22px;
+}
+
+.accounts-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 10px;
+}
+
+.accounts-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.account-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 12px 16px;
+  background: var(--surface-elevated);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s ease,
+    box-shadow 0.15s ease;
+  width: 100%;
+  font-family: var(--sans);
+  color: var(--ink);
+  box-shadow: var(--shadow-xs);
+}
+
+.account-card:hover {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-sm);
+}
+
+.account-card:active {
+  transform: scale(0.99);
+}
+
+.account-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  background-size: cover;
+  background-position: center;
+}
+
+.account-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  flex: 1;
+}
+
+.account-name {
+  font-family: var(--display);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-email {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.accounts-other {
+  font-size: 13px;
+  color: var(--accent);
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  padding: 6px 2px;
+  text-align: left;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+.accounts-other:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+   15. FORM MESSAGE (error / success)
+   ============================================================ */
+
+.form-message {
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+  margin-top: 4px;
+  letter-spacing: -0.005em;
+}
+
+.form-message.error {
+  background: var(--danger-soft);
+  color: var(--danger-ink);
+  border: 1px solid rgba(139, 50, 23, 0.12);
+}
+
+.form-message.success {
+  background: var(--success-soft);
+  color: var(--success);
+  border: 1px solid rgba(46, 110, 68, 0.12);
+}
+
+/* ============================================================
+   16. SUBMIT BUTTON + SPINNER
+   ============================================================ */
+
+.form-submit {
+  margin-top: 8px;
+  padding: 16px 24px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--sans);
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-shadow: var(--shadow-btn);
+  transition:
+    background 0.2s ease,
+    transform 0.12s ease,
+    box-shadow 0.2s ease;
+  width: 100%;
+}
+.form-submit:hover {
+  background: var(--accent-hover);
+  box-shadow:
+    0 2px 4px rgba(31, 27, 20, 0.06),
+    0 10px 20px -8px rgba(46, 110, 68, 0.34);
+}
+.form-submit:active {
+  transform: scale(0.99);
+}
+.form-submit:disabled {
+  opacity: 0.85;
+  cursor: wait;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ============================================================
+   17. FORM ALT LINKS (bottom of form)
+   ============================================================ */
+
+.form-alt {
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-3);
+  margin-top: 16px;
+  letter-spacing: -0.005em;
+}
+
+.form-alt a {
+  color: var(--accent);
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+.form-alt a:hover {
+  color: var(--accent-hover);
+}
+
+.form-alt.form-alt-small {
+  font-size: 12.5px;
+  margin-top: 10px;
+  color: var(--ink-3);
+}
+.form-alt.form-alt-small a {
+  color: var(--ink-3);
+  font-weight: 500;
+}
+.form-alt.form-alt-small a:hover {
+  color: var(--accent);
+}
+
+/* ============================================================
+   18. SKELETON LOADERS
+   ============================================================ */
+
+.dash-loading {
+  padding: 36px 22px 60px;
+  max-width: 560px;
+  margin: 0 auto;
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(31, 27, 20, 0.05) 0%,
+    rgba(31, 27, 20, 0.09) 50%,
+    rgba(31, 27, 20, 0.05) 100%
+  );
+  background-size: 200% 100%;
+  animation: skelAnim 1.4s linear infinite;
+  border-radius: 12px;
+  margin-bottom: 14px;
+}
+
+@keyframes skelAnim {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-title {
+  height: 32px;
+  width: 60%;
+  border-radius: 8px;
+}
+
+.skeleton-line {
+  height: 14px;
+  width: 100%;
+}
+
+.skeleton-line.short {
+  width: 70%;
+}
+
+.skeleton-block {
+  height: 80px;
+  border-radius: 18px;
+  margin-top: 8px;
+}
+
+/* ============================================================
+   19. RESPONSIVE — form pages
+   ============================================================ */
+
+@media (max-width: 760px) {
+  :root {
+    --gutter: 16px;
+  }
+
+  .form-fields {
+    padding: 24px 18px;
+    gap: 18px;
+    border-radius: var(--r-lg);
+  }
+
+  .form-head {
+    margin: 32px 0 24px;
+  }
+}
+
+@media (max-width: 520px) {
+  .form-shell {
+    padding: 20px 16px 90px;
+  }
+
+  .form-fields {
+    padding: 22px 16px;
+    gap: 16px;
+  }
+   }
