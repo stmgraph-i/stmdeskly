@@ -215,11 +215,17 @@
     });
 
     if (scrollToBottom !== false) {
-      log.scrollTop = log.scrollHeight;
-      requestAnimationFrame(() => {
-        log.scrollTop = log.scrollHeight;
-        setTimeout(() => { log.scrollTop = log.scrollHeight; }, 300);
-      });
+      function goBottom(){
+        if (log) log.scrollTop = log.scrollHeight;
+        window.scrollTo(0, document.documentElement.scrollHeight);
+        document.documentElement.scrollTop = document.documentElement.scrollHeight;
+        document.body.scrollTop = document.body.scrollHeight;
+      }
+      goBottom();
+      requestAnimationFrame(goBottom);
+      setTimeout(goBottom, 100);
+      setTimeout(goBottom, 300);
+      setTimeout(goBottom, 600);
     }
   }
 
