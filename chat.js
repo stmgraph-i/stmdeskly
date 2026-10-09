@@ -217,15 +217,11 @@
     if (scrollToBottom !== false) {
       function goBottom(){
         if (log) log.scrollTop = log.scrollHeight;
-        window.scrollTo(0, document.documentElement.scrollHeight);
-        document.documentElement.scrollTop = document.documentElement.scrollHeight;
-        document.body.scrollTop = document.body.scrollHeight;
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
       }
       goBottom();
       requestAnimationFrame(goBottom);
-      setTimeout(goBottom, 100);
-      setTimeout(goBottom, 300);
-      setTimeout(goBottom, 600);
+      setTimeout(goBottom, 200);
     }
   }
 
