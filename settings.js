@@ -39,6 +39,10 @@
   const accSubNotify      = document.getElementById('accSubNotify');
   const notifyStatus      = document.getElementById('notifyStatus');
 
+  const privacyPicker     = document.getElementById('privacyPicker');
+  const accSubPrivacy     = document.getElementById('accSubPrivacy');
+  const privacyStatus     = document.getElementById('privacyStatus');
+
   const avatarPreview   = document.getElementById('avatarPreview');
   const avatarInitials  = document.getElementById('avatarInitials');
   const avatarUploadBtn = document.getElementById('avatarUploadBtn');
@@ -220,6 +224,11 @@
     }
     if (accSubAppearance) {
       accSubAppearance.textContent = currentAccent.name + ' · ' + capitalize(currentFont);
+    }
+    if (accSubPrivacy) {
+      const p = (currentDesk && currentDesk.presence_privacy) || 'everyone';
+      const map = { 'everyone': 'Everyone', 'contacts': 'Contacts', 'nobody': 'Nobody' };
+      accSubPrivacy.textContent = map[p] || 'Everyone';
     }
     updateNotifySubtitle();
   }
@@ -594,6 +603,7 @@
     renderGigAvail();
     renderPhotos();
     renderNotifyToggle();
+    renderPrivacy();
 
     applyType(currentType);
     updateSubtitles();
@@ -683,6 +693,68 @@
       }
 
       renderNotifyToggle();
+    });
+  }
+
+  /* ============================================================
+     PRIVACY (presence visibility)
+     ============================================================ */
+
+  function renderPrivacy(){
+    if (!privacyPicker) return;
+    const current = (currentDesk && currentDesk.presence_privacy) || 'everyone';
+
+    privacyPicker.querySelectorAll('button').forEach(b => {
+      b.classList.toggle('active', b.dataset.value === current);
+    });
+
+    if (accSubPrivacy) {
+      const map = { 'everyone': 'Everyone', 'contacts': 'Contacts', 'nobody': 'Nobody' };
+      accSubPrivacy.textContent = map[current] || 'Everyone';
+    }
+
+    if (privacyStatus) {
+      if (current === 'nobody') {
+        privacyStatus.textContent = 'Your status is hidden. You also won\u2019t see anyone else\u2019s.';
+      } else if (current === 'contacts') {
+        privacyStatus.textContent = 'Only people you\u2019ve chatted with can see your status.';
+      } else {
+        privacyStatus.textContent = '';
+      }
+    }
+  }
+
+  if (privacyPicker) {
+    privacyPicker.addEventListener('click', async (e) => {
+      const btn = e.target.closest('.option-btn');
+      if (!btn || btn.disabled) return;
+      const level = btn.dataset.value;
+      if (!level) return;
+
+      const current = (currentDesk && currentDesk.presence_privacy) || 'everyone';
+      if (level === current) return;
+
+      btn.disabled = true;
+      const orig = btn.textContent;
+      btn.textContent = '...';
+
+      try {
+        await DB.setPresencePrivacy(level);
+        if (currentDesk) currentDesk.presence_privacy = level;
+
+        if (window.PRESENCE && PRESENCE.clearPrivacyCache) {
+          PRESENCE.clearPrivacyCache();
+        }
+
+        renderPrivacy();
+        updateSubtitles();
+      } catch (err) {
+        console.error(err);
+        alert(err.message || 'Could not update privacy.');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = orig;
+      }
     });
   }
 
@@ -1075,7 +1147,7 @@
       photo_layout:   currentPhotoLayout,
       avatar_url:     currentAvatar,
       initials:       (name.split(/\s+/).map(w => w[0]).join('').slice(0,4) || 'D').toUpperCase(),
-      footer:         (name || 'Deskly') + ' on Deskly'
+      footer:         (name || 'STMDeskly') + ' on STMDeskly'
     };
 
     if (!updates.name || !updates.role) {
