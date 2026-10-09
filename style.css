@@ -8232,3 +8232,53 @@ body.pattern-rings .content-band{
   border-radius: 4px;
   vertical-align: middle;
 }
+/* ============================================================
+   PRESENCE · Online dot + last seen text
+   ============================================================ */
+
+/* Wrapper for any avatar that has presence */
+.presence-avatar {
+  position: relative;
+  display: inline-block;
+}
+
+.presence-avatar .presence-dot {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #34C759;
+  border: 2px solid var(--page-bg, #F2F0EA);
+  z-index: 2;
+  pointer-events: none;
+}
+
+/* Larger dot for the chat header avatar */
+.chat-head-avatar.presence-avatar .presence-dot {
+  width: 14px;
+  height: 14px;
+  bottom: 0;
+  right: 0;
+}
+
+/* Larger dot for the profile avatar */
+.desk-mark.presence-avatar .presence-dot {
+  width: 20px;
+  height: 20px;
+  bottom: 4px;
+  right: 4px;
+  border-width: 3px;
+}
+
+/* Presence text under names */
+.presence-text {
+  color: #34C759;
+  font-weight: 500;
+}
+
+.presence-text.offline {
+  color: var(--muted, #6E6E73);
+  font-weight: 400;
+}
