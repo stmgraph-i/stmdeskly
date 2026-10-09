@@ -1093,7 +1093,7 @@
           console.error(err);
           acceptBtn.disabled = false;
           acceptBtn.textContent = 'Accept';
-          alert(err.message || 'Could not accept.');
+          TOAST.show(err.message || 'Could not accept.', { kind: 'error' });
         }
       });
       actions.appendChild(acceptBtn);
@@ -1113,7 +1113,7 @@
         } catch(err) {
           console.error(err);
           declineBtn.disabled = false;
-          alert(err.message || 'Could not decline.');
+          TOAST.show(err.message || 'Could not decline.', { kind: 'error' });
         }
       });
       actions.appendChild(declineBtn);
@@ -1161,7 +1161,7 @@
         await loadAll();
       } catch(e) {
         console.error(e);
-        alert(e.message || 'Could not ' + (isPinned ? 'unpin' : 'pin') + '.');
+        TOAST.show(e.message || 'Could not ' + (isPinned ? 'unpin' : 'pin') + '.', { kind: 'error' });
       }
     });
     menu.appendChild(pinItem);
@@ -1178,7 +1178,7 @@
         await loadAll();
       } catch(e) {
         console.error(e);
-        alert(e.message || 'Could not ' + (isMuted ? 'unmute' : 'mute') + '.');
+        TOAST.show(e.message || 'Could not ' + (isMuted ? 'unmute' : 'mute') + '.', { kind: 'error' });
       }
     });
     menu.appendChild(muteItem);
@@ -1195,7 +1195,7 @@
         await loadAll();
       } catch(e) {
         console.error(e);
-        alert('Could not ' + (isArchived ? 'unarchive' : 'archive') + '.');
+        TOAST.show('Could not ' + (isArchived ? 'unarchive' : 'archive') + '.', { kind: 'error' });
       }
     });
     menu.appendChild(archiveItem);
@@ -1212,7 +1212,7 @@
         await loadAll();
       } catch(e) {
         console.error(e);
-        alert('Could not delete.');
+        TOAST.show('Could not delete.', { kind: 'error' });
       }
     });
     menu.appendChild(deleteItem);
