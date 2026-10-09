@@ -70,6 +70,7 @@
   let realtimeUnsub = null;
   let lastMessageId = null;
   let presenceTimer = null;
+  let typingConnected = false;
 
   /* ============================================================
      HELPERS
@@ -193,6 +194,31 @@
     if (presenceTimer) clearInterval(presenceTimer);
     if (!otherId) return;
     presenceTimer = setInterval(renderPresenceInHeader, 20000);
+  }
+
+  function startTypingChannel(){
+    if (typingConnected) return;
+    if (!threadId || !me) return;
+    if (!window.TYPING) return;
+
+    typingConnected = true;
+
+    TYPING.connect(threadId, me.id, (isTyping) => {
+      renderTypingIndicator(isTyping);
+    });
+  }
+
+  function renderTypingIndicator(isTyping){
+    if (!headStatus) return;
+
+    if (isTyping) {
+      headStatus.textContent = 'typing...';
+      headStatus.classList.add('presence-text');
+      headStatus.classList.remove('offline');
+    } else {
+      /* Restore presence text */
+      renderPresenceInHeader();
+    }
   }
 
   /* ============================================================
@@ -434,6 +460,15 @@
       updateSendState();
       input.style.height = 'auto';
       input.style.height = Math.min(input.scrollHeight, 140) + 'px';
+
+      /* Typing indicator */
+      if (window.TYPING && threadId) {
+        if (input.value.trim().length > 0) {
+          TYPING.userIsTyping();
+        } else {
+          TYPING.stopTyping();
+        }
+      }
     });
 
     input.addEventListener('keydown', (e) => {
@@ -450,6 +485,8 @@
       const body = input ? input.value.trim() : '';
       if (!body) return;
 
+      if (window.TYPING) TYPING.stopTyping();
+
       if (input) {
         input.value = '';
         input.style.height = 'auto';
@@ -465,6 +502,7 @@
           startRealtime();
           startPolling();
           startPresencePolling();
+          startTypingChannel();
           await refreshMessages();
         } else {
           await DB.sendChatMessage(threadId, { body: body });
@@ -534,6 +572,7 @@
           startRealtime();
           startPolling();
           startPresencePolling();
+          startTypingChannel();
           await refreshMessages();
         } else {
           await DB.sendChatMessage(threadId, { photoBlob: pendingPhotoBlob });
@@ -654,6 +693,7 @@
         startRealtime();
         startPolling();
         startPresencePolling();
+        startTypingChannel();
       }
       else if (toUserId) {
         const ok = await loadNewRecipient();
@@ -671,6 +711,7 @@
           startRealtime();
           startPolling();
           startPresencePolling();
+          startTypingChannel();
         } else {
           renderMessages(true);
         }
@@ -686,6 +727,7 @@
       window.addEventListener('beforeunload', () => {
         if (pollTimer) clearInterval(pollTimer);
         if (presenceTimer) clearInterval(presenceTimer);
+        if (window.TYPING) TYPING.disconnect();
         if (realtimeUnsub) {
           try { realtimeUnsub(); } catch(e) {}
         }
