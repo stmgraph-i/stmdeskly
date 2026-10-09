@@ -1,6 +1,6 @@
 /* ============================================================
    DESKLY · SINGLE CONVERSATION
-   Includes: presence, typing, reply, reactions
+   Includes: presence, typing, reply, reactions, delete variants
    ============================================================ */
 
 (function initChat(){
@@ -11,17 +11,13 @@
   let threadId   = params.get('id');
   const toUserId = params.get('to');
 
-  /* Quick reply from notification */
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', async (event) => {
       if (!event.data || event.data.type !== 'quick-reply') return;
-
       const replyThreadId = event.data.threadId;
       const replyBody = event.data.body;
-
       const currentId = new URLSearchParams(location.search).get('id');
       if (!currentId || currentId !== replyThreadId) return;
-
       try {
         await DB.sendChatMessage(replyThreadId, { body: replyBody });
         await refreshMessages();
@@ -71,10 +67,6 @@
   let typingConnected = false;
   let replyToId = null;
 
-  /* ============================================================
-     HELPERS
-     ============================================================ */
-
   function showMissing(){
     if (loading) loading.style.display = 'none';
     if (head) head.style.display = 'none';
@@ -122,10 +114,13 @@
     return String(s || '').slice(0, 120);
   }
 
-  /* ============================================================
-     HEADER
-     ============================================================ */
+  function withinDeleteWindow(iso){
+    const t = new Date(iso).getTime();
+    if (!t) return false;
+    return (Date.now() - t) <= (24 * 60 * 60 * 1000);
+  }
 
+  /* HEADER */
   function renderHeader(){
     if (!head) return;
     if (!otherUser) return;
@@ -201,9 +196,7 @@
     if (typingConnected) return;
     if (!threadId || !me) return;
     if (!window.TYPING) return;
-
     typingConnected = true;
-
     TYPING.connect(threadId, me.id, (isTyping) => {
       renderTypingIndicator(isTyping);
     });
@@ -211,7 +204,6 @@
 
   function renderTypingIndicator(isTyping){
     if (!headStatus) return;
-
     if (isTyping) {
       headStatus.textContent = 'typing...';
       headStatus.classList.add('presence-text');
@@ -221,10 +213,7 @@
     }
   }
 
-  /* ============================================================
-     REPLY QUOTE BAR
-     ============================================================ */
-
+  /* REPLY */
   function showReplyBar(msg){
     replyToId = msg.id;
 
@@ -272,10 +261,7 @@
     if (bar) bar.remove();
   }
 
-  /* ============================================================
-     RENDER MESSAGES
-     ============================================================ */
-
+  /* RENDER */
   function renderMessages(scrollToBottom){
     if (!log) return;
     log.innerHTML = '';
@@ -308,34 +294,50 @@
       bubble.className = 'chat-bubble ' + (mine ? 'chat-bubble-mine' : 'chat-bubble-theirs');
       bubble.dataset.msgId = msg.id;
 
-      if (msg.reply_to) {
-        const quote = document.createElement('button');
-        quote.type = 'button';
-        quote.className = 'chat-bubble-quote';
-        const qName = msg.reply_to.sender_id === me.id ? 'You' : (otherUser.name || 'Them');
-        const qBody = msg.reply_to.photo_url && !msg.reply_to.body ? '📷 Photo' : escapeText(msg.reply_to.body || '');
-        quote.innerHTML =
-          '<div class="chat-bubble-quote-name">' + qName + '</div>' +
-          '<div class="chat-bubble-quote-body">' + qBody + '</div>';
-        quote.addEventListener('click', () => jumpToMessage(msg.reply_to.id));
-        bubble.appendChild(quote);
-      }
-
-      if (msg.photo_url) {
-        const img = document.createElement('img');
-        img.className = 'chat-bubble-photo';
-        img.src = msg.photo_url;
-        img.alt = '';
-        img.loading = 'lazy';
-        img.addEventListener('click', () => openFull(msg.photo_url));
-        bubble.appendChild(img);
-      }
-
-      if (msg.body) {
+      if (msg.deleted_at) {
+        /* Placeholder */
+        bubble.classList.add('chat-bubble-deleted');
         const text = document.createElement('div');
-        text.className = 'chat-bubble-text';
-        text.textContent = msg.body;
+        text.className = 'chat-bubble-text chat-bubble-deleted-text';
+        text.textContent = mine ? 'You deleted this message' : 'This message was deleted';
         bubble.appendChild(text);
+      } else {
+        if (msg.reply_to) {
+          const quote = document.createElement('button');
+          quote.type = 'button';
+          quote.className = 'chat-bubble-quote';
+          const qName = msg.reply_to.sender_id === me.id ? 'You' : (otherUser.name || 'Them');
+          let qBody;
+          if (msg.reply_to.deleted) {
+            qBody = 'Deleted message';
+          } else {
+            qBody = msg.reply_to.photo_url && !msg.reply_to.body ? '📷 Photo' : escapeText(msg.reply_to.body || '');
+          }
+          quote.innerHTML =
+            '<div class="chat-bubble-quote-name">' + qName + '</div>' +
+            '<div class="chat-bubble-quote-body">' + qBody + '</div>';
+          if (!msg.reply_to.deleted) {
+            quote.addEventListener('click', () => jumpToMessage(msg.reply_to.id));
+          }
+          bubble.appendChild(quote);
+        }
+
+        if (msg.photo_url) {
+          const img = document.createElement('img');
+          img.className = 'chat-bubble-photo';
+          img.src = msg.photo_url;
+          img.alt = '';
+          img.loading = 'lazy';
+          img.addEventListener('click', () => openFull(msg.photo_url));
+          bubble.appendChild(img);
+        }
+
+        if (msg.body) {
+          const text = document.createElement('div');
+          text.className = 'chat-bubble-text';
+          text.textContent = msg.body;
+          bubble.appendChild(text);
+        }
       }
 
       const meta = document.createElement('div');
@@ -348,7 +350,7 @@
 
       wrap.appendChild(bubble);
 
-      if (msg.reactions && msg.reactions.length) {
+      if (!msg.deleted_at && msg.reactions && msg.reactions.length) {
         const reactionsBar = renderReactionsBar(msg);
         wrap.appendChild(reactionsBar);
       }
@@ -417,14 +419,15 @@
     setTimeout(() => target.classList.remove('chat-bubble-highlight'), 1500);
   }
 
-  /* ============================================================
-     LONG PRESS + CONTEXT MENU
-     ============================================================ */
-
+  /* CONTEXT MENU */
   let pressTimer = null;
   let activeMenu = null;
 
   function attachLongPress(el, msg){
+    if (msg.deleted_at) {
+      /* No menu for deleted messages */
+      return;
+    }
     const start = () => {
       clearTimeout(pressTimer);
       pressTimer = setTimeout(() => {
@@ -447,6 +450,9 @@
   function openContextMenu(el, msg){
     closeContextMenu();
 
+    const mine = msg.sender_id === me.id;
+    const canDeleteEveryone = mine && withinDeleteWindow(msg.created_at);
+
     const menu = document.createElement('div');
     menu.className = 'chat-ctx-menu';
 
@@ -463,7 +469,7 @@
     });
     menu.appendChild(replyBtn);
 
-    /* Reactions row */
+    /* Reactions */
     const reactWrap = document.createElement('div');
     reactWrap.className = 'chat-ctx-reactions';
     const emojiMap = {
@@ -502,33 +508,57 @@
         '<span>Copy</span>';
       copyBtn.addEventListener('click', async () => {
         closeContextMenu();
-        try {
-          await navigator.clipboard.writeText(msg.body);
-        } catch(e) { /* silent */ }
+        try { await navigator.clipboard.writeText(msg.body); } catch(e) {}
       });
       menu.appendChild(copyBtn);
     }
 
-    /* Delete (only own) */
-    if (msg.sender_id === me.id) {
-      const delBtn = document.createElement('button');
-      delBtn.type = 'button';
-      delBtn.className = 'chat-ctx-item chat-ctx-item-danger';
-      delBtn.innerHTML =
+    /* Delete for me */
+    const delMe = document.createElement('button');
+    delMe.type = 'button';
+    delMe.className = 'chat-ctx-item chat-ctx-item-danger';
+    delMe.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/></svg>' +
+      '<span>Delete for me</span>';
+    delMe.addEventListener('click', async () => {
+      closeContextMenu();
+      if (!confirm('Delete this message for you?')) return;
+      try {
+        await DB.hideMessageForMe(msg.id);
+        await refreshMessages();
+      } catch(e) {
+        console.error(e);
+        alert(e.message || 'Could not delete.');
+      }
+    });
+    menu.appendChild(delMe);
+
+    /* Delete for everyone (only if mine + within 24h) */
+    if (canDeleteEveryone) {
+      const delAll = document.createElement('button');
+      delAll.type = 'button';
+      delAll.className = 'chat-ctx-item chat-ctx-item-danger';
+      delAll.innerHTML =
         '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/></svg>' +
-        '<span>Delete</span>';
-      delBtn.addEventListener('click', async () => {
+        '<span>Delete for everyone</span>';
+      delAll.addEventListener('click', async () => {
         closeContextMenu();
-        if (!confirm('Delete this message?')) return;
-        await deleteMessage(msg.id);
+        if (!confirm('Delete this message for everyone?')) return;
+        try {
+          await DB.deleteMessageForEveryone(msg.id);
+          await refreshMessages();
+        } catch(e) {
+          console.error(e);
+          alert(e.message || 'Could not delete for everyone.');
+        }
       });
-      menu.appendChild(delBtn);
+      menu.appendChild(delAll);
     }
 
     document.body.appendChild(menu);
 
     const rect = el.getBoundingClientRect();
-    const menuW = 220;
+    const menuW = 240;
     let left = rect.left + (rect.width / 2) - (menuW / 2);
     left = Math.max(8, Math.min(left, window.innerWidth - menuW - 8));
 
@@ -568,49 +598,7 @@
     }
   }
 
-  async function deleteMessage(msgId){
-    try {
-      const c = window.SUPABASE_CONFIG;
-      const session = DB.getSession();
-      const token = session?.access_token || c.anonKey;
-      const url = c.url + '/rest/v1/chat_messages?id=eq.' + encodeURIComponent(msgId);
-      const res = await fetch(url, {
-        method: 'DELETE',
-        headers: {
-          'apikey': c.anonKey,
-          'Authorization': 'Bearer ' + token,
-          'Prefer': 'return=representation'
-        }
-      });
-
-      const body = await res.text();
-      alert('Delete debug:\nStatus: ' + res.status + '\nBody: ' + (body || '(empty)'));
-
-      if (!res.ok) throw new Error('Could not delete.');
-
-      /* Only remove from local list if server confirmed */
-      let deleted = false;
-      try {
-        const parsed = JSON.parse(body);
-        deleted = Array.isArray(parsed) && parsed.length > 0;
-      } catch(e) { /* ignore */ }
-
-      if (deleted) {
-        currentMessages = currentMessages.filter(m => m.id !== msgId);
-        renderMessages(false);
-      } else {
-        alert('Server returned success but no row was deleted. RLS is blocking.');
-      }
-    } catch(e) {
-      console.error(e);
-      alert('Delete error: ' + e.message);
-    }
-  }
-
-  /* ============================================================
-     LOAD THREAD / RECIPIENT
-     ============================================================ */
-
+  /* LOAD */
   async function loadExistingThread(){
     try {
       const result = await DB.getThread(threadId);
@@ -660,17 +648,14 @@
     }
   }
 
-  /* ============================================================
-     FETCH / POLL / REALTIME
-     ============================================================ */
-
+  /* FETCH / POLL / REALTIME */
   async function fetchMessages(){
     if (!threadId) return [];
     try {
       if (typeof DB.getChatMessagesWithMeta === 'function') {
         try {
           const metaMsgs = await DB.getChatMessagesWithMeta(threadId);
-          if (Array.isArray(metaMsgs) && metaMsgs.length) {
+          if (Array.isArray(metaMsgs)) {
             return metaMsgs;
           }
         } catch(e) {
@@ -737,10 +722,7 @@
     });
   }
 
-  /* ============================================================
-     SEND
-     ============================================================ */
-
+  /* SEND */
   function updateSendState(){
     if (!input || !sendBtn) return;
     const hasText = input.value.trim().length > 0;
@@ -817,10 +799,7 @@
     });
   }
 
-  /* ============================================================
-     PHOTO ATTACH
-     ============================================================ */
-
+  /* PHOTO */
   if (attachBtn && photoInput) {
     attachBtn.addEventListener('click', () => photoInput.click());
   }
@@ -901,10 +880,7 @@
     });
   }
 
-  /* ============================================================
-     MENU
-     ============================================================ */
-
+  /* MENU */
   if (menuBtn && menu) {
     menuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
@@ -959,10 +935,7 @@
     });
   }
 
-  /* ============================================================
-     INIT
-     ============================================================ */
-
+  /* INIT */
   (async function init(){
     try {
       if ('scrollRestoration' in history) {
