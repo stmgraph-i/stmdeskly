@@ -9100,3 +9100,179 @@ body.pattern-rings .content-band{
 .tab-picker-done:active {
   opacity: 0.9;
 }
+/* ============================================================
+   TAB PICKER · Custom tab extras
+   ============================================================ */
+
+.tab-picker-section-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #8E8E93;
+  padding: 16px 4px 6px;
+}
+
+.tab-picker-empty {
+  font-size: 13px;
+  color: #8E8E93;
+  padding: 10px 4px;
+  font-style: italic;
+}
+
+.tab-picker-custom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 8px;
+  background: rgba(0, 0, 0, 0.03);
+  border-radius: 12px;
+  margin-bottom: 6px;
+}
+
+.tab-picker-custom-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tab-picker-custom-label {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--text, #1D1D1F);
+  margin-bottom: 2px;
+}
+
+.tab-picker-custom-kw {
+  font-size: 12px;
+  color: #8E8E93;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tab-picker-custom-delete {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: #E53535;
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab-picker-custom-delete svg {
+  width: 18px;
+  height: 18px;
+}
+
+.tab-picker-custom-delete:hover,
+.tab-picker-custom-delete:active {
+  background: rgba(229, 53, 53, 0.1);
+}
+
+.tab-picker-new-btn {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-top: 6px;
+  border: 1.5px dashed rgba(1, 118, 76, 0.5);
+  background: transparent;
+  color: var(--accent, #01764C);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  transition: background 120ms ease;
+}
+
+.tab-picker-new-btn:hover,
+.tab-picker-new-btn:active {
+  background: rgba(1, 118, 76, 0.06);
+}
+
+.tab-picker-field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text, #1D1D1F);
+  margin-top: 10px;
+  margin-bottom: 6px;
+}
+
+.tab-picker-input {
+  display: block;
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  background: #FFFFFF;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--text, #1D1D1F);
+  outline: none;
+  transition: border-color 160ms ease;
+  box-sizing: border-box;
+}
+
+.tab-picker-input:focus {
+  border-color: var(--accent, #01764C);
+}
+
+.tab-picker-error {
+  font-size: 13px;
+  color: #E53535;
+  margin-top: 8px;
+}
+
+.tab-picker-form-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 20px;
+  padding-bottom: 4px;
+}
+
+.tab-picker-cancel {
+  flex: 1;
+  padding: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: transparent;
+  color: var(--text, #1D1D1F);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab-picker-cancel:hover,
+.tab-picker-cancel:active {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.tab-picker-save {
+  flex: 1.4;
+  padding: 14px;
+  border: none;
+  background: var(--accent, #01764C);
+  color: #FFFFFF;
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.tab-picker-save:hover,
+.tab-picker-save:active {
+  opacity: 0.92;
+}
