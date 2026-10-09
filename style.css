@@ -8142,3 +8142,11 @@ body.pattern-rings .content-band{
     opacity: 0.55;
   }
 }
+/* ============================================================
+   TABBAR · Hide badge when hidden attribute is set
+   ============================================================ */
+
+.tabbar-badge[hidden],
+.tabbar-request-dot[hidden] {
+  display: none !important;
+}
