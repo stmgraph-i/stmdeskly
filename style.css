@@ -7994,3 +7994,34 @@ body.pattern-rings .content-band{
 .tabbar-item.has-count.has-requests .tabbar-request-dot {
   right: calc(50% - 34px);
 }
+/* ============================================================
+   INBOX · Sticky header + tighter spacing
+   ============================================================ */
+
+/* Header stays locked at the top while the list scrolls under it */
+.chats-head {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+  background: var(--page-bg, #F2F0EA) !important;
+  padding-bottom: 4px !important;
+}
+
+/* Reduce vertical padding on the header block */
+.chats-head-top {
+  margin-bottom: 8px !important;
+}
+
+/* Reduce the tab strip's breathing room */
+.chats-tabs {
+  padding-bottom: 4px !important;
+}
+
+/* Tighter list spacing so more rows fit on screen */
+.chats-body {
+  padding-top: 8px !important;
+}
+
+.chats-list {
+  padding-top: 0 !important;
+}
