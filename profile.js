@@ -86,11 +86,59 @@
     markEl.classList.remove('has-image');
   }
 
+  /* Presence on avatar */
+  markEl.classList.add('presence-avatar');
+  let presenceDot = markEl.querySelector('.presence-dot');
+  if (!presenceDot) {
+    presenceDot = document.createElement('span');
+    presenceDot.className = 'presence-dot';
+    markEl.appendChild(presenceDot);
+  }
+  presenceDot.style.display = 'none';
+
   $('deskName').textContent    = desk.name || 'Desk';
   $('deskRole').textContent    = desk.role || '';
   $('deskTagline').textContent = desk.tagline || '';
 
-  document.title = (desk.name || 'Profile') + ' | Deskly';
+  document.title = (desk.name || 'Profile') + ' | STMDeskly';
+
+  /* Presence polling */
+  let profilePresenceTimer = null;
+
+  async function renderProfilePresence(){
+    if (!window.PRESENCE || !desk.user_id) return;
+    if (!$('deskRole')) return;
+
+    try {
+      const p = await PRESENCE.getPresence(desk.user_id);
+      const roleEl = $('deskRole');
+
+      if (!p.visible) {
+        presenceDot.style.display = 'none';
+        roleEl.textContent = desk.role || '';
+        roleEl.classList.remove('presence-text', 'offline');
+        return;
+      }
+
+      if (p.online) {
+        presenceDot.style.display = '';
+        roleEl.textContent = 'Online';
+        roleEl.classList.add('presence-text');
+        roleEl.classList.remove('offline');
+      } else {
+        presenceDot.style.display = 'none';
+        roleEl.textContent = PRESENCE.formatLastSeen(p.lastSeen);
+        roleEl.classList.add('presence-text', 'offline');
+      }
+    } catch(e) { /* silent */ }
+  }
+
+  renderProfilePresence();
+  profilePresenceTimer = setInterval(renderProfilePresence, 20000);
+
+  window.addEventListener('beforeunload', () => {
+    if (profilePresenceTimer) clearInterval(profilePresenceTimer);
+  });
 
   /* ----- Offer ----- */
   const offerSource = (type === 'business' && desk.products) ? desk.products : desk.services;
