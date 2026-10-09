@@ -1,7 +1,7 @@
 /* ============================================================
    STMDESKLY · INBOX
    Tabs: Inbox, Requests, Updates, Archived, Sent, + (add)
-   Sliding pill indicator behind active tab.
+   Sliding pill indicator. Long-press a row for context menu.
    ============================================================ */
 
 (function initChats(){
@@ -20,6 +20,9 @@
   const reqBadge  = document.getElementById('requestsBadge');
 
   const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
+  const ICON_ARCHIVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg>';
+  const ICON_UNARCHIVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M12 17v-5M9.5 14.5L12 12l2.5 2.5"/></svg>';
+  const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/></svg>';
 
   let currentTab = 'chats';
   let allThreads = { accepted: [], pending: [], declined: [] };
@@ -30,6 +33,7 @@
   let lastTotalUnread = null;
   let pollTimer = null;
   let realtimeUnsub = null;
+  let openMenu = null;
 
   function showLoading(on){
     if (!loading) return;
@@ -70,18 +74,24 @@
     const inbox = [];
     const sent = [];
     const requests = [];
+    const archived = [];
 
-    (all.accepted || []).forEach(t => inbox.push({ thread: t, kind: 'accepted' }));
+    (all.accepted || []).forEach(t => {
+      if (t.archived_at) archived.push({ thread: t, kind: 'accepted' });
+      else inbox.push({ thread: t, kind: 'accepted' });
+    });
 
     (all.pending || []).forEach(t => {
-      if (t.initiated_by === myId) {
+      if (t.archived_at) {
+        archived.push({ thread: t, kind: t.initiated_by === myId ? 'outgoing' : 'incoming' });
+      } else if (t.initiated_by === myId) {
         sent.push({ thread: t, kind: 'outgoing' });
       } else {
         requests.push({ thread: t, kind: 'incoming' });
       }
     });
 
-    return { inbox, sent, requests };
+    return { inbox, sent, requests, archived };
   }
 
   async function loadAll(){
@@ -258,10 +268,10 @@
       renderList(cls.requests, 'requests');
     } else if (currentTab === 'sent') {
       renderList(cls.sent, 'sent');
+    } else if (currentTab === 'archived') {
+      renderList(cls.archived, 'archived');
     } else if (currentTab === 'updates') {
       renderPlaceholder('Updates', 'Notifications about your Desk, gigs and reviews will appear here.');
-    } else if (currentTab === 'archived') {
-      renderPlaceholder('Archived', 'Conversations you archive will appear here.');
     } else {
       renderList(cls.inbox, 'chats');
     }
@@ -288,6 +298,10 @@
         emptyTitle.textContent = 'No sent messages';
         emptySub.textContent = 'When you message someone first, it will show up here until they reply.';
         emptyBtn.hidden = false;
+      } else if (mode === 'archived') {
+        emptyTitle.textContent = 'Nothing archived';
+        emptySub.textContent = 'Long-press a chat and tap Archive to hide it here.';
+        emptyBtn.hidden = true;
       } else {
         emptyTitle.textContent = 'No chats yet';
         emptySub.textContent = 'Find someone on Explore and tap Message to start a conversation.';
@@ -299,11 +313,11 @@
     emptyEl.hidden = true;
 
     items.forEach(item => {
-      listEl.appendChild(buildRow(item.thread, item.kind));
+      listEl.appendChild(buildRow(item.thread, item.kind, mode));
     });
   }
 
-  function buildRow(thread, kind){
+  function buildRow(thread, kind, mode){
     const otherId = thread.user_a === currentUser.id ? thread.user_b : thread.user_a;
     const other = userCache[otherId];
 
@@ -313,9 +327,33 @@
     if (kind === 'accepted' || kind === 'outgoing') {
       row.classList.add('chat-row-tappable');
       row.addEventListener('click', () => {
+        if (openMenu) return;
         window.location.href = 'chat.html?id=' + encodeURIComponent(thread.id);
       });
     }
+
+    /* Long-press to open menu */
+    row.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      showRowMenu(row, thread, mode);
+    });
+
+    /* Touch long-press fallback */
+    let pressTimer = null;
+    row.addEventListener('touchstart', (e) => {
+      pressTimer = setTimeout(() => {
+        showRowMenu(row, thread, mode);
+      }, 550);
+    }, { passive: true });
+    row.addEventListener('touchend', () => {
+      if (pressTimer) clearTimeout(pressTimer);
+    });
+    row.addEventListener('touchmove', () => {
+      if (pressTimer) clearTimeout(pressTimer);
+    });
+    row.addEventListener('touchcancel', () => {
+      if (pressTimer) clearTimeout(pressTimer);
+    });
 
     const avatar = document.createElement('div');
     avatar.className = 'chat-avatar';
@@ -339,6 +377,13 @@
     name.className = 'chat-row-name';
     name.textContent = (other && other.name) ? other.name : 'Someone';
     top.appendChild(name);
+
+    if (mode === 'archived') {
+      const chip = document.createElement('span');
+      chip.className = 'chat-row-archived';
+      chip.textContent = 'Archived';
+      top.appendChild(chip);
+    }
 
     if (other && other.role) {
       const role = document.createElement('span');
@@ -388,7 +433,7 @@
       row.appendChild(pillEl);
     }
 
-    if (kind === 'incoming') {
+    if (kind === 'incoming' && mode === 'requests') {
       const actions = document.createElement('div');
       actions.className = 'chat-row-actions';
 
@@ -439,6 +484,94 @@
   }
 
   /* ============================================================
+     ROW CONTEXT MENU (long-press)
+     ============================================================ */
+
+  function closeRowMenu(){
+    if (!openMenu) return;
+    openMenu.backdrop.remove();
+    openMenu.menu.remove();
+    openMenu = null;
+  }
+
+  function showRowMenu(row, thread, mode){
+    closeRowMenu();
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'chat-row-menu-backdrop';
+    backdrop.addEventListener('click', closeRowMenu);
+
+    const menu = document.createElement('div');
+    menu.className = 'chat-row-menu';
+
+    const isArchived = mode === 'archived';
+
+    /* Archive / Unarchive */
+    const archiveItem = document.createElement('button');
+    archiveItem.type = 'button';
+    archiveItem.className = 'chat-row-menu-item';
+    archiveItem.innerHTML = (isArchived ? ICON_UNARCHIVE : ICON_ARCHIVE) +
+      '<span>' + (isArchived ? 'Unarchive' : 'Archive') + '</span>';
+    archiveItem.addEventListener('click', async () => {
+      closeRowMenu();
+      try {
+        await DB.archiveThread(thread.id, !isArchived);
+        await loadAll();
+      } catch(e) {
+        console.error(e);
+        alert('Could not ' + (isArchived ? 'unarchive' : 'archive') + '.');
+      }
+    });
+    menu.appendChild(archiveItem);
+
+    /* Delete (only for accepted or archived) */
+    if (kind_allows_delete(thread)) {
+      const deleteItem = document.createElement('button');
+      deleteItem.type = 'button';
+      deleteItem.className = 'chat-row-menu-item chat-row-menu-item-danger';
+      deleteItem.innerHTML = ICON_TRASH + '<span>Delete</span>';
+      deleteItem.addEventListener('click', async () => {
+        closeRowMenu();
+        if (!confirm('Delete this conversation? This cannot be undone.')) return;
+        try {
+          await DB.deleteThread(thread.id);
+          await loadAll();
+        } catch(e) {
+          console.error(e);
+          alert('Could not delete.');
+        }
+      });
+      menu.appendChild(deleteItem);
+    }
+
+    /* Position the menu near the row */
+    document.body.appendChild(backdrop);
+    document.body.appendChild(menu);
+
+    const rect = row.getBoundingClientRect();
+    const menuWidth = 180;
+    const padding = 8;
+    let left = rect.left + 16;
+    if (left + menuWidth > window.innerWidth - padding) {
+      left = window.innerWidth - menuWidth - padding;
+    }
+    let top = rect.top + 20;
+    if (top + 200 > window.innerHeight) {
+      top = window.innerHeight - 220;
+    }
+
+    menu.style.left = left + 'px';
+    menu.style.top = top + 'px';
+
+    openMenu = { backdrop, menu };
+  }
+
+  function kind_allows_delete(thread){
+    /* Any thread can be deleted from the user's list */
+    return true;
+  }
+
+  /* ============================================================
      TAB SWITCHING + SLIDING PILL
      ============================================================ */
 
@@ -482,6 +615,8 @@
     const active = tabsEl.querySelector('.chats-tab.active');
     if (active) movePill(active);
   });
+
+  document.addEventListener('scroll', closeRowMenu, { passive: true });
 
   setTimeout(initPill, 100);
   window.addEventListener('load', initPill);
