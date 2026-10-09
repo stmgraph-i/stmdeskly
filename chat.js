@@ -1,7 +1,7 @@
 /* ============================================================
    DESKLY · SINGLE CONVERSATION
    Includes: presence, typing, reply, reactions, soft delete,
-             delivery status, loading state, search
+             delivery status, loading state, search, pin, mute
    ============================================================ */
 
 (function initChat(){
@@ -36,6 +36,10 @@
   const menuBtn     = $('chatMenuBtn');
   const menu        = $('chatMenu');
   const menuProfile = $('menuViewProfile');
+  const menuPin     = $('menuPin');
+  const menuMute    = $('menuMute');
+  const menuPinLabel  = $('menuPinLabel');
+  const menuMuteLabel = $('menuMuteLabel');
   const menuReport  = $('menuReport');
   const menuBlock   = $('menuBlock');
   const loading     = $('chatLoading');
@@ -85,6 +89,8 @@
   let otherIsOnline = false;
   let messagesLoaded = false;
   let searchActive = false;
+  let threadPinned = false;
+  let threadMuted = false;
 
   function showMissing(){
     if (loading) loading.style.display = 'none';
@@ -148,6 +154,11 @@
       (m.read_at || '') + ':' +
       (otherIsOnline ? '1' : '0')
     ).join('|');
+  }
+
+  function updatePinMuteLabels(){
+    if (menuPinLabel) menuPinLabel.textContent = threadPinned ? 'Unpin chat' : 'Pin chat';
+    if (menuMuteLabel) menuMuteLabel.textContent = threadMuted ? 'Unmute chat' : 'Mute chat';
   }
 
   /* HEADER */
@@ -548,7 +559,6 @@
       return;
     }
 
-    /* Show newest first */
     matches.slice().reverse().forEach(m => {
       const card = document.createElement('button');
       card.type = 'button';
@@ -757,6 +767,9 @@
       thread = result.thread;
       otherId = result.otherId;
       otherUser = await DB.getPublicUser(otherId);
+      threadPinned = !!thread.pinned_at;
+      threadMuted = !!thread.muted;
+      updatePinMuteLabels();
       return true;
     } catch(e) {
       console.error(e);
@@ -831,7 +844,6 @@
       messagesLoaded = true;
       renderMessages(true);
 
-      /* Re-run search if the panel is open */
       if (searchActive && searchInput && searchInput.value) {
         runSearch(searchInput.value);
       }
@@ -1054,6 +1066,36 @@
     });
   }
 
+  if (menuPin) {
+    menuPin.addEventListener('click', async () => {
+      if (menu) menu.hidden = true;
+      if (!threadId) return;
+      try {
+        await DB.pinThread(threadId, !threadPinned);
+        threadPinned = !threadPinned;
+        updatePinMuteLabels();
+      } catch(e) {
+        console.error(e);
+        alert(e.message || 'Could not update pin.');
+      }
+    });
+  }
+
+  if (menuMute) {
+    menuMute.addEventListener('click', async () => {
+      if (menu) menu.hidden = true;
+      if (!threadId) return;
+      try {
+        await DB.muteThread(threadId, !threadMuted);
+        threadMuted = !threadMuted;
+        updatePinMuteLabels();
+      } catch(e) {
+        console.error(e);
+        alert(e.message || 'Could not update mute.');
+      }
+    });
+  }
+
   if (menuReport) {
     menuReport.addEventListener('click', async () => {
       if (menu) menu.hidden = true;
@@ -1104,7 +1146,6 @@
 
       me = DB.currentUser();
 
-      /* Show loading animation immediately */
       renderMessages(false);
 
       if (threadId) {
