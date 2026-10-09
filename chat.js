@@ -1,8 +1,6 @@
 /* ============================================================
    DESKLY · SINGLE CONVERSATION
-   Handles two modes:
-   - ?id=<thread>   → existing conversation
-   - ?to=<user_id>  → new conversation, thread created on first Send
+   Includes: presence, typing, reply, reactions
    ============================================================ */
 
 (function initChat(){
@@ -37,7 +35,7 @@
   const headUser    = $('chatHeadUser');
   const headAvatar  = $('chatHeadAvatar');
   const headName    = $('chatHeadName');
-  const headStatus  = $('chatHeadStatus');
+  const headStatus  = $('chatStatus');
   const menuBtn     = $('chatMenuBtn');
   const menu        = $('chatMenu');
   const menuProfile = $('menuViewProfile');
@@ -71,6 +69,7 @@
   let lastMessageId = null;
   let presenceTimer = null;
   let typingConnected = false;
+  let replyToId = null;
 
   /* ============================================================
      HELPERS
@@ -119,6 +118,10 @@
     document.body.appendChild(overlay);
   }
 
+  function escapeText(s){
+    return String(s || '').slice(0, 120);
+  }
+
   /* ============================================================
      HEADER
      ============================================================ */
@@ -141,7 +144,6 @@
         headAvatar.textContent = String(initials).toUpperCase().slice(0, 2);
       }
 
-      /* Presence: add dot wrapper */
       headAvatar.classList.add('presence-avatar');
       let dot = headAvatar.querySelector('.presence-dot');
       if (!dot) {
@@ -167,7 +169,6 @@
 
     try {
       const p = await PRESENCE.getPresence(otherId);
-
       const dot = headAvatar.querySelector('.presence-dot');
 
       if (!p.visible) {
@@ -216,9 +217,59 @@
       headStatus.classList.add('presence-text');
       headStatus.classList.remove('offline');
     } else {
-      /* Restore presence text */
       renderPresenceInHeader();
     }
+  }
+
+  /* ============================================================
+     REPLY QUOTE BAR
+     ============================================================ */
+
+  function showReplyBar(msg){
+    replyToId = msg.id;
+
+    let bar = $('chatReplyBar');
+    if (!bar) {
+      bar = document.createElement('div');
+      bar.id = 'chatReplyBar';
+      bar.className = 'chat-reply-bar';
+      bar.innerHTML =
+        '<div class="chat-reply-bar-accent"></div>' +
+        '<div class="chat-reply-bar-text">' +
+          '<div class="chat-reply-bar-name" id="chatReplyBarName"></div>' +
+          '<div class="chat-reply-bar-body" id="chatReplyBarBody"></div>' +
+        '</div>' +
+        '<button type="button" class="chat-reply-bar-close" id="chatReplyBarClose" aria-label="Cancel reply">' +
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>' +
+        '</button>';
+
+      const composer = $('chatForm');
+      if (composer && composer.parentNode) {
+        composer.parentNode.insertBefore(bar, composer);
+      } else {
+        document.body.appendChild(bar);
+      }
+
+      $('chatReplyBarClose').addEventListener('click', hideReplyBar);
+    }
+
+    const nameEl = $('chatReplyBarName');
+    const bodyEl = $('chatReplyBarBody');
+
+    if (nameEl) {
+      nameEl.textContent = msg.sender_id === me.id ? 'You' : (otherUser.name || 'Them');
+    }
+    if (bodyEl) {
+      bodyEl.textContent = msg.photo_url && !msg.body ? '📷 Photo' : escapeText(msg.body || '');
+    }
+
+    if (input) input.focus();
+  }
+
+  function hideReplyBar(){
+    replyToId = null;
+    const bar = $('chatReplyBar');
+    if (bar) bar.remove();
   }
 
   /* ============================================================
@@ -250,9 +301,26 @@
       }
 
       const mine = msg.sender_id === me.id;
+      const wrap = document.createElement('div');
+      wrap.className = 'chat-bubble-wrap ' + (mine ? 'chat-bubble-wrap-mine' : 'chat-bubble-wrap-theirs');
+
       const bubble = document.createElement('div');
       bubble.className = 'chat-bubble ' + (mine ? 'chat-bubble-mine' : 'chat-bubble-theirs');
       bubble.dataset.msgId = msg.id;
+
+      /* Reply quote inside bubble */
+      if (msg.reply_to) {
+        const quote = document.createElement('button');
+        quote.type = 'button';
+        quote.className = 'chat-bubble-quote';
+        const qName = msg.reply_to.sender_id === me.id ? 'You' : (otherUser.name || 'Them');
+        const qBody = msg.reply_to.photo_url && !msg.reply_to.body ? '📷 Photo' : escapeText(msg.reply_to.body || '');
+        quote.innerHTML =
+          '<div class="chat-bubble-quote-name">' + qName + '</div>' +
+          '<div class="chat-bubble-quote-body">' + qBody + '</div>';
+        quote.addEventListener('click', () => jumpToMessage(msg.reply_to.id));
+        bubble.appendChild(quote);
+      }
 
       if (msg.photo_url) {
         const img = document.createElement('img');
@@ -277,15 +345,18 @@
       if (mine && msg.read_at) meta.textContent += ' ✓✓';
       bubble.appendChild(meta);
 
-      if (mine) {
-        bubble.addEventListener('contextmenu', (e) => {
-          e.preventDefault();
-          if (!confirm('Delete this message?')) return;
-          deleteMessage(msg.id);
-        });
+      /* Long press → context menu */
+      attachLongPress(bubble, msg);
+
+      wrap.appendChild(bubble);
+
+      /* Reactions bar */
+      if (msg.reactions && msg.reactions.length) {
+        const reactionsBar = renderReactionsBar(msg);
+        wrap.appendChild(reactionsBar);
       }
 
-      log.appendChild(bubble);
+      log.appendChild(wrap);
     });
 
     if (scrollToBottom !== false) {
@@ -298,6 +369,209 @@
       requestAnimationFrame(goBottom);
       setTimeout(goBottom, 100);
       setTimeout(goBottom, 300);
+    }
+  }
+
+  function renderReactionsBar(msg){
+    const bar = document.createElement('div');
+    bar.className = 'chat-reactions-bar';
+
+    /* Count reactions by emoji */
+    const counts = {};
+    const mine = {};
+    for (const r of msg.reactions) {
+      counts[r.emoji] = (counts[r.emoji] || 0) + 1;
+      if (r.user_id === me.id) mine[r.emoji] = true;
+    }
+
+    const emojiMap = {
+      heart:    '❤️',
+      thumbsup: '👍',
+      fire:     '🔥',
+      wow:      '😮',
+      pray:     '🙏',
+      like:     '💯'
+    };
+
+    Object.keys(counts).forEach(emoji => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chat-reaction-pill' + (mine[emoji] ? ' mine' : '');
+      btn.textContent = emojiMap[emoji] + ' ' + counts[emoji];
+      btn.addEventListener('click', async () => {
+        try {
+          await DB.toggleChatReaction(msg.id, emoji);
+          await refreshMessages();
+        } catch(e) {
+          console.error(e);
+        }
+      });
+      bar.appendChild(btn);
+    });
+
+    return bar;
+  }
+
+  function jumpToMessage(msgId){
+    if (!log) return;
+    const target = log.querySelector('[data-msg-id="' + msgId + '"]');
+    if (!target) return;
+    target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    target.classList.add('chat-bubble-highlight');
+    setTimeout(() => target.classList.remove('chat-bubble-highlight'), 1500);
+  }
+
+  /* ============================================================
+     LONG PRESS + CONTEXT MENU
+     ============================================================ */
+
+  let pressTimer = null;
+  let activeMenu = null;
+
+  function attachLongPress(el, msg){
+    const start = () => {
+      clearTimeout(pressTimer);
+      pressTimer = setTimeout(() => {
+        openContextMenu(el, msg);
+      }, 500);
+    };
+    const cancel = () => clearTimeout(pressTimer);
+
+    el.addEventListener('touchstart', start, { passive: true });
+    el.addEventListener('touchend', cancel);
+    el.addEventListener('touchmove', cancel);
+    el.addEventListener('touchcancel', cancel);
+
+    el.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      openContextMenu(el, msg);
+    });
+  }
+
+  function openContextMenu(el, msg){
+    closeContextMenu();
+
+    const menu = document.createElement('div');
+    menu.className = 'chat-ctx-menu';
+
+    /* Reply */
+    const replyBtn = document.createElement('button');
+    replyBtn.type = 'button';
+    replyBtn.className = 'chat-ctx-item';
+    replyBtn.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 17 4 12 9 7"/><path d="M20 18v-2a4 4 0 0 0-4-4H4"/></svg>' +
+      '<span>Reply</span>';
+    replyBtn.addEventListener('click', () => {
+      closeContextMenu();
+      showReplyBar(msg);
+    });
+    menu.appendChild(replyBtn);
+
+    /* React row */
+    const reactWrap = document.createElement('div');
+    reactWrap.className = 'chat-ctx-reactions';
+    const emojiMap = {
+      heart:    '❤️',
+      thumbsup: '👍',
+      fire:     '🔥',
+      wow:      '😮',
+      pray:     '🙏',
+      like:     '💯'
+    };
+    Object.keys(emojiMap).forEach(emoji => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'chat-ctx-emoji';
+      b.textContent = emojiMap[emoji];
+      b.addEventListener('click', async () => {
+        closeContextMenu();
+        try {
+          await DB.toggleChatReaction(msg.id, emoji);
+          await refreshMessages();
+        } catch(e) {
+          console.error(e);
+        }
+      });
+      reactWrap.appendChild(b);
+    });
+    menu.appendChild(reactWrap);
+
+    /* Copy */
+    if (msg.body) {
+      const copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'chat-ctx-item';
+      copyBtn.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>' +
+        '<span>Copy</span>';
+      copyBtn.addEventListener('click', async () => {
+        closeContextMenu();
+        try {
+          await navigator.clipboard.writeText(msg.body);
+        } catch(e) { /* silent */ }
+      });
+      menu.appendChild(copyBtn);
+    }
+
+    /* Delete (only own) */
+    if (msg.sender_id === me.id) {
+      const delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'chat-ctx-item chat-ctx-item-danger';
+      delBtn.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/></svg>' +
+        '<span>Delete</span>';
+      delBtn.addEventListener('click', async () => {
+        closeContextMenu();
+        if (!confirm('Delete this message?')) return;
+        await deleteMessage(msg.id);
+      });
+      menu.appendChild(delBtn);
+    }
+
+    document.body.appendChild(menu);
+
+    /* Position */
+    const rect = el.getBoundingClientRect();
+    const menuW = 220;
+    let left = rect.left + (rect.width / 2) - (menuW / 2);
+    left = Math.max(8, Math.min(left, window.innerWidth - menuW - 8));
+
+    /* Prefer above, fall back to below */
+    menu.style.left = left + 'px';
+    menu.style.top = (rect.top - 10) + 'px';
+
+    requestAnimationFrame(() => {
+      const mh = menu.offsetHeight;
+      if (rect.top - mh - 10 < 0) {
+        menu.style.top = (rect.bottom + 10) + 'px';
+      } else {
+        menu.style.top = (rect.top - mh - 10) + 'px';
+      }
+    });
+
+    activeMenu = menu;
+
+    /* Close on outside click */
+    setTimeout(() => {
+      document.addEventListener('click', closeContextMenuOnOutside, { once: true });
+      document.addEventListener('touchstart', closeContextMenuOnOutside, { once: true });
+    }, 50);
+  }
+
+  function closeContextMenuOnOutside(e){
+    if (!activeMenu) return;
+    if (activeMenu.contains(e.target)) {
+      document.addEventListener('click', closeContextMenuOnOutside, { once: true });
+      return;
+    }
+    closeContextMenu();
+  }
+
+  function closeContextMenu(){
+    if (activeMenu) {
+      activeMenu.remove();
+      activeMenu = null;
     }
   }
 
@@ -384,7 +658,7 @@
   async function fetchMessages(){
     if (!threadId) return [];
     try {
-      const msgs = await DB.getChatMessages(threadId);
+      const msgs = await DB.getChatMessagesWithMeta(threadId);
       return msgs || [];
     } catch(e) {
       return [];
@@ -426,8 +700,7 @@
       if (currentMessages.some(m => m.id === record.id)) return;
       if (record.sender_id === me.id) return;
 
-      currentMessages.push(record);
-      renderMessages(true);
+      refreshMessages();
 
       if (window.NOTIFY && document.hidden) {
         const name = (otherUser && otherUser.name) || 'New message';
@@ -461,7 +734,6 @@
       input.style.height = 'auto';
       input.style.height = Math.min(input.scrollHeight, 140) + 'px';
 
-      /* Typing indicator */
       if (window.TYPING && threadId) {
         if (input.value.trim().length > 0) {
           TYPING.userIsTyping();
@@ -487,11 +759,14 @@
 
       if (window.TYPING) TYPING.stopTyping();
 
+      const capturedReplyTo = replyToId;
+
       if (input) {
         input.value = '';
         input.style.height = 'auto';
       }
       updateSendState();
+      hideReplyBar();
 
       try {
         if (!threadId) {
@@ -505,7 +780,10 @@
           startTypingChannel();
           await refreshMessages();
         } else {
-          await DB.sendChatMessage(threadId, { body: body });
+          await DB.sendChatMessageWithReply(threadId, {
+            body: body,
+            replyToId: capturedReplyTo
+          });
           await refreshMessages();
         }
       } catch(err) {
@@ -562,26 +840,35 @@
       previewSend.disabled = true;
       previewSend.textContent = 'Sending...';
 
+      const capturedReplyTo = replyToId;
+
       try {
         if (!threadId) {
           const newThread = await DB.startConversation(otherId, '📷');
           threadId = newThread.id;
           thread = newThread;
           window.history.replaceState({}, '', 'chat.html?id=' + encodeURIComponent(threadId));
-          await DB.sendChatMessage(threadId, { photoBlob: pendingPhotoBlob });
+          await DB.sendChatMessageWithReply(threadId, {
+            photoBlob: pendingPhotoBlob,
+            replyToId: capturedReplyTo
+          });
           startRealtime();
           startPolling();
           startPresencePolling();
           startTypingChannel();
           await refreshMessages();
         } else {
-          await DB.sendChatMessage(threadId, { photoBlob: pendingPhotoBlob });
+          await DB.sendChatMessageWithReply(threadId, {
+            photoBlob: pendingPhotoBlob,
+            replyToId: capturedReplyTo
+          });
           await refreshMessages();
         }
 
         pendingPhotoBlob = null;
         if (preview) preview.hidden = true;
         if (previewImg) previewImg.src = '';
+        hideReplyBar();
       } catch(err) {
         console.error(err);
         alert(err.message || 'Could not send photo.');
