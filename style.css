@@ -8282,3 +8282,230 @@ body.pattern-rings .content-band{
   color: var(--muted, #6E6E73);
   font-weight: 400;
 }
+/* ============================================================
+   CHAT · Reply, Reactions, Context Menu
+   ============================================================ */
+
+/* Bubble wrapper (holds bubble + reactions bar) */
+.chat-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 78%;
+  margin-bottom: 8px;
+  position: relative;
+}
+.chat-bubble-wrap-mine {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+.chat-bubble-wrap-theirs {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+/* Make sure the bubble inside a wrap doesn't have its own max-width fighting */
+.chat-bubble-wrap .chat-bubble {
+  max-width: 100%;
+  margin-bottom: 0;
+}
+
+/* Reply quote inside a bubble */
+.chat-bubble-quote {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  border-left: 3px solid currentColor;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  opacity: 0.85;
+}
+.chat-bubble-mine .chat-bubble-quote {
+  background: rgba(255, 255, 255, 0.15);
+}
+.chat-bubble-quote-name {
+  font-size: 11px;
+  font-weight: 700;
+  opacity: 0.9;
+  margin-bottom: 2px;
+}
+.chat-bubble-quote-body {
+  font-size: 12px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Highlight when jumping to a quoted message */
+.chat-bubble-highlight {
+  animation: chat-highlight 1.6s ease-out;
+}
+@keyframes chat-highlight {
+  0%   { background: rgba(1, 118, 76, 0.28); }
+  100% { background: transparent; }
+}
+
+/* Reply bar above composer */
+.chat-reply-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  background: rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.06);
+}
+.chat-reply-bar-accent {
+  width: 3px;
+  height: 32px;
+  background: #01764C;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+.chat-reply-bar-text {
+  flex: 1;
+  min-width: 0;
+}
+.chat-reply-bar-name {
+  font-size: 12px;
+  font-weight: 700;
+  color: #01764C;
+  margin-bottom: 2px;
+}
+.chat-reply-bar-body {
+  font-size: 13px;
+  color: #4A4A4E;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.chat-reply-bar-close {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6E6E73;
+  cursor: pointer;
+}
+.chat-reply-bar-close svg {
+  width: 16px;
+  height: 16px;
+}
+.chat-reply-bar-close:hover {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+/* Reactions bar under a bubble */
+.chat-reactions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 0 2px;
+}
+.chat-reaction-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  background: #FFFFFF;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 999px;
+  font-size: 12px;
+  font-family: inherit;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: transform 120ms ease;
+}
+.chat-reaction-pill:active {
+  transform: scale(0.94);
+}
+.chat-reaction-pill.mine {
+  background: rgba(1, 118, 76, 0.12);
+  border-color: rgba(1, 118, 76, 0.35);
+  color: #01764C;
+  font-weight: 600;
+}
+
+/* Long-press context menu */
+.chat-ctx-menu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 220px;
+  padding: 6px;
+  background: #FFFFFF;
+  border-radius: 14px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.22);
+  animation: chat-ctx-in 160ms ease-out;
+  font-family: inherit;
+}
+@keyframes chat-ctx-in {
+  from { opacity: 0; transform: translateY(6px) scale(0.96); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.chat-ctx-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1D1D1F;
+  text-align: left;
+  cursor: pointer;
+}
+.chat-ctx-item:hover,
+.chat-ctx-item:active {
+  background: rgba(0, 0, 0, 0.05);
+}
+.chat-ctx-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  opacity: 0.65;
+}
+.chat-ctx-item-danger {
+  color: #E53535;
+}
+.chat-ctx-item-danger svg {
+  opacity: 0.85;
+}
+
+.chat-ctx-reactions {
+  display: flex;
+  gap: 2px;
+  padding: 6px 4px;
+  margin: 4px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+.chat-ctx-emoji {
+  flex: 1;
+  padding: 8px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-size: 22px;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+.chat-ctx-emoji:hover,
+.chat-ctx-emoji:active {
+  background: rgba(0, 0, 0, 0.05);
+  transform: scale(1.08);
+}
