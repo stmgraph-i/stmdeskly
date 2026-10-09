@@ -7940,3 +7940,57 @@ body.pattern-rings .content-band{
 .chats-tab.active .chats-tab-badge {
   background: rgba(255, 255, 255, 0.3);
 }
+/* ============================================================
+   TABBAR · Advanced badge (count pill + request pulse)
+   ============================================================ */
+
+.tabbar-badge {
+  position: absolute;
+  top: 4px;
+  right: calc(50% - 22px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent, #01764C);
+  color: #FFFFFF;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 999px;
+  border: 2px solid var(--page-bg, #F2F0EA);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+  pointer-events: none;
+}
+
+.tabbar-request-dot {
+  position: absolute;
+  top: 2px;
+  right: calc(50% - 30px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent, #01764C);
+  border: 2px solid var(--page-bg, #F2F0EA);
+  pointer-events: none;
+  animation: tabbar-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes tabbar-pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.35);
+    opacity: 0.55;
+  }
+}
+
+/* When both count and dot are present, nudge the dot so it doesn't
+   overlap the count pill */
+.tabbar-item.has-count.has-requests .tabbar-request-dot {
+  right: calc(50% - 34px);
+}
