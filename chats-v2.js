@@ -1,6 +1,6 @@
 /* ============================================================
    STMDESKLY · INBOX
-   Tabs: Inbox, Requests, Updates, Archived, + (add)
+   Tabs: Inbox, Requests, Updates, Archived, Sent, + (add)
    Sliding pill indicator behind active tab.
    ============================================================ */
 
@@ -67,20 +67,21 @@
 
   function classify(all){
     const myId = currentUser.id;
-    const chats = [];
+    const inbox = [];
+    const sent = [];
     const requests = [];
 
-    (all.accepted || []).forEach(t => chats.push({ thread: t, kind: 'accepted' }));
+    (all.accepted || []).forEach(t => inbox.push({ thread: t, kind: 'accepted' }));
 
     (all.pending || []).forEach(t => {
       if (t.initiated_by === myId) {
-        chats.push({ thread: t, kind: 'outgoing' });
+        sent.push({ thread: t, kind: 'outgoing' });
       } else {
         requests.push({ thread: t, kind: 'incoming' });
       }
     });
 
-    return { chats, requests };
+    return { inbox, sent, requests };
   }
 
   async function loadAll(){
@@ -252,15 +253,17 @@
     const cls = classify(allThreads);
 
     if (currentTab === 'chats') {
-      renderList(cls.chats, 'chats');
+      renderList(cls.inbox, 'chats');
     } else if (currentTab === 'requests') {
       renderList(cls.requests, 'requests');
+    } else if (currentTab === 'sent') {
+      renderList(cls.sent, 'sent');
     } else if (currentTab === 'updates') {
       renderPlaceholder('Updates', 'Notifications about your Desk, gigs and reviews will appear here.');
     } else if (currentTab === 'archived') {
       renderPlaceholder('Archived', 'Conversations you archive will appear here.');
     } else {
-      renderList(cls.chats, 'chats');
+      renderList(cls.inbox, 'chats');
     }
   }
 
@@ -281,6 +284,10 @@
         emptyTitle.textContent = 'No requests';
         emptySub.textContent = 'When someone messages you for the first time, their request will appear here.';
         emptyBtn.hidden = true;
+      } else if (mode === 'sent') {
+        emptyTitle.textContent = 'No sent messages';
+        emptySub.textContent = 'When you message someone first, it will show up here until they reply.';
+        emptyBtn.hidden = false;
       } else {
         emptyTitle.textContent = 'No chats yet';
         emptySub.textContent = 'Find someone on Explore and tap Message to start a conversation.';
