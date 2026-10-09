@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#F2F0EA">
-<title>Chats | Deskly</title>
+<title>Inbox | STMDeskly</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
@@ -28,16 +28,34 @@
 
   <header class="chats-head">
     <div class="chats-head-top">
-      <h1 class="chats-title">Chats</h1>
+      <h1 class="chats-title">Inbox</h1>
     </div>
+
     <div class="chats-tabs" id="chatsTabs">
+      <div class="chats-tabs-pill" id="chatsPill"></div>
+
       <button type="button" class="chats-tab active" data-tab="chats">
-        Chats
+        Inbox
         <span class="chats-tab-badge" id="chatsBadge" hidden>0</span>
       </button>
+
       <button type="button" class="chats-tab" data-tab="requests">
         Requests
         <span class="chats-tab-badge" id="requestsBadge" hidden>0</span>
+      </button>
+
+      <button type="button" class="chats-tab" data-tab="updates">
+        Updates
+      </button>
+
+      <button type="button" class="chats-tab" data-tab="archived">
+        Archived
+      </button>
+
+      <button type="button" class="chats-tab chats-tab-add" id="chatsTabAdd" aria-label="Add tab">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M12 5v14M5 12h14"/>
+        </svg>
       </button>
     </div>
   </header>
@@ -58,7 +76,7 @@
       </div>
       <p class="chats-empty-title" id="chatsEmptyTitle">No chats yet</p>
       <p class="chats-empty-sub" id="chatsEmptySub">Find someone on Explore and tap Message to start a conversation.</p>
-      <a class="chats-empty-btn ripple" id="chatsEmptyBtn" href="explore.html">Explore Deskly</a>
+      <a class="chats-empty-btn ripple" id="chatsEmptyBtn" href="explore.html">Explore STMDeskly</a>
     </div>
 
     <div class="chats-list" id="chatsList"></div>
