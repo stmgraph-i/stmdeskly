@@ -676,11 +676,11 @@
 
         if (!result.ok) {
           if (result.reason === 'denied') {
-            alert('Notifications were denied. Enable them for this site in Chrome settings.');
+            TOAST.show('Notifications were denied. Enable them for this site in Chrome settings.', { kind: 'error' });
           } else if (result.reason === 'unsupported') {
-            alert('This browser does not support push notifications.');
+            TOAST.show('This browser does not support push notifications.', { kind: 'error' });
           } else {
-            alert('Could not enable notifications. Try again.\n\nReason: ' + result.reason);
+            TOAST.show('Could not enable notifications. Try again.\n\nReason: ' + result.reason, { kind: 'error' });
           }
         }
       } else {
@@ -750,7 +750,7 @@
         updateSubtitles();
       } catch (err) {
         console.error(err);
-        alert(err.message || 'Could not update privacy.');
+        TOAST.show(err.message || 'Could not update privacy.', { kind: 'error' });
       } finally {
         btn.disabled = false;
         btn.textContent = orig;
