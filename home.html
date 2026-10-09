@@ -4,13 +4,13 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#F2F0EA">
-<title>Home | Deskly</title>
+<title>Home | STMDeskly</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="/manifest.json">
+<link rel="stylesheet" href="style.css?v=11">
+<link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -39,7 +39,7 @@
     <input
       type="search"
       id="homeSearchInput"
-      placeholder="Search Deskly..."
+      placeholder="Search STMDeskly..."
       autocomplete="off"
       aria-label="Search"
     >
@@ -71,7 +71,7 @@
   </section>
 
   <section class="home-section" id="homeAlso">
-    <h2 class="home-section-title" id="homeAlsoTitle">Also on Deskly</h2>
+    <h2 class="home-section-title" id="homeAlsoTitle">Also on STMDeskly</h2>
     <div class="home-section-body" id="homeAlsoBody">
       <p class="home-empty">Loading...</p>
     </div>
@@ -91,7 +91,7 @@
   </a>
 
   <footer class="home-footer">
-    <a href="index.html" class="home-footer-link">Deskly</a>
+    <a href="index.html" class="home-footer-link">STMDeskly</a>
     <span class="home-footer-sep">·</span>
     <a href="explore.html" class="home-footer-link">Explore</a>
   </footer>
@@ -112,10 +112,23 @@
 </div>
 
 <script src="config.js"></script>
-<script src="supabase.js?v=3"></script>
+<script src="supabase.js?v=6"></script>
+<script src="presence.js"></script>
 <script src="home.js" defer></script>
-<script src="tabbar.js?v=5" defer></script>
+<script src="tabbar.js?v=8" defer></script>
 <script src="ripple.js" defer></script>
 
+<script>
+  (async function waitForDb(){
+    for (let i = 0; i < 40; i++) {
+      if (window.DB && DB.ready && DB.currentUser() && window.PRESENCE) {
+        PRESENCE.startHeartbeat();
+        return;
+      }
+      await new Promise(r => setTimeout(r, 100));
+    }
+  })();
+</script>
+
 </body>
-</html>
+  </html>
