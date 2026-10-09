@@ -2,6 +2,7 @@
    STMDESKLY · INBOX
    Tabs: Inbox, Requests, Updates, Archived, Sent
    Long-press a row for actions: Archive, Pin, Mute, Delete
+   Updates tab: notifications feed
    ============================================================ */
 
 (function initChats(){
@@ -28,6 +29,14 @@
   const ICON_UNMUTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
   const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/></svg>';
 
+  /* Notification kind icons */
+  const ICON_NOTIF_REVIEW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
+  const ICON_NOTIF_QUESTION = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 1 1 3.5 2.3c-.9.4-1 1.1-1 1.9v.2"/><circle cx="12" cy="17" r=".6" fill="currentColor" stroke="none"/></svg>';
+  const ICON_NOTIF_WHATSAPP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3l-9 9"/><path d="M21 3h-6"/><path d="M21 3v6"/></svg>';
+  const ICON_NOTIF_GIG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>';
+  const ICON_NOTIF_VIEW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
+  const ICON_NOTIF_DEFAULT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
+
   let currentTab = 'chats';
   let allThreads = { accepted: [], pending: [], declined: [] };
   let userCache  = {};
@@ -38,6 +47,11 @@
   let pollTimer = null;
   let realtimeUnsub = null;
   let openMenu = null;
+
+  /* Notifications state */
+  let notifications = [];
+  let notifLoaded = false;
+  let notifPollTimer = null;
 
   function showLoading(on){
     if (!loading) return;
@@ -60,6 +74,39 @@
     if (wk < 4) return wk + 'w';
     const mo = Math.floor(day / 30);
     return mo + 'mo';
+  }
+
+  function formatDateLabel(iso){
+    const d = new Date(iso);
+    const today = new Date();
+    const yesterday = new Date();
+    yesterday.setDate(yesterday.getDate() - 1);
+    const sameDay = (a, b) => a.toDateString() === b.toDateString();
+    if (sameDay(d, today)) return 'Today';
+    if (sameDay(d, yesterday)) return 'Yesterday';
+    return d.toLocaleDateString('en-NG', { day: 'numeric', month: 'short' });
+  }
+
+  function notifIcon(kind){
+    switch (kind) {
+      case 'review':        return ICON_NOTIF_REVIEW;
+      case 'unanswered':    return ICON_NOTIF_QUESTION;
+      case 'whatsapp_tap':  return ICON_NOTIF_WHATSAPP;
+      case 'gig_new':       return ICON_NOTIF_GIG;
+      case 'view_milestone':return ICON_NOTIF_VIEW;
+      default:              return ICON_NOTIF_DEFAULT;
+    }
+  }
+
+  function notifColor(kind){
+    switch (kind) {
+      case 'review':         return '#C8912E';
+      case 'unanswered':     return '#2E6B8A';
+      case 'whatsapp_tap':   return '#01764C';
+      case 'gig_new':        return '#7A3D6B';
+      case 'view_milestone': return '#D96B3A';
+      default:               return '#4A5A6B';
+    }
   }
 
   async function getUser(userId){
@@ -152,6 +199,8 @@
       const totalUnread = Object.values(unreadCache).reduce((a,b) => a+b, 0);
       lastTotalUnread = totalUnread;
 
+      await refreshNotifBadge();
+
       showLoading(false);
       render();
     } catch(e) {
@@ -183,7 +232,7 @@
             const unreadChanged = JSON.stringify(unreadCache) !== JSON.stringify(freshUnread);
             if (unreadChanged) {
               unreadCache = freshUnread;
-              render();
+              if (currentTab !== 'updates') render();
             }
           } catch(e) { /* skip */ }
         }
@@ -215,7 +264,7 @@
         } catch(e) { unreadCache = {}; }
       }
 
-      render();
+      if (currentTab !== 'updates') render();
     } catch(e) {
       /* Silent */
     }
@@ -255,8 +304,37 @@
     }
   }
 
-  function render(){
+  async function refreshNotifBadge(){
+    try {
+      const count = await DB.getUnreadNotificationCount();
+      updateUpdatesBadge(count);
+    } catch(e) { /* silent */ }
+  }
+
+  function updateUpdatesBadge(count){
+    const tab = tabsEl.querySelector('[data-tab="updates"]');
+    if (!tab) return;
+    let badge = tab.querySelector('.chats-tab-badge');
+    if (!badge) {
+      badge = document.createElement('span');
+      badge.className = 'chats-tab-badge';
+      tab.appendChild(badge);
+    }
+    if (count > 0) {
+      badge.textContent = count > 99 ? '99+' : count;
+      badge.hidden = false;
+    } else {
+      badge.hidden = true;
+    }
+  }
+
+  async function render(){
     renderBadges();
+
+    if (currentTab === 'updates') {
+      await loadAndRenderNotifications();
+      return;
+    }
 
     const cls = classify(allThreads);
 
@@ -268,11 +346,180 @@
       renderList(cls.sent, 'sent');
     } else if (currentTab === 'archived') {
       renderList(cls.archived, 'archived');
-    } else if (currentTab === 'updates') {
-      renderPlaceholder('Updates', 'Notifications about your Desk, gigs and reviews will appear here.');
     } else {
       renderList(cls.inbox, 'chats');
     }
+  }
+
+  /* ============================================================
+     NOTIFICATIONS (Updates tab)
+     ============================================================ */
+
+  async function loadAndRenderNotifications(){
+    showLoading(true);
+    emptyEl.hidden = true;
+    listEl.innerHTML = '';
+
+    try {
+      notifications = await DB.getNotifications(80);
+      notifLoaded = true;
+      await refreshNotifBadge();
+    } catch(e) {
+      console.error('loadNotifications failed:', e);
+      notifications = [];
+    }
+
+    showLoading(false);
+    renderNotifications();
+  }
+
+  function renderNotifications(){
+    listEl.innerHTML = '';
+
+    if (!notifications.length) {
+      emptyEl.hidden = false;
+      emptyTitle.textContent = 'All caught up';
+      emptySub.textContent = 'Updates about your Desk, reviews and activity will show up here.';
+      emptyBtn.hidden = true;
+      return;
+    }
+
+    emptyEl.hidden = true;
+
+    /* Mark all read button */
+    const hasUnread = notifications.some(n => !n.read_at);
+    if (hasUnread) {
+      const bar = document.createElement('div');
+      bar.className = 'notif-action-bar';
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'notif-mark-all';
+      btn.textContent = 'Mark all as read';
+      btn.addEventListener('click', async () => {
+        btn.disabled = true;
+        btn.textContent = 'Marking...';
+        try {
+          await DB.markAllNotificationsRead();
+          notifications = notifications.map(n => Object.assign({}, n, { read_at: n.read_at || new Date().toISOString() }));
+          await refreshNotifBadge();
+          renderNotifications();
+        } catch(e) {
+          console.error(e);
+          btn.disabled = false;
+          btn.textContent = 'Mark all as read';
+        }
+      });
+
+      bar.appendChild(btn);
+      listEl.appendChild(bar);
+    }
+
+    let lastDay = null;
+    notifications.forEach(n => {
+      const day = new Date(n.created_at).toDateString();
+      if (day !== lastDay) {
+        lastDay = day;
+        const divider = document.createElement('div');
+        divider.className = 'notif-day-divider';
+        divider.textContent = formatDateLabel(n.created_at);
+        listEl.appendChild(divider);
+      }
+
+      listEl.appendChild(buildNotificationCard(n));
+    });
+  }
+
+  function buildNotificationCard(n){
+    const card = document.createElement('button');
+    card.type = 'button';
+    card.className = 'notif-card' + (n.read_at ? ' notif-card-read' : ' notif-card-unread');
+
+    const icon = document.createElement('span');
+    icon.className = 'notif-icon';
+    icon.style.color = notifColor(n.kind);
+    icon.innerHTML = notifIcon(n.kind);
+    card.appendChild(icon);
+
+    const body = document.createElement('div');
+    body.className = 'notif-body';
+
+    const top = document.createElement('div');
+    top.className = 'notif-top';
+
+    const title = document.createElement('div');
+    title.className = 'notif-title';
+    title.textContent = n.title || 'Update';
+    top.appendChild(title);
+
+    const time = document.createElement('div');
+    time.className = 'notif-time';
+    time.textContent = timeAgoShort(n.created_at);
+    top.appendChild(time);
+
+    body.appendChild(top);
+
+    if (n.body && n.body.trim()) {
+      const preview = document.createElement('div');
+      preview.className = 'notif-preview';
+      preview.textContent = n.body.trim();
+      body.appendChild(preview);
+    }
+
+    card.appendChild(body);
+
+    if (!n.read_at) {
+      const dot = document.createElement('span');
+      dot.className = 'notif-dot';
+      card.appendChild(dot);
+    }
+
+    /* Tap → mark read + navigate */
+    card.addEventListener('click', async () => {
+      if (!n.read_at) {
+        try {
+          await DB.markNotificationRead(n.id);
+          n.read_at = new Date().toISOString();
+          await refreshNotifBadge();
+        } catch(e) { /* silent */ }
+      }
+
+      if (n.link_url) {
+        window.location.href = n.link_url;
+      } else {
+        renderNotifications();
+      }
+    });
+
+    /* Long-press → delete */
+    let pressTimer = null;
+    const start = () => {
+      clearTimeout(pressTimer);
+      pressTimer = setTimeout(async () => {
+        if (!confirm('Delete this update?')) return;
+        try {
+          await DB.deleteNotification(n.id);
+          notifications = notifications.filter(x => x.id !== n.id);
+          await refreshNotifBadge();
+          renderNotifications();
+        } catch(e) {
+          console.error(e);
+        }
+      }, 550);
+    };
+    const cancel = () => clearTimeout(pressTimer);
+
+    card.addEventListener('touchstart', start, { passive: true });
+    card.addEventListener('touchend', cancel);
+    card.addEventListener('touchmove', cancel);
+    card.addEventListener('touchcancel', cancel);
+
+    card.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      start();
+    });
+
+    return card;
   }
 
   function renderPlaceholder(title, subtitle){
@@ -282,6 +529,10 @@
     emptySub.textContent = subtitle;
     emptyBtn.hidden = true;
   }
+
+  /* ============================================================
+     ROW LIST (threads)
+     ============================================================ */
 
   function renderList(items, mode){
     listEl.innerHTML = '';
@@ -330,7 +581,6 @@
       });
     }
 
-    /* Long-press for menu */
     row.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       showRowMenu(row, thread, mode);
@@ -519,7 +769,6 @@
     const isPinned = !!thread.pinned_at;
     const isMuted = !!thread.muted;
 
-    /* Pin / Unpin */
     const pinItem = document.createElement('button');
     pinItem.type = 'button';
     pinItem.className = 'chat-row-menu-item';
@@ -537,7 +786,6 @@
     });
     menu.appendChild(pinItem);
 
-    /* Mute / Unmute */
     const muteItem = document.createElement('button');
     muteItem.type = 'button';
     muteItem.className = 'chat-row-menu-item';
@@ -555,7 +803,6 @@
     });
     menu.appendChild(muteItem);
 
-    /* Archive / Unarchive */
     const archiveItem = document.createElement('button');
     archiveItem.type = 'button';
     archiveItem.className = 'chat-row-menu-item';
@@ -573,7 +820,6 @@
     });
     menu.appendChild(archiveItem);
 
-    /* Delete */
     const deleteItem = document.createElement('button');
     deleteItem.type = 'button';
     deleteItem.className = 'chat-row-menu-item chat-row-menu-item-danger';
@@ -698,8 +944,18 @@
     startRealtime();
     startPolling();
 
+    /* Poll notifications every 30s (slower than chats) */
+    if (notifPollTimer) clearInterval(notifPollTimer);
+    notifPollTimer = setInterval(() => {
+      refreshNotifBadge();
+      if (currentTab === 'updates') {
+        loadAndRenderNotifications();
+      }
+    }, 30000);
+
     window.addEventListener('beforeunload', () => {
       if (pollTimer) clearInterval(pollTimer);
+      if (notifPollTimer) clearInterval(notifPollTimer);
       if (realtimeUnsub) {
         try { realtimeUnsub(); } catch(e) {}
       }
