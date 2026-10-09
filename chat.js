@@ -35,7 +35,7 @@
   const headUser    = $('chatHeadUser');
   const headAvatar  = $('chatHeadAvatar');
   const headName    = $('chatHeadName');
-  const headStatus  = $('chatStatus');
+  const headStatus  = $('chatHeadStatus');
   const menuBtn     = $('chatMenuBtn');
   const menu        = $('chatMenu');
   const menuProfile = $('menuViewProfile');
@@ -308,7 +308,6 @@
       bubble.className = 'chat-bubble ' + (mine ? 'chat-bubble-mine' : 'chat-bubble-theirs');
       bubble.dataset.msgId = msg.id;
 
-      /* Reply quote inside bubble */
       if (msg.reply_to) {
         const quote = document.createElement('button');
         quote.type = 'button';
@@ -345,12 +344,10 @@
       if (mine && msg.read_at) meta.textContent += ' ✓✓';
       bubble.appendChild(meta);
 
-      /* Long press → context menu */
       attachLongPress(bubble, msg);
 
       wrap.appendChild(bubble);
 
-      /* Reactions bar */
       if (msg.reactions && msg.reactions.length) {
         const reactionsBar = renderReactionsBar(msg);
         wrap.appendChild(reactionsBar);
@@ -376,7 +373,6 @@
     const bar = document.createElement('div');
     bar.className = 'chat-reactions-bar';
 
-    /* Count reactions by emoji */
     const counts = {};
     const mine = {};
     for (const r of msg.reactions) {
@@ -467,7 +463,7 @@
     });
     menu.appendChild(replyBtn);
 
-    /* React row */
+    /* Reactions row */
     const reactWrap = document.createElement('div');
     reactWrap.className = 'chat-ctx-reactions';
     const emojiMap = {
@@ -531,13 +527,11 @@
 
     document.body.appendChild(menu);
 
-    /* Position */
     const rect = el.getBoundingClientRect();
     const menuW = 220;
     let left = rect.left + (rect.width / 2) - (menuW / 2);
     left = Math.max(8, Math.min(left, window.innerWidth - menuW - 8));
 
-    /* Prefer above, fall back to below */
     menu.style.left = left + 'px';
     menu.style.top = (rect.top - 10) + 'px';
 
@@ -552,7 +546,6 @@
 
     activeMenu = menu;
 
-    /* Close on outside click */
     setTimeout(() => {
       document.addEventListener('click', closeContextMenuOnOutside, { once: true });
       document.addEventListener('touchstart', closeContextMenuOnOutside, { once: true });
@@ -658,7 +651,19 @@
   async function fetchMessages(){
     if (!threadId) return [];
     try {
-      const msgs = await DB.getChatMessagesWithMeta(threadId);
+      /* Try the meta version first (includes reactions + replies) */
+      if (typeof DB.getChatMessagesWithMeta === 'function') {
+        try {
+          const metaMsgs = await DB.getChatMessagesWithMeta(threadId);
+          if (Array.isArray(metaMsgs) && metaMsgs.length) {
+            return metaMsgs;
+          }
+        } catch(e) {
+          console.warn('getChatMessagesWithMeta failed, falling back:', e);
+        }
+      }
+      /* Fallback to the plain version */
+      const msgs = await DB.getChatMessages(threadId);
       return msgs || [];
     } catch(e) {
       return [];
@@ -780,7 +785,8 @@
           startTypingChannel();
           await refreshMessages();
         } else {
-          await DB.sendChatMessageWithReply(threadId, {
+          const sendFn = DB.sendChatMessageWithReply || DB.sendChatMessage;
+          await sendFn(threadId, {
             body: body,
             replyToId: capturedReplyTo
           });
@@ -848,7 +854,8 @@
           threadId = newThread.id;
           thread = newThread;
           window.history.replaceState({}, '', 'chat.html?id=' + encodeURIComponent(threadId));
-          await DB.sendChatMessageWithReply(threadId, {
+          const sendFn = DB.sendChatMessageWithReply || DB.sendChatMessage;
+          await sendFn(threadId, {
             photoBlob: pendingPhotoBlob,
             replyToId: capturedReplyTo
           });
@@ -858,7 +865,8 @@
           startTypingChannel();
           await refreshMessages();
         } else {
-          await DB.sendChatMessageWithReply(threadId, {
+          const sendFn = DB.sendChatMessageWithReply || DB.sendChatMessage;
+          await sendFn(threadId, {
             photoBlob: pendingPhotoBlob,
             replyToId: capturedReplyTo
           });
