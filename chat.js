@@ -215,23 +215,11 @@
     });
 
     if (scrollToBottom !== false) {
-      // Scroll immediately
       log.scrollTop = log.scrollHeight;
-
-      // Scroll again after images load
-      const imgs = log.querySelectorAll('img');
-      imgs.forEach(img => {
-        if (!img.complete) {
-          img.addEventListener('load', () => {
-            log.scrollTop = log.scrollHeight;
-          }, { once: true });
-        }
-      });
-
-      // One more scroll after a tick, in case fonts/layout shift
-      setTimeout(() => {
+      requestAnimationFrame(() => {
         log.scrollTop = log.scrollHeight;
-      }, 150);
+        setTimeout(() => { log.scrollTop = log.scrollHeight; }, 300);
+      });
     }
   }
 
