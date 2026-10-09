@@ -1502,10 +1502,12 @@ window.DB = (function(){
   async function getChatMessagesWithMeta(threadId){
     if (!isReady() || !threadId) return [];
     const c = cfg();
+    const me = currentUser();
+    if (!me) return [];
 
     const url = c.url + '/rest/v1/chat_messages?thread_id=eq.' +
                 encodeURIComponent(threadId) +
-                '&select=id,sender_id,body,photo_url,read_at,created_at,reply_to_id' +
+                '&select=id,sender_id,body,photo_url,read_at,created_at,reply_to_id,deleted_at,deleted_by,deleted_for' +
                 '&order=created_at.asc&limit=200';
 
     let messages = [];
@@ -1519,6 +1521,13 @@ window.DB = (function(){
 
     if (!messages.length) return [];
 
+    messages = messages.filter(m => {
+      const hidden = Array.isArray(m.deleted_for) && m.deleted_for.indexOf(me.id) !== -1;
+      return !hidden;
+    });
+
+    if (!messages.length) return [];
+
     const ids = messages.map(m => m.id);
     let reactions = [];
     try {
@@ -1526,7 +1535,10 @@ window.DB = (function(){
                    encodeURIComponent(ids.join(',')) +
                    ')&select=id,message_id,user_id,emoji';
       const rres = await fetch(rurl, { headers: authHeaders() });
-      if (rres.ok) reactions = await rres.json();
+      if (rres.ok) {
+        const parsed = await rres.json();
+        if (Array.isArray(parsed)) reactions = parsed;
+      }
     } catch(e) { /* silent */ }
 
     const reactionMap = {};
@@ -1540,12 +1552,18 @@ window.DB = (function(){
 
     for (const m of messages) {
       m.reactions = reactionMap[m.id] || [];
+      if (m.deleted_at) {
+        m.body = null;
+        m.photo_url = null;
+      }
       if (m.reply_to_id && msgById[m.reply_to_id]) {
+        const orig = msgById[m.reply_to_id];
         m.reply_to = {
-          id: msgById[m.reply_to_id].id,
-          sender_id: msgById[m.reply_to_id].sender_id,
-          body: msgById[m.reply_to_id].body,
-          photo_url: msgById[m.reply_to_id].photo_url
+          id: orig.id,
+          sender_id: orig.sender_id,
+          body: orig.deleted_at ? null : orig.body,
+          photo_url: orig.deleted_at ? null : orig.photo_url,
+          deleted: !!orig.deleted_at
         };
       } else {
         m.reply_to = null;
@@ -1598,6 +1616,56 @@ window.DB = (function(){
       const err = await addRes.text();
       console.error('toggleChatReaction failed:', err);
       throw new Error('Could not react.');
+    }
+    return true;
+  }
+
+  async function hideMessageForMe(messageId){
+    if (!isReady() || !messageId) throw new Error('Database not configured.');
+    const c = cfg();
+
+    const res = await fetch(c.url + '/rest/v1/rpc/hide_message_for_me', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ msg_id: messageId })
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('hideMessageForMe failed:', err);
+      throw new Error('Could not hide message.');
+    }
+    return true;
+  }
+
+  async function deleteMessageForEveryone(messageId){
+    if (!isReady() || !messageId) throw new Error('Database not configured.');
+    const c = cfg();
+
+    const res = await fetch(c.url + '/rest/v1/rpc/delete_message_for_everyone', {
+      method: 'POST',
+      headers: authHeaders(),
+      body: JSON.stringify({ msg_id: messageId })
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('deleteMessageForEveryone failed:', err);
+
+      try {
+        const parsed = JSON.parse(err);
+        if (parsed.message && parsed.message.indexOf('Too late') !== -1) {
+          throw new Error('Too late to delete for everyone (24h limit).');
+        }
+        if (parsed.message && parsed.message.indexOf('Only the sender') !== -1) {
+          throw new Error('You can only delete your own messages for everyone.');
+        }
+      } catch(e) {
+        if (e.message && e.message.indexOf('Too late') !== -1) throw e;
+        if (e.message && e.message.indexOf('Only the sender') !== -1) throw e;
+      }
+
+      throw new Error('Could not delete for everyone.');
     }
     return true;
   }
@@ -2220,6 +2288,7 @@ window.DB = (function(){
     uploadChatPhoto,
     getThread, getChatMessages, getChatMessagesWithMeta, getMyThreads, getLastMessages,
     toggleChatReaction,
+    hideMessageForMe, deleteMessageForEveryone,
     getUnreadCount, getUnreadPerThread, markThreadRead, acceptThread, declineThread,
     archiveThread, deleteThread,
     updateLastSeen, getPresence, setPresencePrivacy,
