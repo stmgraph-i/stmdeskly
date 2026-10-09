@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F5F5F7">
+<title>Create a Desk | Deskly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#01764C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="STMDeskly">
+<meta name="application-name" content="STMDeskly">
+<meta property="og:image" content="https://stmdeskly.pages.dev/og-image.png">
+</head>
+
+<body class="page-form">
+
+<main class="form-shell">
+
+  <a class="back-pill ripple" href="index.html" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </a>
+
+  <header class="form-head">
+    <h1 class="form-head-title" id="headTitle">Create a Desk</h1>
+    <p class="form-head-sub" id="headSub">Pick what this Desk is for. Everything else can be added later.</p>
+  </header>
+
+  <form class="form" id="signupForm" novalidate>
+
+    <div class="type-list" id="typeList">
+      <button type="button" class="type-card ripple" data-type="person">
+        <span class="type-badge">M</span>
+        <span class="type-info">
+          <span class="type-title">Myself</span>
+          <span class="type-sub">I offer a service or work on my own.</span>
+        </span>
+      </button>
+      <button type="button" class="type-card ripple" data-type="business">
+        <span class="type-badge">B</span>
+        <span class="type-info">
+          <span class="type-title">My business</span>
+          <span class="type-sub">I run a shop, brand or business.</span>
+        </span>
+      </button>
+      <button type="button" class="type-card ripple" data-type="organisation">
+        <span class="type-badge">O</span>
+        <span class="type-info">
+          <span class="type-title">A place or organisation</span>
+          <span class="type-sub">A church, venue, school or organisation.</span>
+        </span>
+      </button>
+    </div>
+
+    <div class="form-fields" id="formFields" hidden>
+
+      <div class="form-group">
+        <label class="form-label" for="email">Email</label>
+        <input class="form-input" type="email" id="email" placeholder="you@example.com" autocomplete="email" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="pw-wrap">
+          <input class="form-input" type="password" id="password" placeholder="8+ characters" autocomplete="new-password" required>
+          <button type="button" class="pw-toggle" id="pwToggle" aria-label="Show password">
+            <svg class="icon-eye" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <svg class="icon-eye-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
+              <path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/>
+              <path d="M1 1l22 22"/>
+            </svg>
+          </button>
+        </div>
+        <div class="pw-meter" id="pwMeter" hidden>
+          <div class="pw-meter-bars">
+            <span class="pw-bar"></span>
+            <span class="pw-bar"></span>
+            <span class="pw-bar"></span>
+            <span class="pw-bar"></span>
+          </div>
+          <div class="pw-meter-label" id="pwLabel"></div>
+        </div>
+        <p class="form-help" id="pwHelp">At least 8 characters. Mix letters, numbers or symbols if you like.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="labelName" for="name">Your name</label>
+        <input class="form-input" type="text" id="name" placeholder="Utibe" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="link">Your link</label>
+        <div class="link-preview">
+          <span class="link-prefix" id="linkPrefix">deskly.pages.dev/</span>
+          <input class="link-input" type="text" id="link" placeholder="utibe" required>
+        </div>
+        <p class="form-help">This is generated from your name. You can change it.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" id="labelRole" for="role">What do you do?</label>
+        <p class="form-help" id="roleHelper">Your occupation.</p>
+        <input class="form-input" type="text" id="role" placeholder="Tailor" required>
+        <div class="occ-slot" id="occSlot" hidden></div>
+        <div class="role-chips" id="roleChips"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="whatsapp">WhatsApp number</label>
+        <input class="form-input" type="tel" id="whatsapp" placeholder="08068459151" required>
+        <p class="form-help">With or without the + sign. Spaces are fine.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Pick a colour</label>
+        <div class="color-grid" id="colorGrid"></div>
+      </div>
+
+      <div class="form-message" id="formMessage" hidden></div>
+
+      <button type="submit" class="form-submit ripple" id="submitBtn">
+        <span class="submit-text" id="submitText">Create my Desk</span>
+      </button>
+
+      <p class="form-alt">Already have an account? <a href="login.html">Log in</a></p>
+      <p class="form-alt form-alt-small">
+        By creating a Desk you agree to our
+        <a href="terms.html">Terms &amp; Privacy</a>.
+      </p>
+
+    </div>
+
+  </form>
+
+</main>
+
+<script src="config.js"></script>
+<script src="supabase.js?v=4"></script>
+<script src="password-strength.js"></script>
+<script src="rate-limit.js"></script>
+
+<script src="jobs.js"></script>
+<script src="businesses-a.js"></script>
+<script src="businesses-b.js"></script>
+<script src="businesses-c.js"></script>
+<script src="businesses-d.js"></script>
+<script src="businesses.js"></script>
+<script src="organisations.js"></script>
+
+<script src="match.js"></script>
+<script src="occupation.js"></script>
+<script src="chip-lookup.js"></script>
+
+<script src="signup.js" defer></script>
+<script src="ripple.js" defer></script>
+
+</body>
+</html>

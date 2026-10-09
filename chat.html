@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F2F0EA">
+<title>Chat | Deskly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#01764C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="STMDeskly">
+<meta name="application-name" content="STMDeskly">
+<meta property="og:image" content="https://stmdeskly.pages.dev/og-image.png">
+</head>
+
+<body class="page-chat">
+
+<header class="chat-head" id="chatHead" style="display:none">
+  <a class="chat-back" href="chats.html" aria-label="Back">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M15 18l-6-6 6-6"/>
+    </svg>
+  </a>
+  <a class="chat-head-user" id="chatHeadUser" href="#">
+    <div class="chat-head-avatar" id="chatHeadAvatar">?</div>
+    <div class="chat-head-text">
+      <div class="chat-head-name" id="chatHeadName">Someone</div>
+      <div class="chat-head-status" id="chatHeadStatus"></div>
+    </div>
+  </a>
+  <button type="button" class="chat-menu-btn" id="chatMenuBtn" aria-label="More options">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="5" r="1.4"/>
+      <circle cx="12" cy="12" r="1.4"/>
+      <circle cx="12" cy="19" r="1.4"/>
+    </svg>
+  </button>
+</header>
+
+<div class="chat-menu" id="chatMenu" hidden>
+  <button type="button" class="chat-menu-item" id="menuViewProfile">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+      <circle cx="12" cy="7" r="4"/>
+    </svg>
+    <span>View profile</span>
+  </button>
+  <button type="button" class="chat-menu-item" id="menuReport">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M4 4l16 16"/>
+      <path d="M12 9v4M12 17h.01"/>
+      <path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+    </svg>
+    <span>Report</span>
+  </button>
+  <button type="button" class="chat-menu-item chat-menu-item-danger" id="menuBlock">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="9"/>
+      <path d="M5.6 5.6l12.8 12.8"/>
+    </svg>
+    <span>Block</span>
+  </button>
+</div>
+
+<div class="chat-loading" id="chatLoading">
+  <div class="skeleton skeleton-line"></div>
+  <div class="skeleton skeleton-line short"></div>
+  <div class="skeleton skeleton-line"></div>
+</div>
+
+<div class="chat-log" id="chatLog"></div>
+
+<form class="chat-composer" id="chatForm" style="display:none">
+  <input type="file" id="chatPhotoInput" accept="image/*" hidden>
+
+  <button type="button" class="chat-attach" id="chatAttachBtn" aria-label="Attach photo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <rect x="3" y="4" width="18" height="16" rx="2"/>
+      <circle cx="8.5" cy="9.5" r="1.5"/>
+      <path d="M21 15l-5-5-9 9"/>
+    </svg>
+  </button>
+
+  <div class="chat-input-wrap">
+    <textarea
+      class="chat-input"
+      id="chatInput"
+      placeholder="Message..."
+      rows="1"
+      autocomplete="off"
+    ></textarea>
+  </div>
+
+  <button type="submit" class="chat-send" id="chatSend" aria-label="Send" disabled>
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M22 2L11 13"/>
+      <path d="M22 2l-7 20-4-9-9-4 20-7z"/>
+    </svg>
+  </button>
+</form>
+
+<div class="chat-photo-preview" id="chatPhotoPreview" hidden>
+  <div class="chat-photo-preview-inner">
+    <img id="chatPhotoPreviewImg" alt="">
+    <button type="button" class="chat-photo-remove" id="chatPhotoRemove" aria-label="Remove photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+    <button type="button" class="chat-photo-send ripple" id="chatPhotoSend">Send</button>
+  </div>
+</div>
+
+<div class="chat-missing" id="chatMissing" style="display:none">
+  <h1>Conversation not found</h1>
+  <p>This chat doesn't exist, or you're not part of it.</p>
+  <a class="btn btn-primary ripple" href="chats.html">Back to Chats</a>
+</div>
+
+<script src="config.js"></script>
+<script src="supabase.js?v=5"></script>
+<script src="photos.js"></script>
+<script src="notifications.js"></script>
+<script src="chat.js?v=10" defer></script>
+<script src="ripple.js" defer></script>
+
+</body>
+</html>

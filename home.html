@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F2F0EA">
+<title>Home | Deskly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#01764C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="STMDeskly">
+<meta name="application-name" content="STMDeskly">
+<meta property="og:image" content="https://stmdeskly.pages.dev/og-image.png">
+</head>
+
+<body class="page-form signed-in">
+
+<main class="form-shell" id="homeRoot" style="display:none">
+
+  <header class="home-greet">
+    <p class="home-hello" id="homeHello">Hi.</p>
+    <p class="home-sub" id="homeSub">Welcome back.</p>
+  </header>
+
+  <div class="home-search">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="M21 21l-4.35-4.35"/>
+    </svg>
+    <input
+      type="search"
+      id="homeSearchInput"
+      placeholder="Search Deskly..."
+      autocomplete="off"
+      aria-label="Search"
+    >
+  </div>
+
+  <div class="home-quick-actions">
+    <a class="home-quick-btn ripple" href="post-gig.html">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="width:16px;height:16px;">
+        <path d="M12 5v14M5 12h14"/>
+      </svg>
+      Post a gig
+    </a>
+    <a class="home-quick-btn ripple" href="settings.html">Edit Desk</a>
+    <a class="home-quick-btn ripple" href="bot.html">Open bot</a>
+  </div>
+
+  <section class="home-section" id="homeGigs">
+    <h2 class="home-section-title" id="homeGigsTitle">Gigs for you</h2>
+    <div class="home-section-body" id="homeGigsBody">
+      <p class="home-empty">Loading...</p>
+    </div>
+  </section>
+
+  <section class="home-section" id="homeLane">
+    <h2 class="home-section-title" id="homeLaneTitle">Your lane</h2>
+    <div class="home-section-body" id="homeLaneBody">
+      <p class="home-empty">Loading...</p>
+    </div>
+  </section>
+
+  <section class="home-section" id="homeAlso">
+    <h2 class="home-section-title" id="homeAlsoTitle">Also on Deskly</h2>
+    <div class="home-section-body" id="homeAlsoBody">
+      <p class="home-empty">Loading...</p>
+    </div>
+  </section>
+
+  <a class="home-desk-card" id="homeDeskCard" href="dashboard.html">
+    <div class="home-desk-avatar" id="homeDeskAvatar">D</div>
+    <div class="home-desk-text">
+      <div class="home-desk-name" id="homeDeskName">—</div>
+      <div class="home-desk-role" id="homeDeskRole">—</div>
+    </div>
+    <div class="home-desk-arrow">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
+    </div>
+  </a>
+
+  <footer class="home-footer">
+    <a href="index.html" class="home-footer-link">Deskly</a>
+    <span class="home-footer-sep">·</span>
+    <a href="explore.html" class="home-footer-link">Explore</a>
+  </footer>
+
+</main>
+
+<div class="dash-loading" id="homeLoading">
+  <div class="skeleton skeleton-title"></div>
+  <div class="skeleton skeleton-line"></div>
+  <div class="skeleton skeleton-line short"></div>
+  <div class="skeleton skeleton-block"></div>
+</div>
+
+<div class="form-shell" id="noAuth" style="display:none; text-align:center;">
+  <h1 class="form-head-title" style="margin-top:80px;">Not logged in</h1>
+  <p class="form-head-sub" style="margin-bottom:28px;">You need to be logged in to see this page.</p>
+  <a class="btn btn-primary ripple" href="login.html">Log in</a>
+</div>
+
+<script src="config.js"></script>
+<script src="supabase.js?v=3"></script>
+<script src="home.js" defer></script>
+<script src="tabbar.js?v=5" defer></script>
+<script src="ripple.js" defer></script>
+
+</body>
+</html>

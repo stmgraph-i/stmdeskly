@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F2F0EA">
+<title>Post a gig | Deskly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#01764C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="STMDeskly">
+<meta name="application-name" content="STMDeskly">
+<meta property="og:image" content="https://stmdeskly.pages.dev/og-image.png">
+</head>
+
+<body class="page-form signed-in">
+
+<main class="form-shell" id="postGigRoot" style="display:none">
+
+  <header class="settings-head">
+    <a class="page-back" href="home.html" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </a>
+    <h1 class="settings-title">Post a gig</h1>
+    <div style="width:40px;"></div>
+  </header>
+
+  <form class="form" id="gigForm" novalidate>
+
+    <div class="form-group">
+      <label class="form-label">What kind of gig is this?</label>
+      <div class="type-list" id="gigTypeList">
+        <button type="button" class="type-card ripple" data-type="need">
+          <span class="type-badge">?</span>
+          <span class="type-info">
+            <span class="type-title">I need someone</span>
+            <span class="type-sub">Hiring, looking for a service provider.</span>
+          </span>
+        </button>
+        <button type="button" class="type-card ripple" data-type="available">
+          <span class="type-badge">✓</span>
+          <span class="type-info">
+            <span class="type-title">I&rsquo;m available</span>
+            <span class="type-sub">Offering my service, available for hire.</span>
+          </span>
+        </button>
+      </div>
+    </div>
+
+    <div class="form-fields" id="gigFields" hidden>
+
+      <div class="form-group">
+        <label class="form-label" for="gigRole">Role or category</label>
+        <input class="form-input" type="text" id="gigRole" placeholder="Keyboardist, Photographer, Tailor…" required>
+        <p class="form-help">One or two words. This is what people will search for.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="gigTitle">Title</label>
+        <input class="form-input" type="text" id="gigTitle" placeholder="Keyboardist needed for Sunday services" maxlength="120" required>
+        <p class="form-help">A short headline. Be specific.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="gigBody">Details</label>
+        <textarea class="form-input" id="gigBody" rows="4" placeholder="Requirements, expectations, anything useful…" maxlength="1000"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="gigLocation">Location</label>
+        <input class="form-input" type="text" id="gigLocation" placeholder="Lekki, Lagos" required>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="gigDays">Days or schedule</label>
+        <input class="form-input" type="text" id="gigDays" placeholder="Sundays, Saturdays, weekdays…">
+        <p class="form-help">Optional. When does this happen?</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Pay</label>
+        <div class="pay-row">
+          <input class="form-input" type="number" id="gigPayMin" placeholder="From" min="0">
+          <span class="pay-dash">–</span>
+          <input class="form-input" type="number" id="gigPayMax" placeholder="To" min="0">
+          <select class="form-input pay-unit" id="gigPayUnit">
+            <option value="">Unit</option>
+            <option value="per_service">per service</option>
+            <option value="per_gig">per gig</option>
+            <option value="per_day">per day</option>
+            <option value="monthly">per month</option>
+            <option value="negotiable">negotiable</option>
+          </select>
+        </div>
+        <p class="form-help">Optional. Leave blank if you&rsquo;d rather discuss.</p>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label" for="gigExpires">Expires</label>
+        <select class="form-input" id="gigExpires">
+          <option value="7">In 7 days</option>
+          <option value="14" selected>In 14 days</option>
+          <option value="30">In 30 days</option>
+          <option value="60">In 60 days</option>
+          <option value="">Never</option>
+        </select>
+        <p class="form-help">Gigs hide automatically when they expire.</p>
+      </div>
+
+      <div class="form-message" id="gigMessage" hidden></div>
+
+      <button type="submit" class="form-submit ripple" id="gigSubmit">
+        <span class="submit-text" id="gigSubmitText">Post gig</span>
+      </button>
+
+      <p class="form-alt">
+        <a href="home.html">Cancel</a>
+      </p>
+
+    </div>
+
+  </form>
+
+</main>
+
+<div class="dash-loading" id="gigLoading">
+  <div class="skeleton skeleton-title"></div>
+  <div class="skeleton skeleton-line"></div>
+  <div class="skeleton skeleton-block"></div>
+</div>
+
+<div class="form-shell" id="noAuth" style="display:none; text-align:center;">
+  <h1 class="form-head-title" style="margin-top:80px;">Not logged in</h1>
+  <p class="form-head-sub" style="margin-bottom:28px;">You need to be logged in to post a gig.</p>
+  <a class="btn btn-primary ripple" href="login.html">Log in</a>
+</div>
+
+<script src="config.js"></script>
+<script src="supabase.js?v=4"></script>
+<script src="post-gig.js" defer></script>
+<script src="tabbar.js?v=5" defer></script>
+<script src="ripple.js" defer></script>
+
+</body>
+</html>

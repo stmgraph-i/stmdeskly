@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F2F0EA">
+<title>Desk | Deskly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#01764C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="STMDeskly">
+<meta name="application-name" content="STMDeskly">
+<meta property="og:image" content="https://stmdeskly.pages.dev/og-image.png">
+</head>
+
+<body class="page-desk">
+
+<div class="desk-topbar" id="deskTopbar">
+  <button type="button" class="desk-float-btn ripple" id="deskBotBtn" aria-label="Ask the bot">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-5.5A8 8 0 0 1 11 4h2a8 8 0 0 1 8 8z"/>
+    </svg>
+  </button>
+</div>
+
+<main id="deskRoot" style="display:none">
+
+  <header class="brand-band">
+    <div class="brand-band-inner">
+      <div class="desk-mark" id="deskMark">D</div>
+      <h1 class="desk-name" id="deskName">·</h1>
+      <p class="desk-role" id="deskRole"></p>
+      <p class="desk-tagline" id="deskTagline"></p>
+    </div>
+  </header>
+
+  <div class="content-band">
+
+    <section class="desk-block" id="offerBlock" hidden>
+      <h2 class="desk-block-title" id="offerTag">Services</h2>
+      <ul class="desk-list" id="deskOffer"></ul>
+    </section>
+
+    <section class="desk-block" id="aboutBlock" hidden>
+      <h2 class="desk-block-title">About</h2>
+      <p class="desk-copy" id="deskAbout"></p>
+    </section>
+
+    <section class="desk-block" id="workBlock" hidden>
+      <h2 class="desk-block-title">Work</h2>
+      <div class="desk-work" id="deskWork"></div>
+    </section>
+
+    <section class="desk-block" id="detailsBlock" hidden>
+      <h2 class="desk-block-title">Details</h2>
+      <div class="desk-details">
+        <div class="desk-detail" id="areaBlock" hidden>
+          <div class="desk-detail-label" id="areaLabel">Location</div>
+          <div class="desk-detail-value" id="deskArea"></div>
+        </div>
+        <div class="desk-detail" id="hoursBlock" hidden>
+          <div class="desk-detail-label">Opening hours</div>
+          <div class="desk-detail-value" id="deskHours"></div>
+        </div>
+        <div class="desk-detail" id="timesBlock" hidden>
+          <div class="desk-detail-label">Service times</div>
+          <div class="desk-detail-value" id="deskTimes"></div>
+        </div>
+        <div class="desk-detail" id="progBlock" hidden>
+          <div class="desk-detail-label">Programmes</div>
+          <ul class="desk-list" id="deskProg"></ul>
+        </div>
+        <div class="desk-detail" id="facBlock" hidden>
+          <div class="desk-detail-label">Facilities</div>
+          <ul class="desk-list" id="deskFac"></ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="desk-block" id="contactBlock" hidden>
+      <h2 class="desk-block-title">Contact</h2>
+      <div class="desk-actions">
+        <a class="desk-btn desk-btn-primary ripple" id="deskWhatsApp" href="#" target="_blank" rel="noopener">Message on WhatsApp</a>
+        <a class="desk-btn desk-btn-secondary ripple" id="deskEmail" href="#">Send an email</a>
+        <a class="desk-btn desk-btn-secondary ripple" id="deskPhone" href="#">Call</a>
+        <a class="desk-btn desk-btn-secondary ripple" id="deskWebsite" href="#" target="_blank" rel="noopener">Visit website</a>
+      </div>
+    </section>
+
+  </div>
+
+  <footer class="desk-footer">
+    <a href="index.html" class="desk-footer-brand">Made with Deskly</a>
+    <a href="signup.html" class="desk-footer-cta">Make your own</a>
+  </footer>
+
+</main>
+
+<div class="desk-missing" id="deskMissing" style="display:none">
+  <h1>Desk not found</h1>
+  <p>This link does not match any Desk.</p>
+  <a class="btn btn-primary ripple" href="index.html">Make your own</a>
+</div>
+
+<div class="desk-bot-panel" id="deskBotPanel" data-open="false" style="display:none">
+
+  <header class="desk-bot-head">
+    <div class="desk-bot-avatar" id="deskBotAvatar">D</div>
+    <div class="desk-bot-head-text">
+      <div class="desk-bot-head-name" id="deskBotName">Assistant</div>
+      <div class="desk-bot-head-status">Online</div>
+    </div>
+  </header>
+
+  <div class="desk-bot-log" id="deskBotLog" role="log" aria-live="polite"></div>
+
+  <div class="desk-bot-chips" id="deskBotChips"></div>
+
+  <form class="desk-bot-input-row" id="deskBotForm">
+    <input
+      type="text"
+      class="desk-bot-input"
+      id="deskBotInput"
+      placeholder="Type your question..."
+      aria-label="Your question"
+      autocomplete="off"
+    >
+    <button type="submit" class="desk-bot-send" aria-label="Send">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M5 12h14M13 5l7 7-7 7"/>
+      </svg>
+    </button>
+  </form>
+
+</div>
+
+<script src="config.js"></script>
+<script src="supabase.js?v=4"></script>
+<script src="desk.js?v=6"></script>
+<script src="ripple.js" defer></script>
+
+</body>
+</html>

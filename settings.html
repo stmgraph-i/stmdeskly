@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F2F0EA">
+<title>Edit my Desk | Deskly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#01764C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="STMDeskly">
+<meta name="application-name" content="STMDeskly">
+<meta property="og:image" content="https://stmdeskly.pages.dev/og-image.png">
+</head>
+
+<body class="page-form signed-in page-settings">
+
+<main class="form-shell" id="settingsRoot" style="display:none">
+
+  <header class="settings-head">
+    <a class="page-back" href="home.html" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M15 18l-6-6 6-6"/>
+      </svg>
+    </a>
+    <h1 class="settings-title">Edit my Desk</h1>
+    <button type="button" class="preview-btn ripple" id="previewBtn" aria-label="Preview my Desk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/>
+        <circle cx="12" cy="12" r="3"/>
+      </svg>
+      <span>Preview</span>
+    </button>
+  </header>
+
+  <form class="form" id="editForm" novalidate>
+
+    <!-- ============================
+         IDENTITY
+         ============================ -->
+    <section class="acc" data-section="identity">
+      <button type="button" class="acc-head" aria-expanded="false">
+        <span class="acc-head-text">
+          <span class="acc-title">Identity</span>
+          <span class="acc-sub" id="accSubIdentity">Name, role, tagline</span>
+        </span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-field">
+          <label class="form-label">Profile picture</label>
+          <div class="avatar-row">
+            <button type="button" class="avatar-preview ripple" id="avatarPreview" aria-label="Change profile picture">
+              <span class="avatar-initials" id="avatarInitials">D</span>
+            </button>
+            <div class="avatar-actions">
+              <button type="button" class="avatar-btn ripple" id="avatarUploadBtn">Upload picture</button>
+              <button type="button" class="avatar-btn-quiet ripple" id="avatarRemoveBtn" hidden>Remove</button>
+            </div>
+          </div>
+          <input type="file" id="avatarInput" accept="image/*" hidden>
+          <p class="form-help">A photo of you, your logo, or your emblem.</p>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label" for="name" id="labelName">Name</label>
+          <input class="form-input" type="text" id="name" required>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label" for="role" id="labelRole">What you do</label>
+          <input class="form-input" type="text" id="role" required>
+          <div class="occ-slot" id="occSlot" hidden></div>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label" for="tagline">Tagline</label>
+          <input class="form-input" type="text" id="tagline" placeholder="One line that says what you offer">
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         WHAT YOU OFFER
+         ============================ -->
+    <section class="acc" data-section="offer">
+      <button type="button" class="acc-head" aria-expanded="false">
+        <span class="acc-head-text">
+          <span class="acc-title">What you offer</span>
+          <span class="acc-sub" id="accSubOffer">Services, about</span>
+        </span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-field">
+          <label class="form-label" for="services" id="labelServices">Services</label>
+          <textarea class="form-input" id="services" rows="5" placeholder="One item per line"></textarea>
+          <p class="form-help">Write each item on its own line.</p>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label" for="about">About</label>
+          <textarea class="form-input" id="about" rows="4" placeholder="A short note about your work"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         DETAILS
+         ============================ -->
+    <section class="acc" data-section="details">
+      <button type="button" class="acc-head" aria-expanded="false">
+        <span class="acc-head-text">
+          <span class="acc-title">Details</span>
+          <span class="acc-sub" id="accSubDetails">Location, hours</span>
+        </span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-field" id="rowLocation">
+          <label class="form-label" for="location" id="labelLocation">Location or service area</label>
+          <input class="form-input" type="text" id="location" placeholder="Where do people find you?">
+        </div>
+
+        <div class="acc-field" id="rowHours">
+          <label class="form-label" for="hours">Opening hours</label>
+          <input class="form-input" type="text" id="hours" placeholder="Mon to Sat, 8am to 6pm">
+        </div>
+
+        <div class="acc-field" id="rowServiceTimes">
+          <label class="form-label" for="serviceTimes">Service times</label>
+          <input class="form-input" type="text" id="serviceTimes" placeholder="Sundays 8am and 10am">
+        </div>
+
+        <div class="acc-field" id="rowProgrammes">
+          <label class="form-label" for="programmes">Programmes</label>
+          <textarea class="form-input" id="programmes" rows="4" placeholder="One programme per line"></textarea>
+          <p class="form-help">Write each programme on its own line.</p>
+        </div>
+
+        <div class="acc-field" id="rowFacilities">
+          <label class="form-label" for="facilities">Facilities</label>
+          <textarea class="form-input" id="facilities" rows="4" placeholder="One facility per line"></textarea>
+          <p class="form-help">Write each facility on its own line.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         CONTACT
+         ============================ -->
+    <section class="acc" data-section="contact">
+      <button type="button" class="acc-head" aria-expanded="false">
+        <span class="acc-head-text">
+          <span class="acc-title">Contact</span>
+          <span class="acc-sub" id="accSubContact">WhatsApp, email</span>
+        </span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-field">
+          <label class="form-label" for="whatsapp">WhatsApp number</label>
+          <input class="form-input" type="tel" id="whatsapp" required>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label" for="email">Email address</label>
+          <input class="form-input" type="email" id="email" placeholder="you@example.com" autocomplete="email">
+          <p class="form-help">Optional. Shown as a "Send an email" button.</p>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label" for="phone">Phone number</label>
+          <input class="form-input" type="tel" id="phone" placeholder="08068459151">
+          <p class="form-help">Optional. Shown as a "Call" button.</p>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label" for="website">Website or link</label>
+          <input class="form-input" type="url" id="website" placeholder="https://example.com">
+          <p class="form-help">Optional. A website, Instagram, TikTok, anything with a link.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         PHOTOS
+         ============================ -->
+    <section class="acc" data-section="photos">
+      <button type="button" class="acc-head" aria-expanded="false">
+        <span class="acc-head-text">
+          <span class="acc-title">Photos</span>
+          <span class="acc-sub" id="accSubPhotos">0 photos</span>
+        </span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-field">
+          <label class="form-label">Your photos</label>
+          <div class="photo-grid" id="photoGrid"></div>
+          <input type="file" id="photoInput" accept="image/*" hidden>
+          <p class="form-help" id="photoHelp">Up to 10 photos.</p>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label">Photo layout</label>
+          <div class="option-row" id="photoLayoutPicker">
+            <button type="button" class="option-btn ripple" data-value="grid">Grid</button>
+            <button type="button" class="option-btn ripple" data-value="bigfirst">Big first</button>
+            <button type="button" class="option-btn ripple" data-value="slide">Slide</button>
+            <button type="button" class="option-btn ripple" data-value="mosaic">Mosaic</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         GIGS & DISCOVERY
+         ============================ -->
+    <section class="acc" data-section="gigs">
+      <button type="button" class="acc-head" aria-expanded="false">
+        <span class="acc-head-text">
+          <span class="acc-title">Gigs &amp; discovery</span>
+          <span class="acc-sub" id="accSubGigs">Off · In Explore: On</span>
+        </span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-field">
+          <label class="form-label">Available for gigs</label>
+          <div class="option-row" id="gigAvailPicker">
+            <button type="button" class="option-btn ripple" data-value="on">On</button>
+            <button type="button" class="option-btn ripple" data-value="off">Off</button>
+          </div>
+          <p class="form-help">When on, people searching for what you do can find you.</p>
+        </div>
+
+        <div class="acc-field" id="gigDetailsGroup" hidden>
+          <label class="form-label" for="gigRoles">Roles you offer</label>
+          <input class="form-input" type="text" id="gigRoles" placeholder="keyboardist, pianist, accompanist">
+          <p class="form-help">Comma-separated. What people search for to find you.</p>
+        </div>
+
+        <div class="acc-field" id="gigLocationGroup" hidden>
+          <label class="form-label" for="gigLocation">Gig location</label>
+          <input class="form-input" type="text" id="gigLocation" placeholder="Lagos">
+        </div>
+
+        <div class="acc-field" id="gigRateGroup" hidden>
+          <label class="form-label" for="gigRate">Your rate</label>
+          <input class="form-input" type="text" id="gigRate" placeholder="₦20k per service, negotiable">
+          <p class="form-help">Optional. Free text.</p>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label">Show my Desk in Explore</label>
+          <div class="option-row" id="explorePicker">
+            <button type="button" class="option-btn ripple" data-value="on">On</button>
+            <button type="button" class="option-btn ripple" data-value="off">Off</button>
+          </div>
+          <p class="form-help">When on, people searching on Deskly can find your Desk.</p>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label">Let visitors post on my wall</label>
+          <div class="option-row" id="wallPicker">
+            <button type="button" class="option-btn ripple" data-value="on">On</button>
+            <button type="button" class="option-btn ripple" data-value="off">Off</button>
+          </div>
+          <p class="form-help">When on, visitors can leave a public message.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         NOTIFICATIONS
+         ============================ -->
+    <section class="acc" data-section="notifications">
+      <button type="button" class="acc-head" aria-expanded="false">
+        <span class="acc-head-text">
+          <span class="acc-title">Notifications</span>
+          <span class="acc-sub" id="accSubNotify">Off</span>
+        </span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-field">
+          <label class="form-label">Push notifications</label>
+          <div class="option-row" id="notifyPicker">
+            <button type="button" class="option-btn ripple" data-value="on">On</button>
+            <button type="button" class="option-btn ripple" data-value="off">Off</button>
+          </div>
+          <p class="form-help">Get a notification on this phone when someone messages you — even when Chrome is closed.</p>
+          <p class="form-help" id="notifyStatus"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================
+         APPEARANCE
+         ============================ -->
+    <section class="acc" data-section="appearance">
+      <button type="button" class="acc-head" aria-expanded="false">
+        <span class="acc-head-text">
+          <span class="acc-title">Appearance</span>
+          <span class="acc-sub" id="accSubAppearance">Colours, font, pattern</span>
+        </span>
+        <svg class="acc-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M6 9l6 6 6-6"/>
+        </svg>
+      </button>
+      <div class="acc-body">
+        <div class="acc-field">
+          <label class="form-label">Accent colour</label>
+          <div class="color-grid" id="accentPicker"></div>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label">Page background</label>
+          <div class="color-grid" id="pagePicker"></div>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label">Pattern</label>
+          <div class="pattern-row" id="patternPicker"></div>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label">Font</label>
+          <div class="option-row" id="fontPicker"></div>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label">Corners</label>
+          <div class="option-row" id="cornerPicker">
+            <button type="button" class="option-btn ripple" data-value="rounded">Rounded</button>
+            <button type="button" class="option-btn ripple" data-value="sharp">Sharp</button>
+          </div>
+        </div>
+
+        <div class="acc-field">
+          <label class="form-label">Layout</label>
+          <div class="option-row" id="layoutPicker">
+            <button type="button" class="option-btn ripple" data-value="spacious">Spacious</button>
+            <button type="button" class="option-btn ripple" data-value="compact">Compact</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <div class="form-message" id="formMessage" hidden></div>
+
+  </form>
+
+  <!-- Account actions -->
+  <div class="account-actions">
+    <button type="button" class="account-action account-action-logout ripple" id="logoutBtn">
+      Log out
+    </button>
+    <button type="button" class="account-action account-action-delete ripple" id="deleteAccountBtn">
+      Delete my account
+    </button>
+  </div>
+
+  <section class="settings-footer-links">
+    <a href="how.html">How it works</a>
+    <span class="settings-footer-sep">·</span>
+    <a href="terms.html">Terms &amp; Privacy</a>
+  </section>
+
+</main>
+
+<!-- Fixed bottom bar with Save -->
+<div class="settings-save-bar" id="settingsSaveBar" hidden>
+  <button type="button" class="settings-save-btn ripple" id="saveBtn">
+    <span class="submit-text" id="submitText">Save changes</span>
+  </button>
+</div>
+
+<!-- Preview modal -->
+<div class="preview-modal" id="previewModal" hidden>
+  <div class="preview-backdrop" id="previewBackdrop"></div>
+  <div class="preview-sheet" role="dialog" aria-label="Preview">
+    <div class="preview-topbar">
+      <span class="preview-topbar-label">Preview</span>
+      <button type="button" class="preview-close" id="previewClose" aria-label="Close">✕</button>
+    </div>
+    <div class="preview-body">
+
+      <header class="preview-band" id="pvBand">
+        <div class="preview-mark" id="pvMark">D</div>
+        <h1 class="preview-name" id="pvName">Your name</h1>
+        <p class="preview-role" id="pvRole">What you do</p>
+        <p class="preview-tagline" id="pvTagline">Your tagline</p>
+      </header>
+
+      <div class="preview-content">
+        <section class="preview-block" id="pvOfferBlock" hidden>
+          <h2 class="preview-block-title">Services</h2>
+          <ul class="preview-list" id="pvOffer"></ul>
+        </section>
+
+        <section class="preview-block" id="pvAboutBlock" hidden>
+          <h2 class="preview-block-title">About</h2>
+          <p class="preview-copy" id="pvAbout"></p>
+        </section>
+
+        <section class="preview-block" id="pvContactBlock" hidden>
+          <h2 class="preview-block-title">Contact</h2>
+          <div class="preview-btn-primary" id="pvWhatsapp">Message on WhatsApp</div>
+          <div class="preview-btn-secondary" id="pvEmail">Send an email</div>
+        </section>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Logout modal -->
+<div class="logout-modal" id="logoutModal" hidden>
+  <div class="logout-backdrop" id="logoutBackdrop"></div>
+  <div class="logout-sheet" role="dialog" aria-label="Log out">
+    <div class="logout-body">
+      <h2 class="logout-modal-title">Log out?</h2>
+      <p class="logout-modal-copy">
+        You&rsquo;ll need to log in again to access your Desk.
+        Your Desk will stay online for visitors.
+      </p>
+      <div class="logout-modal-actions">
+        <button type="button" class="logout-modal-cancel ripple" id="logoutCancel">Cancel</button>
+        <button type="button" class="logout-modal-confirm ripple" id="logoutConfirm">Log out</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Delete account modal -->
+<div class="confirm-modal" id="confirmModal" hidden>
+  <div class="confirm-backdrop" id="confirmBackdrop"></div>
+  <div class="confirm-sheet" role="dialog" aria-label="Confirm deletion">
+    <div class="confirm-body">
+
+      <h2 class="confirm-title">Delete your account</h2>
+
+      <p class="confirm-copy">This will permanently remove:</p>
+      <ul class="confirm-list">
+        <li>Your Desk page</li>
+        <li>Your photos</li>
+        <li>Your bot and everything it knows</li>
+        <li>Your ratings and view history</li>
+      </ul>
+      <p class="confirm-copy" style="font-weight:600;">This cannot be undone.</p>
+
+      <p class="confirm-copy" style="margin-top:18px;">
+        To confirm, enter your email and password.
+      </p>
+
+      <div class="confirm-field">
+        <label class="confirm-label" for="confirmEmail">Email</label>
+        <input class="form-input" type="email" id="confirmEmail" placeholder="you@example.com" autocomplete="email">
+      </div>
+
+      <div class="confirm-field">
+        <label class="confirm-label" for="confirmPassword">Password</label>
+        <input class="form-input" type="password" id="confirmPassword" placeholder="Your password" autocomplete="current-password">
+      </div>
+
+      <div class="form-message" id="confirmMessage" hidden></div>
+
+      <div class="confirm-actions">
+        <button type="button" class="confirm-cancel ripple" id="confirmCancel">Cancel</button>
+        <button type="button" class="confirm-delete ripple" id="confirmDelete">Delete forever</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="dash-loading" id="dashLoading">
+  <div class="skeleton skeleton-title"></div>
+  <div class="skeleton skeleton-line"></div>
+  <div class="skeleton skeleton-line short"></div>
+  <div class="skeleton skeleton-block"></div>
+  <div class="skeleton skeleton-block"></div>
+</div>
+
+<div class="form-shell" id="noAuth" style="display:none; text-align:center;">
+  <h1 class="form-head-title" style="margin-top:80px;">Not logged in</h1>
+  <p class="form-head-sub" style="margin-bottom:28px;">You need to be logged in to see this page.</p>
+  <a class="btn btn-primary ripple" href="login.html">Log in</a>
+</div>
+
+<script src="config.js"></script>
+<script src="supabase.js?v=4"></script>
+<script src="photos.js"></script>
+<script src="jobs.js"></script>
+<script src="businesses-a.js"></script>
+<script src="businesses-b.js"></script>
+<script src="businesses-c.js"></script>
+<script src="businesses-d.js"></script>
+<script src="businesses.js"></script>
+<script src="match.js"></script>
+<script src="occupation.js"></script>
+<script src="notifications.js"></script>
+<script src="header.js" defer></script>
+<script src="settings.js?v=2" defer></script>
+<script src="tabbar.js?v=5" defer></script>
+<script src="ripple.js" defer></script>
+
+</body>
+</html>

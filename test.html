@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#F5F5F7">
+<title>Matcher test | Deskly</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+  <link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#01764C">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="STMDeskly">
+<meta name="application-name" content="STMDeskly">
+<meta property="og:image" content="/og-image.png">
+</head>
+
+<body class="page-form">
+
+<main class="form-shell">
+
+  <header class="form-head" style="text-align:left;">
+    <h1 class="form-head-title" style="text-align:left;">Matcher test</h1>
+    <p class="form-head-sub" style="text-align:left;margin:0;">Type what you do. See what comes back.</p>
+  </header>
+
+  <div class="form-group" style="margin-top:24px;">
+    <label class="form-label" for="q">What do you do?</label>
+    <input class="form-input" type="text" id="q" placeholder="I fix phones" autocomplete="off">
+  </div>
+
+  <div id="result" style="margin-top:24px;"></div>
+
+</main>
+
+<script src="jobs.js"></script>
+<script src="match.js"></script>
+<script>
+  const q = document.getElementById('q');
+  const r = document.getElementById('result');
+
+  function render(){
+    const val = q.value.trim();
+    if (!val) { r.innerHTML = ''; return; }
+
+    const hit = MATCH.findJob(val);
+    if (!hit) {
+      r.innerHTML = '<p class="form-help" style="font-size:15px;">No match found. You can write your own.</p>';
+      return;
+    }
+
+    const job = hit.job;
+    const variant = MATCH.pickVariant(job, val);
+
+    r.innerHTML = `
+      <div class="link-box" style="margin-top:8px;">
+        <div class="link-box-tag">Suggestion</div>
+        <div style="font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:-.03em;color:var(--ink);margin-bottom:6px;">
+          ${job.title}${job.local ? ' (' + job.local + ')' : ''}
+        </div>
+        <div style="font-size:15px;color:var(--ink-2);line-height:1.55;margin-bottom:6px;">${variant.tagline}</div>
+        <div style="font-size:14px;color:var(--ink-3);line-height:1.55;margin-bottom:14px;">${variant.about}</div>
+        <div style="font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3);margin-bottom:8px;">Services</div>
+        <ul style="list-style:none;font-size:14px;color:var(--ink-2);line-height:1.85;padding-left:0;">
+          ${variant.services.map(s => '• ' + s).join('<br>')}
+        </ul>
+      </div>
+    `;
+  }
+
+  q.addEventListener('input', render);
+</script>
+
+</body>
+</html>
