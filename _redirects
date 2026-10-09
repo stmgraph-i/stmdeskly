@@ -1,0 +1,15 @@
+# ============================================================
+# DESKLY · CLEAN URL REWRITES
+# Serve desk.html for /u/username, profile.html for /@username
+# ============================================================
+
+# Public Desk — /u/success → desk.html?u=success
+/u/:username        /desk.html?u=:username           200
+
+# In-app Profile — /@success → profile.html?u=success
+/@:username         /profile.html?u=:username        200
+
+# Optional: /gig/{id} → gig.html?id={id}
+/gig/:id            /gig.html?id=:id                 200
+
+# Everything else: let Cloudflare serve normally

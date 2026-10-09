@@ -1,0 +1,18 @@
+# ============================================================
+# STM DESKLY · robots.txt
+# ============================================================
+
+User-agent: *
+Allow: /
+
+# Keep the private app pages out of search results
+Disallow: /settings.html
+Disallow: /dashboard.html
+Disallow: /post-gig.html
+Disallow: /bot.html
+Disallow: /forgot.html
+Disallow: /new-password.html
+Disallow: /test.html
+Disallow: /start.html
+
+Sitemap: https://stmdeskly.pages.dev/sitemap.xml
