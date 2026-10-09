@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=13">
+<link rel="stylesheet" href="style.css?v=16">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
@@ -37,6 +37,12 @@
       <div class="chat-head-status" id="chatHeadStatus"></div>
     </div>
   </a>
+  <button type="button" class="chat-search-btn" id="chatSearchBtn" aria-label="Search messages">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="M21 21l-4.35-4.35"/>
+    </svg>
+  </button>
   <button type="button" class="chat-menu-btn" id="chatMenuBtn" aria-label="More options">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <circle cx="12" cy="5" r="1.4"/>
@@ -45,6 +51,29 @@
     </svg>
   </button>
 </header>
+
+<div class="chat-search-panel" id="chatSearchPanel" hidden>
+  <div class="chat-search-bar">
+    <svg class="chat-search-bar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="11" cy="11" r="7"/>
+      <path d="M21 21l-4.35-4.35"/>
+    </svg>
+    <input
+      type="search"
+      class="chat-search-input"
+      id="chatSearchInput"
+      placeholder="Search messages..."
+      autocomplete="off"
+      aria-label="Search messages"
+    >
+    <button type="button" class="chat-search-close" id="chatSearchClose" aria-label="Close search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
+  </div>
+  <div class="chat-search-results" id="chatSearchResults"></div>
+</div>
 
 <div class="chat-menu" id="chatMenu" hidden>
   <button type="button" class="chat-menu-item" id="menuViewProfile">
@@ -132,7 +161,7 @@
 <script src="notifications.js"></script>
 <script src="presence.js"></script>
 <script src="typing.js"></script>
-<script src="chat.js?v=15" defer></script>
+<script src="chat.js?v=18" defer></script>
 <script src="ripple.js" defer></script>
 
 </body>
