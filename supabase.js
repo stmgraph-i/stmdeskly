@@ -28,7 +28,6 @@ window.DB = (function(){
     }, extra || {});
   }
 
-  /* ---------- SESSION ---------- */
   const SESSION_KEY = 'fd_session';
   const REMEMBER_KEY = 'fd_remember_until';
 
@@ -71,15 +70,12 @@ window.DB = (function(){
     try { localStorage.removeItem(REMEMBER_KEY); } catch(e){}
   }
 
-  /* ---------- TOKEN REFRESH ---------- */
-
   let refreshInFlight = null;
 
   async function refreshSession(){
     const session = getSession();
     if (!session || !session.refresh_token) return null;
     if (!isReady()) return null;
-
     if (refreshInFlight) return refreshInFlight;
 
     const c = cfg();
@@ -90,19 +86,12 @@ window.DB = (function(){
           headers: baseHeaders(),
           body: JSON.stringify({ refresh_token: session.refresh_token })
         });
-        if (!res.ok) {
-          saveSession(null);
-          clearPersist();
-          return null;
-        }
+        if (!res.ok) { saveSession(null); clearPersist(); return null; }
         const data = await res.json();
         saveSession(data);
         return data;
-      } catch(e) {
-        return null;
-      } finally {
-        refreshInFlight = null;
-      }
+      } catch(e) { return null; }
+      finally { refreshInFlight = null; }
     })();
 
     return refreshInFlight;
@@ -111,19 +100,15 @@ window.DB = (function(){
   function tokenExpiringSoon(){
     const session = getSession();
     if (!session || !session.access_token) return true;
-
     try {
       const payload = session.access_token.split('.')[1];
       const decoded = JSON.parse(atob(payload.replace(/-/g,'+').replace(/_/g,'/')));
       if (!decoded.exp) return false;
       const now = Math.floor(Date.now() / 1000);
       return (decoded.exp - now) < 300;
-    } catch(e) {
-      return false;
-    }
+    } catch(e) { return false; }
   }
 
-  /* ---------- AUTH ---------- */
   async function signUp(email, password){
     if (!isReady()) throw new Error('Database not configured.');
     const c = cfg();
@@ -171,8 +156,6 @@ window.DB = (function(){
     return null;
   }
 
-  /* ---------- KNOWN ACCOUNTS ---------- */
-
   const ACCOUNTS_KEY = 'fd_accounts';
   const MAX_ACCOUNTS = 3;
 
@@ -190,10 +173,8 @@ window.DB = (function(){
     if (!email) return;
     email = String(email).trim().toLowerCase();
     if (!email) return;
-
     let list = knownAccounts();
     list = list.filter(a => a.email !== email);
-
     list.unshift({
       email: email,
       name: info?.name || '',
@@ -201,9 +182,7 @@ window.DB = (function(){
       avatar_url: info?.avatar_url || '',
       lastUsed: Date.now()
     });
-
     if (list.length > MAX_ACCOUNTS) list = list.slice(0, MAX_ACCOUNTS);
-
     try { localStorage.setItem(ACCOUNTS_KEY, JSON.stringify(list)); } catch(e){}
   }
 
@@ -218,8 +197,6 @@ window.DB = (function(){
     try { localStorage.removeItem(ACCOUNTS_KEY); } catch(e){}
   }
 
-  /* ---------- PASSWORD RESET ---------- */
-
   async function recoverPassword(email){
     if (!isReady()) throw new Error('Database not configured.');
     const c = cfg();
@@ -229,9 +206,7 @@ window.DB = (function(){
       body: JSON.stringify({
         email: email,
         gotrue_meta_security: {},
-        options: {
-          redirect_to: window.location.origin + '/new-password.html'
-        }
+        options: { redirect_to: window.location.origin + '/new-password.html' }
       })
     });
     if (!res.ok) {
@@ -262,7 +237,6 @@ window.DB = (function(){
     return true;
   }
 
-  /* ---------- DESKS ---------- */
   async function getDesk(username){
     if (!isReady()) return null;
     const c = cfg();
@@ -293,15 +267,11 @@ window.DB = (function(){
   async function getMyDesk(){
     const user = currentUser();
     if (!user) return null;
-
-    if (tokenExpiringSoon()) {
-      await refreshSession();
-    }
+    if (tokenExpiringSoon()) await refreshSession();
 
     const c = cfg();
     const url = c.url + '/rest/v1/desks?user_id=eq.' +
                 encodeURIComponent(user.id) + '&select=*&limit=1';
-
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
 
@@ -310,7 +280,6 @@ window.DB = (function(){
         headers: authHeaders(),
         signal: controller.signal
       });
-
       if (res.status === 401) {
         const refreshed = await refreshSession();
         if (refreshed) {
@@ -320,18 +289,14 @@ window.DB = (function(){
           });
         }
       }
-
       clearTimeout(timeout);
-
       if (!res.ok) {
         const txt = await res.text();
         console.error('getMyDesk failed:', res.status, txt);
         throw new Error('Failed to fetch your desk (status ' + res.status + ')');
       }
-
       const rows = await res.json();
       return rows[0] || null;
-
     } catch (e) {
       clearTimeout(timeout);
       if (e.name === 'AbortError') {
@@ -394,12 +359,8 @@ window.DB = (function(){
       if (!res.ok) return false;
       const rows = await res.json();
       return Array.isArray(rows) && rows.length > 0;
-    } catch (e) {
-      return false;
-    }
+    } catch (e) { return false; }
   }
-
-  /* ---------- VISITS ---------- */
 
   async function recordVisit(deskId){
     if (!isReady() || !deskId) return false;
@@ -419,9 +380,7 @@ window.DB = (function(){
         })
       });
       return res.ok;
-    } catch(e) {
-      return false;
-    }
+    } catch(e) { return false; }
   }
 
   async function getMyVisits(deskId){
@@ -433,8 +392,6 @@ window.DB = (function(){
     if (!res.ok) throw new Error('Failed to fetch visits');
     return await res.json();
   }
-
-  /* ---------- BOT · UNANSWERED QUESTIONS ---------- */
 
   async function recordUnanswered(deskId, question){
     if (!isReady() || !deskId || !question) return false;
@@ -459,9 +416,7 @@ window.DB = (function(){
         })
       });
       return res.ok;
-    } catch(e) {
-      return false;
-    }
+    } catch(e) { return false; }
   }
 
   async function getUnanswered(deskId){
@@ -486,8 +441,6 @@ window.DB = (function(){
     return res.ok;
   }
 
-  /* ---------- RATINGS ---------- */
-
   const RATER_KEY = 'fd_rater_key';
 
   function getRaterKey(){
@@ -503,21 +456,16 @@ window.DB = (function(){
       key = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
       localStorage.setItem(RATER_KEY, key);
       return key;
-    } catch(e) {
-      return 'unknown-' + Date.now();
-    }
+    } catch(e) { return 'unknown-' + Date.now(); }
   }
 
   async function addRating(deskId, rating){
     if (!isReady() || !deskId) throw new Error('Database not configured.');
     const value = parseInt(rating, 10);
     if (!value || value < 1 || value > 5) throw new Error('Rating must be 1 to 5.');
-
     const c = cfg();
     const key = getRaterKey();
-
-    const url = c.url + '/rest/v1/desk_ratings' +
-                '?on_conflict=desk_id,rater_key';
+    const url = c.url + '/rest/v1/desk_ratings?on_conflict=desk_id,rater_key';
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -533,7 +481,6 @@ window.DB = (function(){
         rated_at: new Date().toISOString()
       })
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('addRating failed:', err);
@@ -564,9 +511,7 @@ window.DB = (function(){
         rating_count: row.rating_count || 0,
         rating_avg: Number(row.rating_avg || 0)
       };
-    } catch(e) {
-      return { rating_count: 0, rating_avg: 0 };
-    }
+    } catch(e) { return { rating_count: 0, rating_avg: 0 }; }
   }
 
   function getMyRating(deskId){
@@ -587,24 +532,16 @@ window.DB = (function(){
     } catch(e) {}
   }
 
-  /* ---------- REVIEWS ---------- */
-
   async function submitReview(deskId, data){
     if (!isReady() || !deskId) throw new Error('Database not configured.');
-
     const value = parseInt(data.rating, 10);
     if (!value || value < 1 || value > 5) throw new Error('Please pick a star rating.');
-
     const text = (data.text || '').trim().slice(0, 600);
     const name = (data.name || '').trim().slice(0, 60);
-
     const c = cfg();
     const key = getRaterKey();
-
     let verified = false;
-    try {
-      verified = localStorage.getItem('fd_wa_tapped_' + deskId) === '1';
-    } catch(e) {}
+    try { verified = localStorage.getItem('fd_wa_tapped_' + deskId) === '1'; } catch(e) {}
 
     const url = c.url + '/rest/v1/desk_ratings?on_conflict=desk_id,rater_key';
     const res = await fetch(url, {
@@ -616,22 +553,20 @@ window.DB = (function(){
         'Prefer': 'resolution=merge-duplicates,return=representation'
       },
       body: JSON.stringify({
-        desk_id:       deskId,
-        rating:        value,
-        rater_key:     key,
-        review_text:   text || null,
+        desk_id: deskId,
+        rating: value,
+        rater_key: key,
+        review_text: text || null,
         reviewer_name: name || null,
-        verified:      verified,
-        rated_at:      new Date().toISOString()
+        verified: verified,
+        rated_at: new Date().toISOString()
       })
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('submitReview failed:', err);
       throw new Error('Could not save your review.');
     }
-
     const rows = await res.json();
     if (saveMyRating) saveMyRating(deskId, value);
     return rows[0];
@@ -641,11 +576,9 @@ window.DB = (function(){
     if (!isReady() || !deskId) throw new Error('Database not configured.');
     const c = cfg();
     const key = getRaterKey();
-
     const url = c.url + '/rest/v1/desk_ratings?desk_id=eq.' +
                 encodeURIComponent(deskId) +
                 '&rater_key=eq.' + encodeURIComponent(key);
-
     const res = await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -655,20 +588,17 @@ window.DB = (function(){
         'Prefer': 'return=minimal'
       }
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('deleteReview failed:', err);
       throw new Error('Could not delete your review.');
     }
-
     try {
       const raw = localStorage.getItem('fd_my_ratings');
       const map = raw ? JSON.parse(raw) : {};
       delete map[deskId];
       localStorage.setItem('fd_my_ratings', JSON.stringify(map));
     } catch(e) {}
-
     return true;
   }
 
@@ -678,8 +608,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/desk_ratings?desk_id=eq.' +
                 encodeURIComponent(deskId) +
                 '&select=id,rating,review_text,reviewer_name,verified,owner_reply,replied_at,rated_at,rater_key' +
-                '&order=rated_at.desc' +
-                '&limit=50';
+                '&order=rated_at.desc&limit=50';
     try {
       const res = await fetch(url, {
         headers: {
@@ -689,16 +618,13 @@ window.DB = (function(){
       });
       if (!res.ok) return [];
       return await res.json();
-    } catch(e) {
-      return [];
-    }
+    } catch(e) { return []; }
   }
 
   async function replyToReview(ratingId, replyText){
     if (!isReady() || !ratingId) throw new Error('Database not configured.');
     const trimmed = String(replyText || '').trim().slice(0, 500);
     if (!trimmed) throw new Error('Reply is empty.');
-
     const c = cfg();
     const url = c.url + '/rest/v1/desk_ratings?id=eq.' + encodeURIComponent(ratingId);
     const res = await fetch(url, {
@@ -731,35 +657,25 @@ window.DB = (function(){
   }
 
   function markWhatsAppTap(deskId){
-    try {
-      localStorage.setItem('fd_wa_tapped_' + deskId, '1');
-    } catch(e) {}
+    try { localStorage.setItem('fd_wa_tapped_' + deskId, '1'); } catch(e) {}
   }
 
   function hasTappedWhatsApp(deskId){
-    try {
-      return localStorage.getItem('fd_wa_tapped_' + deskId) === '1';
-    } catch(e) {
-      return false;
-    }
+    try { return localStorage.getItem('fd_wa_tapped_' + deskId) === '1'; }
+    catch(e) { return false; }
   }
-
-  /* ---------- EXPLORE / SEARCH ---------- */
 
   async function searchDesks(query, typeFilter){
     if (!isReady()) return [];
     const c = cfg();
-
     let url = c.url + '/rest/v1/desks' +
               '?select=id,username,name,role,tagline,location,avatar_url,initials,type,accent,accentsoft,services' +
               '&show_in_explore=eq.true' +
               '&order=created_at.desc' +
               '&limit=50';
-
     if (typeFilter && typeFilter !== 'all') {
       url += '&type=eq.' + encodeURIComponent(typeFilter);
     }
-
     if (query && query.trim()) {
       const q = query.trim();
       const pattern = '*' + encodeURIComponent(q) + '*';
@@ -774,7 +690,6 @@ window.DB = (function(){
         ')';
       url += '&' + orClause;
     }
-
     try {
       const res = await fetch(url, {
         headers: {
@@ -788,33 +703,23 @@ window.DB = (function(){
         return [];
       }
       return await res.json();
-    } catch(e) {
-      console.error(e);
-      return [];
-    }
+    } catch(e) { return []; }
   }
-
-  /* ---------- GIGS ---------- */
 
   async function searchGigs(query, opts){
     if (!isReady()) return [];
     opts = opts || {};
-
     const c = cfg();
     let url = c.url + '/rest/v1/gigs' +
               '?select=id,user_id,desk_id,type,role,title,body,location,days,pay_min,pay_max,pay_unit,status,created_at,expires_at' +
               '&status=eq.open' +
-              '&order=created_at.desc' +
-              '&limit=40';
-
+              '&order=created_at.desc&limit=40';
     if (opts.type === 'need' || opts.type === 'available') {
       url += '&type=eq.' + encodeURIComponent(opts.type);
     }
-
     if (opts.location) {
       url += '&location.ilike.*' + encodeURIComponent(opts.location) + '*';
     }
-
     if (query && query.trim()) {
       const q = query.trim();
       const pattern = '*' + encodeURIComponent(q) + '*';
@@ -827,7 +732,6 @@ window.DB = (function(){
         ')';
       url += '&' + orClause;
     }
-
     try {
       const res = await fetch(url, {
         headers: {
@@ -841,10 +745,7 @@ window.DB = (function(){
         return [];
       }
       return await res.json();
-    } catch(e) {
-      console.error(e);
-      return [];
-    }
+    } catch(e) { return []; }
   }
 
   async function getGig(id){
@@ -878,22 +779,18 @@ window.DB = (function(){
     if (!isReady()) throw new Error('Database not configured.');
     const user = currentUser();
     if (!user) throw new Error('You must be logged in.');
-
     const desk = await getMyDesk();
     if (!desk) throw new Error('You need a Desk before posting a gig.');
-
     const c = cfg();
     const payload = Object.assign({}, data, {
       user_id: user.id,
       desk_id: desk.id
     });
-
     const res = await fetch(c.url + '/rest/v1/gigs', {
       method: 'POST',
       headers: authHeaders({ 'Prefer': 'return=representation' }),
       body: JSON.stringify(payload)
     });
-
     if (!res.ok) {
       const err = await res.text();
       throw new Error(err || 'Could not create the gig.');
@@ -953,8 +850,6 @@ window.DB = (function(){
     return true;
   }
 
-  /* ---------- WALL ---------- */
-
   const AUTHOR_KEY = 'fd_author_key';
 
   function getAuthorKey(){
@@ -970,21 +865,16 @@ window.DB = (function(){
       key = Array.from(bytes).map(b => b.toString(16).padStart(2, '0')).join('');
       localStorage.setItem(AUTHOR_KEY, key);
       return key;
-    } catch(e) {
-      return 'unknown-' + Date.now();
-    }
+    } catch(e) { return 'unknown-' + Date.now(); }
   }
 
   async function uploadWallPhoto(blob, deskId){
     const c = cfg();
     if (!c.url || !c.anonKey) throw new Error('Storage is not connected.');
-
     const token = getSession()?.access_token || c.anonKey;
     const filename = 'wall-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
     const path = deskId + '/wall/' + filename;
-
     const url = c.url + '/storage/v1/object/desk-photos/' + path;
-
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -995,27 +885,23 @@ window.DB = (function(){
       },
       body: blob
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('Wall upload failed:', err);
       throw new Error('Could not upload the photo.');
     }
-
     return c.url + '/storage/v1/object/public/desk-photos/' + path;
   }
 
   async function getWallPosts(deskId){
     if (!isReady() || !deskId) return { posts: [], reactions: [] };
     const c = cfg();
-
     let posts = [];
     try {
       const url = c.url + '/rest/v1/desk_wall?desk_id=eq.' +
                   encodeURIComponent(deskId) +
                   '&select=id,author_name,body,author_key,posted_at,photo_url,pinned,reply_to' +
-                  '&order=pinned.desc,posted_at.desc' +
-                  '&limit=100';
+                  '&order=pinned.desc,posted_at.desc&limit=100';
       const res = await fetch(url, {
         headers: {
           'apikey': c.anonKey,
@@ -1041,29 +927,23 @@ window.DB = (function(){
         if (res.ok) reactions = await res.json();
       } catch(e) { console.error(e); }
     }
-
     return { posts: posts || [], reactions: reactions || [] };
   }
 
   async function postToWallV2(deskId, opts){
     if (!isReady() || !deskId) throw new Error('Database not configured.');
-
     const body = String(opts.body || '').trim();
     const name = opts.name ? String(opts.name).trim().slice(0, 60) : null;
     const photoBlob = opts.photoBlob || null;
     const replyTo = opts.replyTo || null;
-
     if (!body && !photoBlob) throw new Error('Write something or attach a photo.');
     if (body.length > 500) throw new Error('Message is too long.');
-
     const c = cfg();
     const key = getAuthorKey();
-
     let photoUrl = null;
     if (photoBlob) {
       photoUrl = await uploadWallPhoto(photoBlob, deskId);
     }
-
     const payload = {
       desk_id: deskId,
       author_name: name,
@@ -1072,7 +952,6 @@ window.DB = (function(){
       photo_url: photoUrl
     };
     if (replyTo) payload.reply_to = replyTo;
-
     const res = await fetch(c.url + '/rest/v1/desk_wall', {
       method: 'POST',
       headers: {
@@ -1083,7 +962,6 @@ window.DB = (function(){
       },
       body: JSON.stringify(payload)
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('postToWallV2 failed:', err);
@@ -1109,9 +987,7 @@ window.DB = (function(){
       });
       if (!res.ok) return [];
       return await res.json();
-    } catch(e) {
-      return [];
-    }
+    } catch(e) { return []; }
   }
 
   async function postToWall(deskId, name, body){
@@ -1120,12 +996,10 @@ window.DB = (function(){
 
   async function deleteWallPost(id){
     if (!isReady() || !id) throw new Error('Database not configured.');
-
     const c = cfg();
     const key = getAuthorKey();
     const token = getSession()?.access_token || c.anonKey;
     const url = c.url + '/rest/v1/desk_wall?id=eq.' + encodeURIComponent(id);
-
     const res = await fetch(url, {
       method: 'DELETE',
       headers: {
@@ -1135,7 +1009,6 @@ window.DB = (function(){
         'Prefer': 'return=minimal'
       }
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('deleteWallPost failed:', res.status, err);
@@ -1148,12 +1021,10 @@ window.DB = (function(){
     if (!isReady() || !postId || !emoji) throw new Error('Database not configured.');
     const c = cfg();
     const key = getAuthorKey();
-
     const checkUrl = c.url + '/rest/v1/desk_wall_reactions' +
                      '?post_id=eq.' + encodeURIComponent(postId) +
                      '&emoji=eq.' + encodeURIComponent(emoji) +
                      '&reactor_key=eq.' + encodeURIComponent(key);
-
     const checkRes = await fetch(checkUrl, {
       headers: {
         'apikey': c.anonKey,
@@ -1161,7 +1032,6 @@ window.DB = (function(){
       }
     });
     const existing = await checkRes.json();
-
     if (existing && existing.length) {
       const delUrl = c.url + '/rest/v1/desk_wall_reactions?id=eq.' + encodeURIComponent(existing[0].id);
       await fetch(delUrl, {
@@ -1206,8 +1076,6 @@ window.DB = (function(){
     return true;
   }
 
-  /* ---------- CHAT ---------- */
-
   function orderPair(idA, idB){
     if (!idA || !idB) throw new Error('Two user IDs required.');
     if (idA === idB) throw new Error('Cannot chat with yourself.');
@@ -1228,22 +1096,17 @@ window.DB = (function(){
       if (!res.ok) return false;
       const rows = await res.json();
       return Array.isArray(rows) && rows.length > 0;
-    } catch(e) {
-      return false;
-    }
+    } catch(e) { return false; }
   }
 
   async function uploadChatPhoto(blob, threadId){
     const c = cfg();
     if (!c.url || !c.anonKey) throw new Error('Storage not configured.');
-
     const session = getSession();
     const token = session?.access_token || c.anonKey;
     const filename = 'chat-' + Date.now() + '-' + Math.random().toString(36).slice(2, 8) + '.jpg';
     const path = 'chat/' + threadId + '/' + filename;
-
     const url = c.url + '/storage/v1/object/desk-photos/' + path;
-
     const res = await fetch(url, {
       method: 'POST',
       headers: {
@@ -1254,13 +1117,11 @@ window.DB = (function(){
       },
       body: blob
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('uploadChatPhoto failed:', err);
       throw new Error('Could not upload the photo.');
     }
-
     return c.url + '/storage/v1/object/public/desk-photos/' + path;
   }
 
@@ -1268,27 +1129,19 @@ window.DB = (function(){
     const me = currentUser();
     if (!me) throw new Error('You must be logged in.');
     if (!otherUserId) throw new Error('Missing recipient.');
-
     const [user_a, user_b] = orderPair(me.id, otherUserId);
-
     const c = cfg();
     const checkUrl = c.url + '/rest/v1/chat_threads' +
                      '?user_a=eq.' + encodeURIComponent(user_a) +
                      '&user_b=eq.' + encodeURIComponent(user_b) +
                      '&select=*&limit=1';
-
     const checkRes = await fetch(checkUrl, { headers: authHeaders() });
     if (!checkRes.ok) throw new Error('Could not check for existing thread.');
     const existing = await checkRes.json();
-
-    if (existing && existing.length) {
-      return existing[0];
-    }
+    if (existing && existing.length) return existing[0];
 
     const blocked = await isBlocked(me.id, otherUserId);
-    if (blocked) {
-      throw new Error('You cannot message this person.');
-    }
+    if (blocked) throw new Error('You cannot message this person.');
 
     const createUrl = c.url + '/rest/v1/chat_threads';
     const createRes = await fetch(createUrl, {
@@ -1309,11 +1162,9 @@ window.DB = (function(){
     }
     const created = await createRes.json();
     const thread = created[0];
-
     if (firstMessage && firstMessage.trim()) {
       await sendChatMessage(thread.id, { body: firstMessage.trim() });
     }
-
     return thread;
   }
 
@@ -1325,25 +1176,20 @@ window.DB = (function(){
 
     const [user_a, user_b] = orderPair(me.id, recipientId);
     const c = cfg();
-
     const checkUrl = c.url + '/rest/v1/chat_threads' +
                      '?user_a=eq.' + encodeURIComponent(user_a) +
                      '&user_b=eq.' + encodeURIComponent(user_b) +
                      '&select=*&limit=1';
-
     const checkRes = await fetch(checkUrl, { headers: authHeaders() });
     if (!checkRes.ok) throw new Error('Could not check for existing thread.');
     const existing = await checkRes.json();
-
     if (existing && existing.length) {
       await sendChatMessage(existing[0].id, { body: firstMessage.trim() });
       return existing[0];
     }
 
     const blocked = await isBlocked(me.id, recipientId);
-    if (blocked) {
-      throw new Error('You cannot message this person.');
-    }
+    if (blocked) throw new Error('You cannot message this person.');
 
     const createRes = await fetch(c.url + '/rest/v1/chat_threads', {
       method: 'POST',
@@ -1363,9 +1209,7 @@ window.DB = (function(){
     }
     const created = await createRes.json();
     const thread = created[0];
-
     await sendChatMessage(thread.id, { body: firstMessage.trim() });
-
     return thread;
   }
 
@@ -1373,44 +1217,35 @@ window.DB = (function(){
     if (!isReady() || !threadId) throw new Error('Database not configured.');
     const me = currentUser();
     if (!me) throw new Error('You must be logged in.');
-
     const body = (opts && opts.body ? String(opts.body).trim() : '');
     const photoBlob = (opts && opts.photoBlob) || null;
-
     if (!body && !photoBlob) throw new Error('Nothing to send.');
-
     const c = cfg();
-
     let photoUrl = null;
     if (photoBlob) {
       photoUrl = await uploadChatPhoto(photoBlob, threadId);
     }
-
     const payload = {
       thread_id: threadId,
       sender_id: me.id,
       body: body ? body.slice(0, 2000) : null,
       photo_url: photoUrl
     };
-
     const res = await fetch(c.url + '/rest/v1/chat_messages', {
       method: 'POST',
       headers: authHeaders({ 'Prefer': 'return=representation' }),
       body: JSON.stringify(payload)
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('sendChatMessage failed:', err);
       throw new Error('Could not send message.');
     }
-
     await fetch(c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId), {
       method: 'PATCH',
       headers: authHeaders({ 'Prefer': 'return=minimal' }),
       body: JSON.stringify({ last_message_at: new Date().toISOString() })
     });
-
     const rows = await res.json();
     return rows[0];
   }
@@ -1419,20 +1254,15 @@ window.DB = (function(){
     if (!isReady() || !threadId) throw new Error('Database not configured.');
     const me = currentUser();
     if (!me) throw new Error('You must be logged in.');
-
     const body = (opts && opts.body ? String(opts.body).trim() : '');
     const photoBlob = (opts && opts.photoBlob) || null;
     const replyToId = (opts && opts.replyToId) || null;
-
     if (!body && !photoBlob) throw new Error('Nothing to send.');
-
     const c = cfg();
-
     let photoUrl = null;
     if (photoBlob) {
       photoUrl = await uploadChatPhoto(photoBlob, threadId);
     }
-
     const payload = {
       thread_id: threadId,
       sender_id: me.id,
@@ -1440,25 +1270,21 @@ window.DB = (function(){
       photo_url: photoUrl,
       reply_to_id: replyToId
     };
-
     const res = await fetch(c.url + '/rest/v1/chat_messages', {
       method: 'POST',
       headers: authHeaders({ 'Prefer': 'return=representation' }),
       body: JSON.stringify(payload)
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('sendChatMessageWithReply failed:', err);
       throw new Error('Could not send message.');
     }
-
     await fetch(c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId), {
       method: 'PATCH',
       headers: authHeaders({ 'Prefer': 'return=minimal' }),
       body: JSON.stringify({ last_message_at: new Date().toISOString() })
     });
-
     const rows = await res.json();
     return rows[0];
   }
@@ -1467,7 +1293,6 @@ window.DB = (function(){
     if (!isReady() || !threadId) return null;
     const me = currentUser();
     if (!me) return null;
-
     const c = cfg();
     const url = c.url + '/rest/v1/chat_threads?id=eq.' +
                 encodeURIComponent(threadId) + '&select=*&limit=1';
@@ -1476,9 +1301,7 @@ window.DB = (function(){
     const rows = await res.json();
     const thread = rows[0];
     if (!thread) return null;
-
     if (thread.user_a !== me.id && thread.user_b !== me.id) return null;
-
     const otherId = thread.user_a === me.id ? thread.user_b : thread.user_a;
     return { thread, otherId };
   }
@@ -1494,9 +1317,7 @@ window.DB = (function(){
       const res = await fetch(url, { headers: authHeaders() });
       if (!res.ok) return [];
       return await res.json();
-    } catch(e) {
-      return [];
-    }
+    } catch(e) { return []; }
   }
 
   async function getChatMessagesWithMeta(threadId){
@@ -1515,9 +1336,7 @@ window.DB = (function(){
       const res = await fetch(url, { headers: authHeaders() });
       if (!res.ok) return [];
       messages = await res.json();
-    } catch(e) {
-      return [];
-    }
+    } catch(e) { return []; }
 
     if (!messages.length) return [];
 
@@ -1577,22 +1396,17 @@ window.DB = (function(){
     if (!isReady() || !messageId || !emoji) throw new Error('Database not configured.');
     const me = currentUser();
     if (!me) throw new Error('You must be logged in.');
-
     const allowed = ['heart', 'thumbsup', 'fire', 'wow', 'pray', 'like'];
     if (!allowed.includes(emoji)) throw new Error('Invalid reaction.');
-
     const c = cfg();
-
     const checkUrl = c.url + '/rest/v1/chat_reactions' +
                      '?message_id=eq.' + encodeURIComponent(messageId) +
                      '&user_id=eq.' + encodeURIComponent(me.id) +
                      '&emoji=eq.' + encodeURIComponent(emoji) +
                      '&select=id&limit=1';
-
     const checkRes = await fetch(checkUrl, { headers: authHeaders() });
     if (!checkRes.ok) throw new Error('Could not check reaction.');
     const existing = await checkRes.json();
-
     if (existing && existing.length) {
       const delUrl = c.url + '/rest/v1/chat_reactions?id=eq.' + encodeURIComponent(existing[0].id);
       const delRes = await fetch(delUrl, {
@@ -1602,7 +1416,6 @@ window.DB = (function(){
       if (!delRes.ok) throw new Error('Could not remove reaction.');
       return false;
     }
-
     const addRes = await fetch(c.url + '/rest/v1/chat_reactions', {
       method: 'POST',
       headers: authHeaders({ 'Prefer': 'return=minimal' }),
@@ -1623,13 +1436,11 @@ window.DB = (function(){
   async function hideMessageForMe(messageId){
     if (!isReady() || !messageId) throw new Error('Database not configured.');
     const c = cfg();
-
     const res = await fetch(c.url + '/rest/v1/rpc/hide_message_for_me', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({ msg_id: messageId })
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('hideMessageForMe failed:', err);
@@ -1651,20 +1462,7 @@ window.DB = (function(){
     if (!res.ok) {
       const err = await res.text();
       console.error('deleteMessageForEveryone failed:', err);
-
-      try {
-        const parsed = JSON.parse(err);
-        if (parsed.message && parsed.message.indexOf('Too late') !== -1) {
-          throw new Error('Too late to delete for everyone (24h limit).');
-        }
-        if (parsed.message && parsed.message.indexOf('Only the sender') !== -1) {
-          throw new Error('You can only delete your own messages for everyone.');
-        }
-      } catch(e) {
-        if (e.message && e.message.indexOf('Too late') !== -1) throw e;
-        if (e.message && e.message.indexOf('Only the sender') !== -1) throw e;
-      }
-
+      alert('Server said:\n\nStatus: ' + res.status + '\nBody: ' + err.slice(0, 500));
       throw new Error('Could not delete for everyone.');
     }
     return true;
@@ -1673,29 +1471,24 @@ window.DB = (function(){
   async function getMyThreads(){
     const me = currentUser();
     if (!me) return { accepted: [], pending: [], declined: [] };
-
     const c = cfg();
     const url = c.url + '/rest/v1/chat_threads' +
                 '?or=(user_a.eq.' + encodeURIComponent(me.id) +
                 ',user_b.eq.' + encodeURIComponent(me.id) + ')' +
                 '&select=id,user_a,user_b,status,initiated_by,last_message_at,created_at,archived_at' +
                 '&order=last_message_at.desc&limit=100';
-
     try {
       const res = await fetch(url, { headers: authHeaders() });
       if (!res.ok) return { accepted: [], pending: [], declined: [] };
       const all = await res.json();
-
       const accepted = [];
       const pending = [];
       const declined = [];
-
       for (const t of (all || [])) {
         if (t.status === 'accepted') accepted.push(t);
         else if (t.status === 'pending') pending.push(t);
         else if (t.status === 'declined') declined.push(t);
       }
-
       return { accepted, pending, declined };
     } catch(e) {
       console.error('getMyThreads failed:', e);
@@ -1711,27 +1504,22 @@ window.DB = (function(){
                 '?thread_id=in.(' + encodeURIComponent(ids) + ')' +
                 '&select=thread_id,sender_id,body,photo_url,created_at' +
                 '&order=created_at.desc&limit=500';
-
     try {
       const res = await fetch(url, { headers: authHeaders() });
       if (!res.ok) return {};
       const rows = await res.json();
-
       const map = {};
       for (const r of (rows || [])) {
         if (!map[r.thread_id]) map[r.thread_id] = r;
       }
       return map;
-    } catch(e) {
-      return {};
-    }
+    } catch(e) { return {}; }
   }
 
   async function getUnreadPerThread(threadIds){
     if (!isReady() || !threadIds || !threadIds.length) return {};
     const me = currentUser();
     if (!me) return {};
-
     const c = cfg();
     const ids = threadIds.join(',');
     const url = c.url + '/rest/v1/chat_messages' +
@@ -1739,53 +1527,43 @@ window.DB = (function(){
                 '&sender_id=neq.' + encodeURIComponent(me.id) +
                 '&read_at=is.null' +
                 '&select=thread_id&limit=1000';
-
     try {
       const res = await fetch(url, { headers: authHeaders() });
       if (!res.ok) return {};
       const rows = await res.json();
-
       const map = {};
       for (const r of (rows || [])) {
         map[r.thread_id] = (map[r.thread_id] || 0) + 1;
       }
       return map;
-    } catch(e) {
-      return {};
-    }
+    } catch(e) { return {}; }
   }
 
   async function getUnreadCount(){
     const me = currentUser();
     if (!me) return 0;
-
     const c = cfg();
     const url = c.url + '/rest/v1/chat_messages' +
                 '?sender_id=neq.' + encodeURIComponent(me.id) +
                 '&read_at=is.null' +
                 '&select=id&limit=500';
-
     try {
       const res = await fetch(url, { headers: authHeaders() });
       if (!res.ok) return 0;
       const rows = await res.json();
       return (rows || []).length;
-    } catch(e) {
-      return 0;
-    }
+    } catch(e) { return 0; }
   }
 
   async function markThreadRead(threadId){
     if (!isReady() || !threadId) return false;
     const me = currentUser();
     if (!me) return false;
-
     const c = cfg();
     const url = c.url + '/rest/v1/chat_messages' +
                 '?thread_id=eq.' + encodeURIComponent(threadId) +
                 '&sender_id=neq.' + encodeURIComponent(me.id) +
                 '&read_at=is.null';
-
     try {
       const res = await fetch(url, {
         method: 'PATCH',
@@ -1793,15 +1571,12 @@ window.DB = (function(){
         body: JSON.stringify({ read_at: new Date().toISOString() })
       });
       return res.ok;
-    } catch(e) {
-      return false;
-    }
+    } catch(e) { return false; }
   }
 
   async function acceptThread(threadId){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
-
     const c = cfg();
     const url = c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId);
     const res = await fetch(url, {
@@ -1816,7 +1591,6 @@ window.DB = (function(){
   async function declineThread(threadId){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
-
     const c = cfg();
     const url = c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId);
     const res = await fetch(url, {
@@ -1832,7 +1606,6 @@ window.DB = (function(){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
     if (!threadId) throw new Error('Missing thread.');
-
     const c = cfg();
     const url = c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId);
     const res = await fetch(url, {
@@ -1854,19 +1627,15 @@ window.DB = (function(){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
     if (!threadId) throw new Error('Missing thread.');
-
     const c = cfg();
-
     await fetch(c.url + '/rest/v1/chat_messages?thread_id=eq.' + encodeURIComponent(threadId), {
       method: 'DELETE',
       headers: authHeaders({ 'Prefer': 'return=minimal' })
     });
-
     const res = await fetch(c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId), {
       method: 'DELETE',
       headers: authHeaders({ 'Prefer': 'return=minimal' })
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('deleteThread failed:', err);
@@ -1875,12 +1644,9 @@ window.DB = (function(){
     return true;
   }
 
-  /* ---------- PRESENCE ---------- */
-
   async function updateLastSeen(){
     const me = currentUser();
     if (!me) return false;
-
     const c = cfg();
     const url = c.url + '/rest/v1/desks?user_id=eq.' + encodeURIComponent(me.id);
     const res = await fetch(url, {
@@ -1907,18 +1673,14 @@ window.DB = (function(){
       if (!res.ok) return null;
       const rows = await res.json();
       return rows[0] || null;
-    } catch(e) {
-      return null;
-    }
+    } catch(e) { return null; }
   }
 
   async function setPresencePrivacy(level){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
-
     const allowed = ['everyone', 'contacts', 'nobody'];
     if (!allowed.includes(level)) throw new Error('Invalid privacy level.');
-
     const c = cfg();
     const url = c.url + '/rest/v1/desks?user_id=eq.' + encodeURIComponent(me.id);
     const res = await fetch(url, {
@@ -1934,9 +1696,7 @@ window.DB = (function(){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
     if (me.id === blockedId) throw new Error('You cannot block yourself.');
-
     const c = cfg();
-
     const blockRes = await fetch(c.url + '/rest/v1/chat_blocks', {
       method: 'POST',
       headers: authHeaders({ 'Prefer': 'return=minimal' }),
@@ -1948,7 +1708,6 @@ window.DB = (function(){
     if (!blockRes.ok && blockRes.status !== 409) {
       throw new Error('Could not block.');
     }
-
     const [a, b] = orderPair(me.id, blockedId);
     await fetch(c.url + '/rest/v1/chat_threads' +
                 '?user_a=eq.' + encodeURIComponent(a) +
@@ -1957,19 +1716,16 @@ window.DB = (function(){
       headers: authHeaders({ 'Prefer': 'return=minimal' }),
       body: JSON.stringify({ status: 'blocked' })
     });
-
     return true;
   }
 
   async function unblockUser(blockedId){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
-
     const c = cfg();
     const url = c.url + '/rest/v1/chat_blocks' +
                 '?blocker_id=eq.' + encodeURIComponent(me.id) +
                 '&blocked_id=eq.' + encodeURIComponent(blockedId);
-
     const res = await fetch(url, {
       method: 'DELETE',
       headers: authHeaders({ 'Prefer': 'return=minimal' })
@@ -1980,26 +1736,21 @@ window.DB = (function(){
   async function getMyBlocks(){
     const me = currentUser();
     if (!me) return [];
-
     const c = cfg();
     const url = c.url + '/rest/v1/chat_blocks' +
                 '?blocker_id=eq.' + encodeURIComponent(me.id) +
-                '&select=id,blocked_id,created_at' +
-                '&order=created_at.desc';
+                '&select=id,blocked_id,created_at&order=created_at.desc';
     try {
       const res = await fetch(url, { headers: authHeaders() });
       if (!res.ok) return [];
       return await res.json();
-    } catch(e) {
-      return [];
-    }
+    } catch(e) { return []; }
   }
 
   async function reportUser(reportedId, reason, threadId){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
     if (me.id === reportedId) throw new Error('You cannot report yourself.');
-
     const c = cfg();
     const payload = {
       reporter_id: me.id,
@@ -2007,7 +1758,6 @@ window.DB = (function(){
       reason: String(reason || 'No reason given').slice(0, 500)
     };
     if (threadId) payload.thread_id = threadId;
-
     const res = await fetch(c.url + '/rest/v1/chat_reports', {
       method: 'POST',
       headers: authHeaders({ 'Prefer': 'return=minimal' }),
@@ -2034,12 +1784,8 @@ window.DB = (function(){
       if (!res.ok) return null;
       const rows = await res.json();
       return rows[0] || null;
-    } catch(e) {
-      return null;
-    }
+    } catch(e) { return null; }
   }
-
-  /* ---------- CHAT · REALTIME ---------- */
 
   function realtimeWsUrl(){
     const c = cfg();
@@ -2052,16 +1798,11 @@ window.DB = (function(){
 
   function subscribeToThreadMessages(threadId, onMessage){
     if (!isReady() || !threadId || typeof onMessage !== 'function') return null;
-
     let ws;
     let heartbeat;
-
     try {
       ws = new WebSocket(realtimeWsUrl());
-    } catch(e) {
-      console.error('WebSocket connect failed:', e);
-      return null;
-    }
+    } catch(e) { return null; }
 
     ws.onopen = () => {
       ws.send(JSON.stringify({
@@ -2083,7 +1824,6 @@ window.DB = (function(){
         },
         ref: '1'
       }));
-
       heartbeat = setInterval(() => {
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({
@@ -2103,16 +1843,10 @@ window.DB = (function(){
           const record = msg.payload.data.record;
           if (record) onMessage(record);
         }
-      } catch(e) { /* ignore */ }
+      } catch(e) {}
     };
 
-    ws.onerror = (err) => {
-      console.error('Realtime error:', err);
-    };
-
-    ws.onclose = () => {
-      if (heartbeat) clearInterval(heartbeat);
-    };
+    ws.onclose = () => { if (heartbeat) clearInterval(heartbeat); };
 
     return function unsubscribe(){
       if (heartbeat) clearInterval(heartbeat);
@@ -2124,17 +1858,12 @@ window.DB = (function(){
     if (!isReady() || typeof onChange !== 'function') return null;
     const me = currentUser();
     if (!me) return null;
-
     let ws;
     let heartbeat;
     const myId = me.id;
-
     try {
       ws = new WebSocket(realtimeWsUrl());
-    } catch(e) {
-      console.error('WebSocket connect failed:', e);
-      return null;
-    }
+    } catch(e) { return null; }
 
     ws.onopen = () => {
       ws.send(JSON.stringify({
@@ -2151,7 +1880,6 @@ window.DB = (function(){
         },
         ref: '1'
       }));
-
       heartbeat = setInterval(() => {
         if (ws.readyState === WebSocket.OPEN) {
           ws.send(JSON.stringify({
@@ -2173,24 +1901,16 @@ window.DB = (function(){
             onChange(record);
           }
         }
-      } catch(e) { /* ignore */ }
+      } catch(e) {}
     };
 
-    ws.onerror = (err) => {
-      console.error('Realtime error:', err);
-    };
-
-    ws.onclose = () => {
-      if (heartbeat) clearInterval(heartbeat);
-    };
+    ws.onclose = () => { if (heartbeat) clearInterval(heartbeat); };
 
     return function unsubscribe(){
       if (heartbeat) clearInterval(heartbeat);
       try { ws.close(); } catch(e) {}
     };
   }
-
-  /* ---------- DELETE ACCOUNT ---------- */
 
   async function deleteMyDesk(deskId){
     if (!isReady() || !deskId) throw new Error('Database not configured.');
@@ -2200,10 +1920,7 @@ window.DB = (function(){
       method: 'DELETE',
       headers: authHeaders({ 'Prefer': 'return=minimal' })
     });
-    if (!res.ok) {
-      const err = await res.text();
-      throw new Error('Could not delete your Desk.');
-    }
+    if (!res.ok) throw new Error('Could not delete your Desk.');
     return true;
   }
 
@@ -2211,10 +1928,8 @@ window.DB = (function(){
     const c = cfg();
     const session = getSession();
     if (!session?.access_token) return false;
-
     const random = Math.random().toString(36).slice(2, 10);
     const deletedEmail = 'deleted-' + Date.now() + '-' + random + '@deskly.local';
-
     const res = await fetch(c.url + '/auth/v1/user', {
       method: 'PUT',
       headers: {
@@ -2226,10 +1941,6 @@ window.DB = (function(){
     });
     return res.ok;
   }
-
-  /* ============================================================
-     VALIDATORS
-     ============================================================ */
 
   function normalizeNGNumber(input){
     if (!input) return null;
