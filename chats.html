@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=7">
+<link rel="stylesheet" href="style.css?v=11">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
@@ -96,11 +96,24 @@
 </div>
 
 <script src="config.js"></script>
-<script src="supabase.js?v=5"></script>
+<script src="supabase.js?v=6"></script>
 <script src="notifications.js"></script>
-<script src="chats-v2.js?v=12" defer></script>
+<script src="presence.js"></script>
+<script src="chats-v2.js?v=13" defer></script>
 <script src="tabbar.js?v=8" defer></script>
 <script src="ripple.js" defer></script>
 
+<script>
+  (async function waitForDb(){
+    for (let i = 0; i < 40; i++) {
+      if (window.DB && DB.ready && DB.currentUser() && window.PRESENCE) {
+        PRESENCE.startHeartbeat();
+        return;
+      }
+      await new Promise(r => setTimeout(r, 100));
+    }
+  })();
+</script>
+
 </body>
-  </html>
+</html>
