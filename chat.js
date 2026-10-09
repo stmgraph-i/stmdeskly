@@ -217,10 +217,8 @@
     if (scrollToBottom !== false) {
       function goBottom(){
         if (!log) return;
-        const last = log.lastElementChild;
-        if (last && last.scrollIntoView) {
-          last.scrollIntoView({ block: 'end', behavior: 'instant' });
-        }
+        log.scrollTop = log.scrollHeight + 9999;
+        window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'instant' });
       }
       goBottom();
       requestAnimationFrame(goBottom);
