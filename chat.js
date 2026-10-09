@@ -21,7 +21,6 @@
       const replyThreadId = event.data.threadId;
       const replyBody = event.data.body;
 
-      /* Only handle replies for THIS chat */
       const currentId = new URLSearchParams(location.search).get('id');
       if (!currentId || currentId !== replyThreadId) return;
 
@@ -216,7 +215,23 @@
     });
 
     if (scrollToBottom !== false) {
+      // Scroll immediately
       log.scrollTop = log.scrollHeight;
+
+      // Scroll again after images load
+      const imgs = log.querySelectorAll('img');
+      imgs.forEach(img => {
+        if (!img.complete) {
+          img.addEventListener('load', () => {
+            log.scrollTop = log.scrollHeight;
+          }, { once: true });
+        }
+      });
+
+      // One more scroll after a tick, in case fonts/layout shift
+      setTimeout(() => {
+        log.scrollTop = log.scrollHeight;
+      }, 150);
     }
   }
 
@@ -348,7 +363,6 @@
       currentMessages.push(record);
       renderMessages(true);
 
-      /* Browser notification if tab is hidden */
       if (window.NOTIFY && document.hidden) {
         const name = (otherUser && otherUser.name) || 'New message';
         const body = record.photo_url && !record.body
