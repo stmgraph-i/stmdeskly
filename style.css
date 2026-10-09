@@ -8525,3 +8525,33 @@ body.pattern-rings .content-band{
 .chat-bubble-mine .chat-bubble-deleted-text {
   color: rgba(255, 255, 255, 0.7);
 }
+/* ============================================================
+   CHAT · Delivery status symbols
+   ============================================================ */
+
+.chat-delivery {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-left: 6px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: background 200ms ease, border-color 200ms ease;
+}
+
+.chat-delivery-seen {
+  background: rgba(255, 255, 255, 0.95);
+  border: none;
+}
+
+.chat-delivery-online {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.95);
+}
+
+.chat-delivery-offline {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+}
