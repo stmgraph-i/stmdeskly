@@ -1,7 +1,7 @@
 /* ============================================================
    DESKLY · SINGLE CONVERSATION
    Includes: presence, typing, reply, reactions, soft delete,
-             delivery status, loading state
+             delivery status, loading state, search
    ============================================================ */
 
 (function initChat(){
@@ -51,6 +51,12 @@
   const previewSend = $('chatPhotoSend');
   const missing     = $('chatMissing');
 
+  const searchBtn     = $('chatSearchBtn');
+  const searchPanel   = $('chatSearchPanel');
+  const searchInput   = $('chatSearchInput');
+  const searchClose   = $('chatSearchClose');
+  const searchResults = $('chatSearchResults');
+
   const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
 
   const REACTION_EMOJIS = {
@@ -78,6 +84,7 @@
   let replyToId = null;
   let otherIsOnline = false;
   let messagesLoaded = false;
+  let searchActive = false;
 
   function showMissing(){
     if (loading) loading.style.display = 'none';
@@ -482,6 +489,101 @@
     setTimeout(() => target.classList.remove('chat-bubble-highlight'), 1500);
   }
 
+  /* SEARCH */
+  function escapeSearchHtml(s){
+    return String(s || '').replace(/[&<>"']/g, c => ({
+      '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
+    })[c]);
+  }
+
+  function highlightSearchMatch(text, q){
+    const t = String(text || '');
+    const lower = t.toLowerCase();
+    const idx = lower.indexOf(q);
+    if (idx === -1) return escapeSearchHtml(t);
+    const before = t.slice(0, idx);
+    const match = t.slice(idx, idx + q.length);
+    const after = t.slice(idx + q.length);
+    return escapeSearchHtml(before) +
+           '<mark>' + escapeSearchHtml(match) + '</mark>' +
+           escapeSearchHtml(after);
+  }
+
+  function openSearch(){
+    if (!searchPanel) return;
+    searchActive = true;
+    searchPanel.hidden = false;
+    if (searchInput) {
+      searchInput.value = '';
+      setTimeout(() => searchInput.focus(), 100);
+    }
+    if (searchResults) searchResults.innerHTML = '';
+  }
+
+  function closeSearch(){
+    searchActive = false;
+    if (searchPanel) searchPanel.hidden = true;
+    if (searchInput) searchInput.value = '';
+    if (searchResults) searchResults.innerHTML = '';
+  }
+
+  function runSearch(rawQuery){
+    if (!searchResults) return;
+    const q = String(rawQuery || '').trim().toLowerCase();
+    searchResults.innerHTML = '';
+
+    if (!q) return;
+
+    const matches = currentMessages.filter(m => {
+      if (m.deleted_at) return false;
+      const body = (m.body || '').toLowerCase();
+      return body.indexOf(q) !== -1;
+    });
+
+    if (!matches.length) {
+      const empty = document.createElement('div');
+      empty.className = 'chat-search-empty';
+      empty.textContent = 'No messages found';
+      searchResults.appendChild(empty);
+      return;
+    }
+
+    /* Show newest first */
+    matches.slice().reverse().forEach(m => {
+      const card = document.createElement('button');
+      card.type = 'button';
+      card.className = 'chat-search-result';
+
+      const mine = m.sender_id === me.id;
+      const name = mine ? 'You' : (otherUser && otherUser.name ? otherUser.name : 'Them');
+
+      const head = document.createElement('div');
+      head.className = 'chat-search-result-head';
+      head.innerHTML =
+        '<span class="chat-search-result-name">' + escapeSearchHtml(name) + '</span>' +
+        '<span class="chat-search-result-time">' + formatTime(m.created_at) + '</span>';
+      card.appendChild(head);
+
+      const body = document.createElement('div');
+      body.className = 'chat-search-result-body';
+      body.innerHTML = highlightSearchMatch(m.body || '', q);
+      card.appendChild(body);
+
+      card.addEventListener('click', () => {
+        closeSearch();
+        setTimeout(() => jumpToMessage(m.id), 80);
+      });
+
+      searchResults.appendChild(card);
+    });
+  }
+
+  if (searchBtn) searchBtn.addEventListener('click', openSearch);
+  if (searchClose) searchClose.addEventListener('click', closeSearch);
+  if (searchInput) {
+    searchInput.addEventListener('input', () => runSearch(searchInput.value));
+  }
+
   /* CONTEXT MENU */
   let pressTimer = null;
   let activeMenu = null;
@@ -728,6 +830,11 @@
       currentMessages = msgs;
       messagesLoaded = true;
       renderMessages(true);
+
+      /* Re-run search if the panel is open */
+      if (searchActive && searchInput && searchInput.value) {
+        runSearch(searchInput.value);
+      }
     }
 
     try { await DB.markThreadRead(threadId); } catch(e) {}
