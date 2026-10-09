@@ -1,7 +1,8 @@
 /* ============================================================
    STMDESKLY · INBOX
    Fixed tabs: Inbox, Requests, Updates, Archived
-   Optional tabs (via + button): Sent, Pinned, Muted
+   Optional tabs: Sent, Pinned, Muted
+   Custom tabs: user-created keyword filters
    ============================================================ */
 
 (function initChats(){
@@ -36,13 +37,13 @@
   const ICON_NOTIF_VIEW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
   const ICON_NOTIF_DEFAULT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
 
-  /* Optional tabs available via + button */
   const OPTIONAL_TABS = [
     { key: 'sent',   label: 'Sent' },
     { key: 'pinned', label: 'Pinned' },
     { key: 'muted',  label: 'Muted' }
   ];
   const OPTIONAL_KEY = 'fd_optional_tabs';
+  const CUSTOM_KEY   = 'fd_custom_tabs';
 
   function getOptionalTabs(){
     try {
@@ -58,6 +59,20 @@
     try { localStorage.setItem(OPTIONAL_KEY, JSON.stringify(list)); } catch(e){}
   }
 
+  function getCustomTabs(){
+    try {
+      const raw = localStorage.getItem(CUSTOM_KEY);
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr.filter(t => t && t.key && t.label && t.keyword);
+    } catch(e) { return []; }
+  }
+
+  function setCustomTabs(list){
+    try { localStorage.setItem(CUSTOM_KEY, JSON.stringify(list)); } catch(e){}
+  }
+
   let currentTab = 'chats';
   let allThreads = { accepted: [], pending: [], declined: [] };
   let userCache  = {};
@@ -71,6 +86,7 @@
   let notifications = [];
   let notifPollTimer = null;
   let optionalTabs = getOptionalTabs();
+  let customTabs = getCustomTabs();
   let activePickerSheet = null;
 
   function showLoading(on){
@@ -186,13 +202,28 @@
       if (t.muted && !t.archived_at) muted.push({ thread: t, kind: kind });
     });
 
+    /* Custom keyword tabs */
+    const custom = {};
+    const pool = [].concat(inbox, sent, requests);
+    customTabs.forEach(ct => {
+      const k = ct.keyword.toLowerCase();
+      const matches = pool.filter(item => {
+        const last = lastMsgCache[item.thread.id];
+        if (!last) return false;
+        const body = (last.body || '').toLowerCase();
+        return body.indexOf(k) !== -1;
+      });
+      custom[ct.key] = sortThreads(matches);
+    });
+
     return {
       inbox: sortThreads(inbox),
       sent: sortThreads(sent),
       requests: sortThreads(requests),
       archived: sortThreads(archived),
       pinned: sortThreads(pinned),
-      muted: sortThreads(muted)
+      muted: sortThreads(muted),
+      custom: custom
     };
   }
 
@@ -382,18 +413,21 @@
       renderList(cls.pinned, 'pinned');
     } else if (currentTab === 'muted') {
       renderList(cls.muted, 'muted');
+    } else if (cls.custom[currentTab] !== undefined) {
+      renderList(cls.custom[currentTab], 'custom');
     } else {
       renderList(cls.inbox, 'chats');
     }
   }
 
   /* ============================================================
-     OPTIONAL TABS (+ button)
+     OPTIONAL + CUSTOM TABS
      ============================================================ */
 
   function renderOptionalTabs(){
-    /* Remove existing optional tab buttons */
+    /* Remove existing optional/custom tab buttons */
     tabsEl.querySelectorAll('.chats-tab[data-optional="1"]').forEach(el => el.remove());
+    tabsEl.querySelectorAll('.chats-tab[data-custom="1"]').forEach(el => el.remove());
 
     const addBtnEl = tabsEl.querySelector('.chats-tab-add');
     if (!addBtnEl) return;
@@ -413,16 +447,33 @@
       tabsEl.insertBefore(btn, addBtnEl);
     });
 
-    /* Re-place pill under current active tab */
-    const active = tabsEl.querySelector('.chats-tab.active');
-    if (active) {
-      requestAnimationFrame(() => movePill(active));
-    }
+    customTabs.forEach(ct => {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chats-tab';
+      btn.setAttribute('data-tab', ct.key);
+      btn.setAttribute('data-custom', '1');
+      btn.textContent = ct.label;
+      if (currentTab === ct.key) btn.classList.add('active');
 
-    /* + button gets accent tint when any optional tab is present */
+      tabsEl.insertBefore(btn, addBtnEl);
+    });
+
+    const active = tabsEl.querySelector('.chats-tab.active');
+    if (active) requestAnimationFrame(() => movePill(active));
+
     if (addBtnEl) {
-      addBtnEl.classList.toggle('has-tabs', optionalTabs.length > 0);
+      const anyExtra = (optionalTabs.length + customTabs.length) > 0;
+      addBtnEl.classList.toggle('has-tabs', anyExtra);
     }
+  }
+
+  function applyActiveTab(){
+    tabsEl.querySelectorAll('.chats-tab').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-tab') === currentTab);
+    });
+    const active = tabsEl.querySelector('.chats-tab.active');
+    if (active) movePill(active);
   }
 
   function openTabPicker(){
@@ -435,71 +486,231 @@
     const sheet = document.createElement('div');
     sheet.className = 'tab-picker-sheet';
 
-    const handle = document.createElement('div');
-    handle.className = 'tab-picker-handle';
-    sheet.appendChild(handle);
+    document.body.appendChild(backdrop);
+    document.body.appendChild(sheet);
 
-    const title = document.createElement('div');
-    title.className = 'tab-picker-title';
-    title.textContent = 'Add tabs';
-    sheet.appendChild(title);
+    function renderListView(){
+      sheet.innerHTML = '';
 
-    const sub = document.createElement('div');
-    sub.className = 'tab-picker-sub';
-    sub.textContent = 'Choose extra tabs to show at the top.';
-    sheet.appendChild(sub);
+      const handle = document.createElement('div');
+      handle.className = 'tab-picker-handle';
+      sheet.appendChild(handle);
 
-    const list = document.createElement('div');
-    list.className = 'tab-picker-list';
+      const title = document.createElement('div');
+      title.className = 'tab-picker-title';
+      title.textContent = 'Add tabs';
+      sheet.appendChild(title);
 
-    OPTIONAL_TABS.forEach(meta => {
-      const isOn = optionalTabs.indexOf(meta.key) !== -1;
+      const sub = document.createElement('div');
+      sub.className = 'tab-picker-sub';
+      sub.textContent = 'Extra tabs shown at the top of your inbox.';
+      sheet.appendChild(sub);
 
-      const row = document.createElement('button');
-      row.type = 'button';
-      row.className = 'tab-picker-row' + (isOn ? ' on' : '');
+      const list = document.createElement('div');
+      list.className = 'tab-picker-list';
 
-      const label = document.createElement('span');
-      label.className = 'tab-picker-row-label';
-      label.textContent = meta.label;
-      row.appendChild(label);
+      OPTIONAL_TABS.forEach(meta => {
+        const isOn = optionalTabs.indexOf(meta.key) !== -1;
 
-      const toggle = document.createElement('span');
-      toggle.className = 'tab-picker-row-toggle';
-      row.appendChild(toggle);
+        const row = document.createElement('button');
+        row.type = 'button';
+        row.className = 'tab-picker-row' + (isOn ? ' on' : '');
 
-      row.addEventListener('click', () => {
-        const idx = optionalTabs.indexOf(meta.key);
-        if (idx === -1) {
-          optionalTabs.push(meta.key);
-        } else {
-          optionalTabs.splice(idx, 1);
-          /* If we just removed the active tab, go back to Inbox */
-          if (currentTab === meta.key) {
-            currentTab = 'chats';
+        const label = document.createElement('span');
+        label.className = 'tab-picker-row-label';
+        label.textContent = meta.label;
+        row.appendChild(label);
+
+        const toggle = document.createElement('span');
+        toggle.className = 'tab-picker-row-toggle';
+        row.appendChild(toggle);
+
+        row.addEventListener('click', () => {
+          const idx = optionalTabs.indexOf(meta.key);
+          if (idx === -1) {
+            optionalTabs.push(meta.key);
+          } else {
+            optionalTabs.splice(idx, 1);
+            if (currentTab === meta.key) currentTab = 'chats';
           }
+          setOptionalTabs(optionalTabs);
+          renderOptionalTabs();
+          applyActiveTab();
+          render();
+          row.classList.toggle('on', idx === -1);
+        });
+
+        list.appendChild(row);
+      });
+
+      sheet.appendChild(list);
+
+      /* Custom tabs section */
+      const sectionTitle = document.createElement('div');
+      sectionTitle.className = 'tab-picker-section-title';
+      sectionTitle.textContent = 'Your tabs';
+      sheet.appendChild(sectionTitle);
+
+      const customList = document.createElement('div');
+      customList.className = 'tab-picker-list';
+
+      if (!customTabs.length) {
+        const empty = document.createElement('div');
+        empty.className = 'tab-picker-empty';
+        empty.textContent = 'No custom tabs yet.';
+        customList.appendChild(empty);
+      } else {
+        customTabs.forEach(ct => {
+          const row = document.createElement('div');
+          row.className = 'tab-picker-custom-row';
+
+          const info = document.createElement('div');
+          info.className = 'tab-picker-custom-info';
+
+          const labelEl = document.createElement('div');
+          labelEl.className = 'tab-picker-custom-label';
+          labelEl.textContent = ct.label;
+          info.appendChild(labelEl);
+
+          const kw = document.createElement('div');
+          kw.className = 'tab-picker-custom-kw';
+          kw.textContent = 'matches: "' + ct.keyword + '"';
+          info.appendChild(kw);
+
+          row.appendChild(info);
+
+          const delBtn = document.createElement('button');
+          delBtn.type = 'button';
+          delBtn.className = 'tab-picker-custom-delete';
+          delBtn.setAttribute('aria-label', 'Remove tab');
+          delBtn.innerHTML = ICON_TRASH;
+          delBtn.addEventListener('click', () => {
+            if (!confirm('Remove "' + ct.label + '" tab?')) return;
+            customTabs = customTabs.filter(t => t.key !== ct.key);
+            setCustomTabs(customTabs);
+            if (currentTab === ct.key) currentTab = 'chats';
+            renderOptionalTabs();
+            applyActiveTab();
+            render();
+            renderListView();
+          });
+          row.appendChild(delBtn);
+
+          customList.appendChild(row);
+        });
+      }
+
+      sheet.appendChild(customList);
+
+      const newBtn = document.createElement('button');
+      newBtn.type = 'button';
+      newBtn.className = 'tab-picker-new-btn';
+      newBtn.textContent = '+ New custom tab';
+      newBtn.addEventListener('click', renderCreateView);
+      sheet.appendChild(newBtn);
+
+      const done = document.createElement('button');
+      done.type = 'button';
+      done.className = 'tab-picker-done';
+      done.textContent = 'Done';
+      done.addEventListener('click', closeTabPicker);
+      sheet.appendChild(done);
+    }
+
+    function renderCreateView(){
+      sheet.innerHTML = '';
+
+      const handle = document.createElement('div');
+      handle.className = 'tab-picker-handle';
+      sheet.appendChild(handle);
+
+      const title = document.createElement('div');
+      title.className = 'tab-picker-title';
+      title.textContent = 'New tab';
+      sheet.appendChild(title);
+
+      const sub = document.createElement('div');
+      sub.className = 'tab-picker-sub';
+      sub.textContent = 'Give it a name and a word to match in your chats.';
+      sheet.appendChild(sub);
+
+      const nameLabel = document.createElement('label');
+      nameLabel.className = 'tab-picker-field-label';
+      nameLabel.textContent = 'Tab name';
+      sheet.appendChild(nameLabel);
+
+      const nameInput = document.createElement('input');
+      nameInput.type = 'text';
+      nameInput.className = 'tab-picker-input';
+      nameInput.placeholder = 'Weddings';
+      nameInput.maxLength = 16;
+      sheet.appendChild(nameInput);
+
+      const kwLabel = document.createElement('label');
+      kwLabel.className = 'tab-picker-field-label';
+      kwLabel.textContent = 'Match this word in chats';
+      sheet.appendChild(kwLabel);
+
+      const kwInput = document.createElement('input');
+      kwInput.type = 'text';
+      kwInput.className = 'tab-picker-input';
+      kwInput.placeholder = 'wedding';
+      kwInput.maxLength = 24;
+      sheet.appendChild(kwInput);
+
+      const err = document.createElement('div');
+      err.className = 'tab-picker-error';
+      err.hidden = true;
+      sheet.appendChild(err);
+
+      const actions = document.createElement('div');
+      actions.className = 'tab-picker-form-actions';
+
+      const cancel = document.createElement('button');
+      cancel.type = 'button';
+      cancel.className = 'tab-picker-cancel';
+      cancel.textContent = 'Back';
+      cancel.addEventListener('click', renderListView);
+      actions.appendChild(cancel);
+
+      const save = document.createElement('button');
+      save.type = 'button';
+      save.className = 'tab-picker-save';
+      save.textContent = 'Add tab';
+      save.addEventListener('click', () => {
+        const name = nameInput.value.trim();
+        const keyword = kwInput.value.trim();
+
+        if (!name) {
+          err.textContent = 'Give the tab a name.';
+          err.hidden = false;
+          return;
         }
-        setOptionalTabs(optionalTabs);
+        if (!keyword) {
+          err.textContent = 'Enter a word to match.';
+          err.hidden = false;
+          return;
+        }
+
+        const key = 'custom_' + Date.now();
+
+        customTabs.push({ key: key, label: name, keyword: keyword });
+        setCustomTabs(customTabs);
+
         renderOptionalTabs();
         applyActiveTab();
         render();
-        row.classList.toggle('on', idx === -1);
+        closeTabPicker();
       });
+      actions.appendChild(save);
 
-      list.appendChild(row);
-    });
+      sheet.appendChild(actions);
 
-    sheet.appendChild(list);
+      setTimeout(() => nameInput.focus(), 100);
+    }
 
-    const done = document.createElement('button');
-    done.type = 'button';
-    done.className = 'tab-picker-done';
-    done.textContent = 'Done';
-    done.addEventListener('click', closeTabPicker);
-    sheet.appendChild(done);
+    renderListView();
 
-    document.body.appendChild(backdrop);
-    document.body.appendChild(sheet);
     requestAnimationFrame(() => {
       backdrop.classList.add('visible');
       sheet.classList.add('visible');
@@ -518,14 +729,6 @@
       sheet.remove();
     }, 220);
     activePickerSheet = null;
-  }
-
-  function applyActiveTab(){
-    tabsEl.querySelectorAll('.chats-tab').forEach(b => {
-      b.classList.toggle('active', b.getAttribute('data-tab') === currentTab);
-    });
-    const active = tabsEl.querySelector('.chats-tab.active');
-    if (active) movePill(active);
   }
 
   /* ============================================================
@@ -723,6 +926,10 @@
       } else if (mode === 'muted') {
         emptyTitle.textContent = 'No muted chats';
         emptySub.textContent = 'Long-press a chat and tap Mute to silence it.';
+        emptyBtn.hidden = true;
+      } else if (mode === 'custom') {
+        emptyTitle.textContent = 'Nothing matches yet';
+        emptySub.textContent = 'Chats whose last message contains this tab\u2019s word will appear here.';
         emptyBtn.hidden = true;
       } else {
         emptyTitle.textContent = 'No chats yet';
@@ -1103,12 +1310,12 @@
 
     currentUser = DB.currentUser();
 
-    /* Read requested tab from URL */
     const params = new URLSearchParams(location.search);
     const tabParam = params.get('tab');
     if (tabParam) {
       const isFixed = ['chats', 'requests', 'updates', 'archived'].indexOf(tabParam) !== -1;
       const isOptional = OPTIONAL_TABS.some(t => t.key === tabParam);
+      const isCustom = customTabs.some(t => t.key === tabParam);
       if (isFixed) {
         currentTab = tabParam;
       } else if (isOptional) {
@@ -1117,13 +1324,14 @@
           setOptionalTabs(optionalTabs);
         }
         currentTab = tabParam;
+      } else if (isCustom) {
+        currentTab = tabParam;
       }
     }
 
     noAuth.style.display = 'none';
     root.style.display = '';
 
-    /* Render optional tabs before anything else so pill/active work */
     renderOptionalTabs();
     applyActiveTab();
 
