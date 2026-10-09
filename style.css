@@ -7814,3 +7814,30 @@ body.pattern-rings .content-band{
   opacity: 0;
   pointer-events: none;
 }
+/* ============================================================
+   CHAT · Photo thumbnail override
+   ============================================================ */
+
+.chat-bubble-photo {
+  display: block !important;
+  max-height: 320px !important;
+  max-width: 240px !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 14px !important;
+  object-fit: cover !important;
+  cursor: pointer !important;
+}
+
+/* ============================================================
+   CHAT · Invisible spacer at end of chat log
+   ============================================================ */
+
+.chat-log::after {
+  content: "";
+  display: block;
+  height: 6px;
+  width: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
