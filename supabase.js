@@ -1609,8 +1609,6 @@ window.DB = (function(){
     return true;
   }
 
-  /* ---------- ARCHIVE / DELETE THREADS ---------- */
-
   async function archiveThread(threadId, archived){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
@@ -1640,13 +1638,11 @@ window.DB = (function(){
 
     const c = cfg();
 
-    /* Delete messages first */
     await fetch(c.url + '/rest/v1/chat_messages?thread_id=eq.' + encodeURIComponent(threadId), {
       method: 'DELETE',
       headers: authHeaders({ 'Prefer': 'return=minimal' })
     });
 
-    /* Then the thread */
     const res = await fetch(c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId), {
       method: 'DELETE',
       headers: authHeaders({ 'Prefer': 'return=minimal' })
@@ -1657,6 +1653,61 @@ window.DB = (function(){
       console.error('deleteThread failed:', err);
       throw new Error('Could not delete this conversation.');
     }
+    return true;
+  }
+
+  /* ---------- PRESENCE ---------- */
+
+  async function updateLastSeen(){
+    const me = currentUser();
+    if (!me) return false;
+
+    const c = cfg();
+    const url = c.url + '/rest/v1/desks?user_id=eq.' + encodeURIComponent(me.id);
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      body: JSON.stringify({ last_seen_at: new Date().toISOString() })
+    });
+    return res.ok;
+  }
+
+  async function getPresence(userId){
+    if (!isReady() || !userId) return null;
+    const c = cfg();
+    const url = c.url + '/rest/v1/desks?user_id=eq.' +
+                encodeURIComponent(userId) +
+                '&select=last_seen_at,presence_privacy&limit=1';
+    try {
+      const res = await fetch(url, {
+        headers: {
+          'apikey': c.anonKey,
+          'Authorization': 'Bearer ' + c.anonKey
+        }
+      });
+      if (!res.ok) return null;
+      const rows = await res.json();
+      return rows[0] || null;
+    } catch(e) {
+      return null;
+    }
+  }
+
+  async function setPresencePrivacy(level){
+    const me = currentUser();
+    if (!me) throw new Error('Not logged in.');
+
+    const allowed = ['everyone', 'contacts', 'nobody'];
+    if (!allowed.includes(level)) throw new Error('Invalid privacy level.');
+
+    const c = cfg();
+    const url = c.url + '/rest/v1/desks?user_id=eq.' + encodeURIComponent(me.id);
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      body: JSON.stringify({ presence_privacy: level })
+    });
+    if (!res.ok) throw new Error('Could not update privacy.');
     return true;
   }
 
@@ -1752,7 +1803,7 @@ window.DB = (function(){
     const c = cfg();
     const url = c.url + '/rest/v1/desks?user_id=eq.' +
                 encodeURIComponent(userId) +
-                '&select=id,user_id,username,name,initials,avatar_url,role' +
+                '&select=id,user_id,username,name,initials,avatar_url,role,last_seen_at,presence_privacy' +
                 '&limit=1';
     try {
       const res = await fetch(url, {
@@ -2018,6 +2069,7 @@ window.DB = (function(){
     getThread, getChatMessages, getMyThreads, getLastMessages,
     getUnreadCount, getUnreadPerThread, markThreadRead, acceptThread, declineThread,
     archiveThread, deleteThread,
+    updateLastSeen, getPresence, setPresencePrivacy,
     blockUser, unblockUser, getMyBlocks, reportUser, isBlocked,
     getPublicUser,
     subscribeToThreadMessages, subscribeToMyThreads,
