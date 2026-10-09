@@ -1655,6 +1655,166 @@ window.DB = (function(){
     }
     return true;
   }
+/* ---------- MESSAGE REPLY + REACTIONS ---------- */
+
+async function sendChatMessageWithReply(threadId, opts){
+  if (!isReady() || !threadId) throw new Error('Database not configured.');
+  const me = currentUser();
+  if (!me) throw new Error('You must be logged in.');
+
+  const body = (opts && opts.body ? String(opts.body).trim() : '');
+  const photoBlob = (opts && opts.photoBlob) || null;
+  const replyToId = (opts && opts.replyToId) || null;
+
+  if (!body && !photoBlob) throw new Error('Nothing to send.');
+
+  const c = cfg();
+
+  let photoUrl = null;
+  if (photoBlob) {
+    photoUrl = await uploadChatPhoto(photoBlob, threadId);
+  }
+
+  const payload = {
+    thread_id: threadId,
+    sender_id: me.id,
+    body: body ? body.slice(0, 2000) : null,
+    photo_url: photoUrl,
+    reply_to_id: replyToId
+  };
+
+  const res = await fetch(c.url + '/rest/v1/chat_messages', {
+    method: 'POST',
+    headers: authHeaders({ 'Prefer': 'return=representation' }),
+    body: JSON.stringify(payload)
+  });
+
+  if (!res.ok) {
+    const err = await res.text();
+    console.error('sendChatMessageWithReply failed:', err);
+    throw new Error('Could not send message.');
+  }
+
+  await fetch(c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId), {
+    method: 'PATCH',
+    headers: authHeaders({ 'Prefer': 'return=minimal' }),
+    body: JSON.stringify({ last_message_at: new Date().toISOString() })
+  });
+
+  const rows = await res.json();
+  return rows[0];
+}
+
+async function getChatMessagesWithMeta(threadId){
+  if (!isReady() || !threadId) return [];
+  const c = cfg();
+
+  /* Fetch messages */
+  const url = c.url + '/rest/v1/chat_messages?thread_id=eq.' +
+              encodeURIComponent(threadId) +
+              '&select=id,sender_id,body,photo_url,read_at,created_at,reply_to_id' +
+              '&order=created_at.asc&limit=200';
+
+  let messages = [];
+  try {
+    const res = await fetch(url, { headers: authHeaders() });
+    if (!res.ok) return [];
+    messages = await res.json();
+  } catch(e) {
+    return [];
+  }
+
+  if (!messages.length) return [];
+
+  /* Fetch reactions for these messages */
+  const ids = messages.map(m => m.id);
+  let reactions = [];
+  try {
+    const rurl = c.url + '/rest/v1/chat_reactions?message_id=in.(' +
+                 encodeURIComponent(ids.join(',')) +
+                 ')&select=id,message_id,user_id,emoji';
+    const rres = await fetch(rurl, { headers: authHeaders() });
+    if (rres.ok) reactions = await rres.json();
+  } catch(e) { /* silent */ }
+
+  /* Map reactions by message id */
+  const reactionMap = {};
+  for (const r of (reactions || [])) {
+    if (!reactionMap[r.message_id]) reactionMap[r.message_id] = [];
+    reactionMap[r.message_id].push(r);
+  }
+
+  /* Map messages by id for quote lookup */
+  const msgById = {};
+  for (const m of messages) msgById[m.id] = m;
+
+  /* Attach reactions + quoted message */
+  for (const m of messages) {
+    m.reactions = reactionMap[m.id] || [];
+    if (m.reply_to_id && msgById[m.reply_to_id]) {
+      m.reply_to = {
+        id: msgById[m.reply_to_id].id,
+        sender_id: msgById[m.reply_to_id].sender_id,
+        body: msgById[m.reply_to_id].body,
+        photo_url: msgById[m.reply_to_id].photo_url
+      };
+    } else {
+      m.reply_to = null;
+    }
+  }
+
+  return messages;
+}
+
+async function toggleChatReaction(messageId, emoji){
+  if (!isReady() || !messageId || !emoji) throw new Error('Database not configured.');
+  const me = currentUser();
+  if (!me) throw new Error('You must be logged in.');
+
+  const allowed = ['heart', 'thumbsup', 'fire', 'wow', 'pray', 'like'];
+  if (!allowed.includes(emoji)) throw new Error('Invalid reaction.');
+
+  const c = cfg();
+
+  /* Check if reaction exists */
+  const checkUrl = c.url + '/rest/v1/chat_reactions' +
+                   '?message_id=eq.' + encodeURIComponent(messageId) +
+                   '&user_id=eq.' + encodeURIComponent(me.id) +
+                   '&emoji=eq.' + encodeURIComponent(emoji) +
+                   '&select=id&limit=1';
+
+  const checkRes = await fetch(checkUrl, { headers: authHeaders() });
+  if (!checkRes.ok) throw new Error('Could not check reaction.');
+  const existing = await checkRes.json();
+
+  if (existing && existing.length) {
+    /* Remove it */
+    const delUrl = c.url + '/rest/v1/chat_reactions?id=eq.' + encodeURIComponent(existing[0].id);
+    const delRes = await fetch(delUrl, {
+      method: 'DELETE',
+      headers: authHeaders({ 'Prefer': 'return=minimal' })
+    });
+    if (!delRes.ok) throw new Error('Could not remove reaction.');
+    return false;
+  }
+
+  /* Add it */
+  const addRes = await fetch(c.url + '/rest/v1/chat_reactions', {
+    method: 'POST',
+    headers: authHeaders({ 'Prefer': 'return=minimal' }),
+    body: JSON.stringify({
+      message_id: messageId,
+      user_id: me.id,
+      emoji: emoji
+    })
+  });
+  if (!addRes.ok) {
+    const err = await addRes.text();
+    console.error('toggleChatReaction failed:', err);
+    throw new Error('Could not react.');
+  }
+  return true;
+}
 
   /* ---------- PRESENCE ---------- */
 
