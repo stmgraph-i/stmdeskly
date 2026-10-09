@@ -1459,7 +1459,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/chat_threads' +
                 '?or=(user_a.eq.' + encodeURIComponent(me.id) +
                 ',user_b.eq.' + encodeURIComponent(me.id) + ')' +
-                '&select=id,user_a,user_b,status,initiated_by,last_message_at,created_at' +
+                '&select=id,user_a,user_b,status,initiated_by,last_message_at,created_at,archived_at' +
                 '&order=last_message_at.desc&limit=100';
 
     try {
@@ -1609,6 +1609,57 @@ window.DB = (function(){
     return true;
   }
 
+  /* ---------- ARCHIVE / DELETE THREADS ---------- */
+
+  async function archiveThread(threadId, archived){
+    const me = currentUser();
+    if (!me) throw new Error('Not logged in.');
+    if (!threadId) throw new Error('Missing thread.');
+
+    const c = cfg();
+    const url = c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId);
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      body: JSON.stringify({
+        archived_at: archived ? new Date().toISOString() : null
+      })
+    });
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('archiveThread failed:', err);
+      throw new Error('Could not ' + (archived ? 'archive' : 'unarchive') + '.');
+    }
+    return true;
+  }
+
+  async function deleteThread(threadId){
+    const me = currentUser();
+    if (!me) throw new Error('Not logged in.');
+    if (!threadId) throw new Error('Missing thread.');
+
+    const c = cfg();
+
+    /* Delete messages first */
+    await fetch(c.url + '/rest/v1/chat_messages?thread_id=eq.' + encodeURIComponent(threadId), {
+      method: 'DELETE',
+      headers: authHeaders({ 'Prefer': 'return=minimal' })
+    });
+
+    /* Then the thread */
+    const res = await fetch(c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId), {
+      method: 'DELETE',
+      headers: authHeaders({ 'Prefer': 'return=minimal' })
+    });
+
+    if (!res.ok) {
+      const err = await res.text();
+      console.error('deleteThread failed:', err);
+      throw new Error('Could not delete this conversation.');
+    }
+    return true;
+  }
+
   async function blockUser(blockedId){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
@@ -1729,9 +1780,6 @@ window.DB = (function(){
       '&vsn=1.0.0';
   }
 
-  /* Subscribe to new messages in one thread.
-     The callback fires with the new message record.
-     Returns an unsubscribe function. */
   function subscribeToThreadMessages(threadId, onMessage){
     if (!isReady() || !threadId || typeof onMessage !== 'function') return null;
 
@@ -1802,8 +1850,6 @@ window.DB = (function(){
     };
   }
 
-  /* Subscribe to any change in chat_threads that involves me.
-     Returns an unsubscribe function. */
   function subscribeToMyThreads(onChange){
     if (!isReady() || typeof onChange !== 'function') return null;
     const me = currentUser();
@@ -1971,6 +2017,7 @@ window.DB = (function(){
     getOrCreateThread, startConversation, sendChatMessage, uploadChatPhoto,
     getThread, getChatMessages, getMyThreads, getLastMessages,
     getUnreadCount, getUnreadPerThread, markThreadRead, acceptThread, declineThread,
+    archiveThread, deleteThread,
     blockUser, unblockUser, getMyBlocks, reportUser, isBlocked,
     getPublicUser,
     subscribeToThreadMessages, subscribeToMyThreads,
