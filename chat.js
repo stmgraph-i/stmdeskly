@@ -1,6 +1,6 @@
 /* ============================================================
    DESKLY · SINGLE CONVERSATION
-   Includes: presence, typing, reply, reactions, delete variants
+   Includes: presence, typing, reply, reactions, soft delete
    ============================================================ */
 
 (function initChat(){
@@ -63,6 +63,7 @@
   let pollTimer = null;
   let realtimeUnsub = null;
   let lastMessageId = null;
+  let lastStateKey = null;
   let presenceTimer = null;
   let typingConnected = false;
   let replyToId = null;
@@ -118,6 +119,16 @@
     const t = new Date(iso).getTime();
     if (!t) return false;
     return (Date.now() - t) <= (24 * 60 * 60 * 1000);
+  }
+
+  function stateKey(msgs){
+    return msgs.map(m =>
+      m.id + ':' +
+      (m.deleted_at || '') + ':' +
+      (Array.isArray(m.deleted_for) ? m.deleted_for.join(',') : '') + ':' +
+      (m.reactions ? m.reactions.length : 0) + ':' +
+      (m.read_at || '')
+    ).join('|');
   }
 
   /* HEADER */
@@ -295,7 +306,6 @@
       bubble.dataset.msgId = msg.id;
 
       if (msg.deleted_at) {
-        /* Placeholder */
         bubble.classList.add('chat-bubble-deleted');
         const text = document.createElement('div');
         text.className = 'chat-bubble-text chat-bubble-deleted-text';
@@ -424,10 +434,8 @@
   let activeMenu = null;
 
   function attachLongPress(el, msg){
-    if (msg.deleted_at) {
-      /* No menu for deleted messages */
-      return;
-    }
+    if (msg.deleted_at) return;
+
     const start = () => {
       clearTimeout(pressTimer);
       pressTimer = setTimeout(() => {
@@ -533,7 +541,7 @@
     });
     menu.appendChild(delMe);
 
-    /* Delete for everyone (only if mine + within 24h) */
+    /* Delete for everyone */
     if (canDeleteEveryone) {
       const delAll = document.createElement('button');
       delAll.type = 'button';
@@ -672,11 +680,10 @@
   async function refreshMessages(){
     if (!threadId) return;
     const msgs = await fetchMessages();
-    const lastId = msgs.length ? msgs[msgs.length - 1].id : null;
-    const changed = (lastId !== lastMessageId) || (msgs.length !== currentMessages.length);
+    const key = stateKey(msgs);
 
-    if (changed) {
-      lastMessageId = lastId;
+    if (key !== lastStateKey) {
+      lastStateKey = key;
       currentMessages = msgs;
       renderMessages(true);
     }
@@ -701,21 +708,18 @@
 
     realtimeUnsub = DB.subscribeToThreadMessages(threadId, (record) => {
       if (!record || !record.id) return;
-      if (currentMessages.some(m => m.id === record.id)) return;
-      if (record.sender_id === me.id) return;
 
+      /* Always refresh on any change — new, updated, deleted */
       refreshMessages();
 
-      if (window.NOTIFY && document.hidden) {
-        const name = (otherUser && otherUser.name) || 'New message';
-        const body = record.photo_url && !record.body
-          ? '📷 Photo'
-          : (record.body || '');
-        NOTIFY.show(
-          'New message from ' + name,
-          body,
-          { threadId: threadId }
-        );
+      if (record.sender_id && record.sender_id !== me.id && !record.deleted_at) {
+        if (window.NOTIFY && document.hidden) {
+          const name = (otherUser && otherUser.name) || 'New message';
+          const body = record.photo_url && !record.body
+            ? '📷 Photo'
+            : (record.body || '');
+          NOTIFY.show('New message from ' + name, body, { threadId: threadId });
+        }
       }
 
       try { DB.markThreadRead(threadId); } catch(e) {}
@@ -961,9 +965,7 @@
         renderHeader();
 
         currentMessages = await fetchMessages();
-        lastMessageId = currentMessages.length
-          ? currentMessages[currentMessages.length - 1].id
-          : null;
+        lastStateKey = stateKey(currentMessages);
         renderMessages(true);
 
         try { await DB.markThreadRead(threadId); } catch(e) {}
@@ -985,9 +987,7 @@
 
         if (threadId) {
           currentMessages = await fetchMessages();
-          lastMessageId = currentMessages.length
-            ? currentMessages[currentMessages.length - 1].id
-            : null;
+          lastStateKey = stateKey(currentMessages);
           renderMessages(true);
           try { await DB.markThreadRead(threadId); } catch(e) {}
           startRealtime();
