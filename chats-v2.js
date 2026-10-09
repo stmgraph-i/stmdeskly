@@ -1,8 +1,7 @@
 /* ============================================================
    STMDESKLY · INBOX
-   Tabs: Inbox, Requests, Updates, Archived, Sent
-   Long-press a row for actions: Archive, Pin, Mute, Delete
-   Updates tab: notifications feed
+   Fixed tabs: Inbox, Requests, Updates, Archived
+   Optional tabs (via + button): Sent, Pinned, Muted
    ============================================================ */
 
 (function initChats(){
@@ -19,6 +18,7 @@
   const pill      = document.getElementById('chatsPill');
   const chatsBadge= document.getElementById('chatsBadge');
   const reqBadge  = document.getElementById('requestsBadge');
+  const addBtn    = document.getElementById('chatsTabAdd');
 
   const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
   const ICON_ARCHIVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg>';
@@ -29,7 +29,6 @@
   const ICON_UNMUTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
   const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/></svg>';
 
-  /* Notification kind icons */
   const ICON_NOTIF_REVIEW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>';
   const ICON_NOTIF_QUESTION = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.2a2.5 2.5 0 1 1 3.5 2.3c-.9.4-1 1.1-1 1.9v.2"/><circle cx="12" cy="17" r=".6" fill="currentColor" stroke="none"/></svg>';
   const ICON_NOTIF_WHATSAPP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-9-9"/><path d="M21 3l-9 9"/><path d="M21 3h-6"/><path d="M21 3v6"/></svg>';
@@ -37,21 +36,42 @@
   const ICON_NOTIF_VIEW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>';
   const ICON_NOTIF_DEFAULT = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
 
+  /* Optional tabs available via + button */
+  const OPTIONAL_TABS = [
+    { key: 'sent',   label: 'Sent' },
+    { key: 'pinned', label: 'Pinned' },
+    { key: 'muted',  label: 'Muted' }
+  ];
+  const OPTIONAL_KEY = 'fd_optional_tabs';
+
+  function getOptionalTabs(){
+    try {
+      const raw = localStorage.getItem(OPTIONAL_KEY);
+      if (!raw) return [];
+      const arr = JSON.parse(raw);
+      if (!Array.isArray(arr)) return [];
+      return arr.filter(k => OPTIONAL_TABS.some(t => t.key === k));
+    } catch(e) { return []; }
+  }
+
+  function setOptionalTabs(list){
+    try { localStorage.setItem(OPTIONAL_KEY, JSON.stringify(list)); } catch(e){}
+  }
+
   let currentTab = 'chats';
   let allThreads = { accepted: [], pending: [], declined: [] };
   let userCache  = {};
   let lastMsgCache = {};
   let unreadCache = {};
   let currentUser = null;
-  let lastTotalUnread = null;
   let pollTimer = null;
   let realtimeUnsub = null;
   let openMenu = null;
 
-  /* Notifications state */
   let notifications = [];
-  let notifLoaded = false;
   let notifPollTimer = null;
+  let optionalTabs = getOptionalTabs();
+  let activePickerSheet = null;
 
   function showLoading(on){
     if (!loading) return;
@@ -137,27 +157,42 @@
     const sent = [];
     const requests = [];
     const archived = [];
+    const pinned = [];
+    const muted = [];
 
     (all.accepted || []).forEach(t => {
-      if (t.archived_at) archived.push({ thread: t, kind: 'accepted' });
-      else inbox.push({ thread: t, kind: 'accepted' });
+      if (t.archived_at) {
+        archived.push({ thread: t, kind: 'accepted' });
+      } else {
+        inbox.push({ thread: t, kind: 'accepted' });
+      }
+      if (t.pinned_at && !t.archived_at) pinned.push({ thread: t, kind: 'accepted' });
+      if (t.muted && !t.archived_at) muted.push({ thread: t, kind: 'accepted' });
     });
 
     (all.pending || []).forEach(t => {
+      const isMine = t.initiated_by === myId;
+      const kind = isMine ? 'outgoing' : 'incoming';
+
       if (t.archived_at) {
-        archived.push({ thread: t, kind: t.initiated_by === myId ? 'outgoing' : 'incoming' });
-      } else if (t.initiated_by === myId) {
+        archived.push({ thread: t, kind: kind });
+      } else if (isMine) {
         sent.push({ thread: t, kind: 'outgoing' });
       } else {
         requests.push({ thread: t, kind: 'incoming' });
       }
+
+      if (t.pinned_at && !t.archived_at) pinned.push({ thread: t, kind: kind });
+      if (t.muted && !t.archived_at) muted.push({ thread: t, kind: kind });
     });
 
     return {
       inbox: sortThreads(inbox),
       sent: sortThreads(sent),
       requests: sortThreads(requests),
-      archived: sortThreads(archived)
+      archived: sortThreads(archived),
+      pinned: sortThreads(pinned),
+      muted: sortThreads(muted)
     };
   }
 
@@ -195,9 +230,6 @@
           unreadCache = {};
         }
       }
-
-      const totalUnread = Object.values(unreadCache).reduce((a,b) => a+b, 0);
-      lastTotalUnread = totalUnread;
 
       await refreshNotifBadge();
 
@@ -346,13 +378,158 @@
       renderList(cls.sent, 'sent');
     } else if (currentTab === 'archived') {
       renderList(cls.archived, 'archived');
+    } else if (currentTab === 'pinned') {
+      renderList(cls.pinned, 'pinned');
+    } else if (currentTab === 'muted') {
+      renderList(cls.muted, 'muted');
     } else {
       renderList(cls.inbox, 'chats');
     }
   }
 
   /* ============================================================
-     NOTIFICATIONS (Updates tab)
+     OPTIONAL TABS (+ button)
+     ============================================================ */
+
+  function renderOptionalTabs(){
+    /* Remove existing optional tab buttons */
+    tabsEl.querySelectorAll('.chats-tab[data-optional="1"]').forEach(el => el.remove());
+
+    const addBtnEl = tabsEl.querySelector('.chats-tab-add');
+    if (!addBtnEl) return;
+
+    optionalTabs.forEach(key => {
+      const meta = OPTIONAL_TABS.find(t => t.key === key);
+      if (!meta) return;
+
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'chats-tab';
+      btn.setAttribute('data-tab', meta.key);
+      btn.setAttribute('data-optional', '1');
+      btn.textContent = meta.label;
+      if (currentTab === meta.key) btn.classList.add('active');
+
+      tabsEl.insertBefore(btn, addBtnEl);
+    });
+
+    /* Re-place pill under current active tab */
+    const active = tabsEl.querySelector('.chats-tab.active');
+    if (active) {
+      requestAnimationFrame(() => movePill(active));
+    }
+
+    /* + button gets accent tint when any optional tab is present */
+    if (addBtnEl) {
+      addBtnEl.classList.toggle('has-tabs', optionalTabs.length > 0);
+    }
+  }
+
+  function openTabPicker(){
+    closeTabPicker();
+
+    const backdrop = document.createElement('div');
+    backdrop.className = 'tab-picker-backdrop';
+    backdrop.addEventListener('click', closeTabPicker);
+
+    const sheet = document.createElement('div');
+    sheet.className = 'tab-picker-sheet';
+
+    const handle = document.createElement('div');
+    handle.className = 'tab-picker-handle';
+    sheet.appendChild(handle);
+
+    const title = document.createElement('div');
+    title.className = 'tab-picker-title';
+    title.textContent = 'Add tabs';
+    sheet.appendChild(title);
+
+    const sub = document.createElement('div');
+    sub.className = 'tab-picker-sub';
+    sub.textContent = 'Choose extra tabs to show at the top.';
+    sheet.appendChild(sub);
+
+    const list = document.createElement('div');
+    list.className = 'tab-picker-list';
+
+    OPTIONAL_TABS.forEach(meta => {
+      const isOn = optionalTabs.indexOf(meta.key) !== -1;
+
+      const row = document.createElement('button');
+      row.type = 'button';
+      row.className = 'tab-picker-row' + (isOn ? ' on' : '');
+
+      const label = document.createElement('span');
+      label.className = 'tab-picker-row-label';
+      label.textContent = meta.label;
+      row.appendChild(label);
+
+      const toggle = document.createElement('span');
+      toggle.className = 'tab-picker-row-toggle';
+      row.appendChild(toggle);
+
+      row.addEventListener('click', () => {
+        const idx = optionalTabs.indexOf(meta.key);
+        if (idx === -1) {
+          optionalTabs.push(meta.key);
+        } else {
+          optionalTabs.splice(idx, 1);
+          /* If we just removed the active tab, go back to Inbox */
+          if (currentTab === meta.key) {
+            currentTab = 'chats';
+          }
+        }
+        setOptionalTabs(optionalTabs);
+        renderOptionalTabs();
+        applyActiveTab();
+        render();
+        row.classList.toggle('on', idx === -1);
+      });
+
+      list.appendChild(row);
+    });
+
+    sheet.appendChild(list);
+
+    const done = document.createElement('button');
+    done.type = 'button';
+    done.className = 'tab-picker-done';
+    done.textContent = 'Done';
+    done.addEventListener('click', closeTabPicker);
+    sheet.appendChild(done);
+
+    document.body.appendChild(backdrop);
+    document.body.appendChild(sheet);
+    requestAnimationFrame(() => {
+      backdrop.classList.add('visible');
+      sheet.classList.add('visible');
+    });
+
+    activePickerSheet = { backdrop, sheet };
+  }
+
+  function closeTabPicker(){
+    if (!activePickerSheet) return;
+    const { backdrop, sheet } = activePickerSheet;
+    backdrop.classList.remove('visible');
+    sheet.classList.remove('visible');
+    setTimeout(() => {
+      backdrop.remove();
+      sheet.remove();
+    }, 220);
+    activePickerSheet = null;
+  }
+
+  function applyActiveTab(){
+    tabsEl.querySelectorAll('.chats-tab').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-tab') === currentTab);
+    });
+    const active = tabsEl.querySelector('.chats-tab.active');
+    if (active) movePill(active);
+  }
+
+  /* ============================================================
+     NOTIFICATIONS
      ============================================================ */
 
   async function loadAndRenderNotifications(){
@@ -362,7 +539,6 @@
 
     try {
       notifications = await DB.getNotifications(80);
-      notifLoaded = true;
       await refreshNotifBadge();
     } catch(e) {
       console.error('loadNotifications failed:', e);
@@ -386,7 +562,6 @@
 
     emptyEl.hidden = true;
 
-    /* Mark all read button */
     const hasUnread = notifications.some(n => !n.read_at);
     if (hasUnread) {
       const bar = document.createElement('div');
@@ -474,7 +649,6 @@
       card.appendChild(dot);
     }
 
-    /* Tap → mark read + navigate */
     card.addEventListener('click', async () => {
       if (!n.read_at) {
         try {
@@ -491,7 +665,6 @@
       }
     });
 
-    /* Long-press → delete */
     let pressTimer = null;
     const start = () => {
       clearTimeout(pressTimer);
@@ -522,16 +695,8 @@
     return card;
   }
 
-  function renderPlaceholder(title, subtitle){
-    listEl.innerHTML = '';
-    emptyEl.hidden = false;
-    emptyTitle.textContent = title;
-    emptySub.textContent = subtitle;
-    emptyBtn.hidden = true;
-  }
-
   /* ============================================================
-     ROW LIST (threads)
+     THREAD ROWS
      ============================================================ */
 
   function renderList(items, mode){
@@ -550,6 +715,14 @@
       } else if (mode === 'archived') {
         emptyTitle.textContent = 'Nothing archived';
         emptySub.textContent = 'Long-press a chat and tap Archive to hide it here.';
+        emptyBtn.hidden = true;
+      } else if (mode === 'pinned') {
+        emptyTitle.textContent = 'No pinned chats';
+        emptySub.textContent = 'Long-press a chat and tap Pin to stick it to the top.';
+        emptyBtn.hidden = true;
+      } else if (mode === 'muted') {
+        emptyTitle.textContent = 'No muted chats';
+        emptySub.textContent = 'Long-press a chat and tap Mute to silence it.';
         emptyBtn.hidden = true;
       } else {
         emptyTitle.textContent = 'No chats yet';
@@ -859,7 +1032,7 @@
   }
 
   /* ============================================================
-     TAB SWITCHING + SLIDING PILL
+     TAB SWITCHING + PILL
      ============================================================ */
 
   function movePill(target){
@@ -881,8 +1054,11 @@
   }
 
   tabsEl.addEventListener('click', (e) => {
-    const addBtn = e.target.closest('.chats-tab-add');
-    if (addBtn) return;
+    const addBtnClick = e.target.closest('.chats-tab-add');
+    if (addBtnClick) {
+      openTabPicker();
+      return;
+    }
 
     const btn = e.target.closest('.chats-tab');
     if (!btn) return;
@@ -927,24 +1103,35 @@
 
     currentUser = DB.currentUser();
 
+    /* Read requested tab from URL */
     const params = new URLSearchParams(location.search);
     const tabParam = params.get('tab');
     if (tabParam) {
-      currentTab = tabParam;
-      tabsEl.querySelectorAll('.chats-tab').forEach(b => {
-        b.classList.toggle('active', b.getAttribute('data-tab') === tabParam);
-      });
+      const isFixed = ['chats', 'requests', 'updates', 'archived'].indexOf(tabParam) !== -1;
+      const isOptional = OPTIONAL_TABS.some(t => t.key === tabParam);
+      if (isFixed) {
+        currentTab = tabParam;
+      } else if (isOptional) {
+        if (optionalTabs.indexOf(tabParam) === -1) {
+          optionalTabs.push(tabParam);
+          setOptionalTabs(optionalTabs);
+        }
+        currentTab = tabParam;
+      }
     }
 
     noAuth.style.display = 'none';
     root.style.display = '';
+
+    /* Render optional tabs before anything else so pill/active work */
+    renderOptionalTabs();
+    applyActiveTab();
 
     await loadAll();
 
     startRealtime();
     startPolling();
 
-    /* Poll notifications every 30s (slower than chats) */
     if (notifPollTimer) clearInterval(notifPollTimer);
     notifPollTimer = setInterval(() => {
       refreshNotifBadge();
