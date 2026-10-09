@@ -7841,3 +7841,102 @@ body.pattern-rings .content-band{
   opacity: 0;
   pointer-events: none;
 }
+
+/* ============================================================
+   CHAT · Pill tabs with sliding indicator
+   ============================================================ */
+
+.chats-tabs {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+
+.chats-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+.chats-tab {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border: none;
+  background: transparent;
+  color: var(--text, #1D1D1F);
+  opacity: 0.55;
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: opacity 220ms ease, color 220ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chats-tab:hover {
+  opacity: 0.8;
+}
+
+.chats-tab.active {
+  opacity: 1;
+  color: #FFFFFF;
+}
+
+.chats-tabs-pill {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: calc(100% - 8px);
+  background: var(--accent, #01764C);
+  border-radius: 999px;
+  z-index: 0;
+  transition: transform 320ms cubic-bezier(0.4, 0, 0.2, 1),
+              width 320ms cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
+  will-change: transform, width;
+}
+
+.chats-tab-add {
+  padding: 8px 10px;
+  opacity: 0.7;
+}
+
+.chats-tab-add svg {
+  width: 16px;
+  height: 16px;
+}
+
+.chats-tab-add:hover {
+  opacity: 1;
+}
+
+.chats-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.25);
+  color: inherit;
+}
+
+.chats-tab.active .chats-tab-badge {
+  background: rgba(255, 255, 255, 0.3);
+}
