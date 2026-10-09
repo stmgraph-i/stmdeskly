@@ -8509,3 +8509,19 @@ body.pattern-rings .content-band{
   background: rgba(0, 0, 0, 0.05);
   transform: scale(1.08);
 }
+/* ============================================================
+   CHAT · Deleted message placeholder
+   ============================================================ */
+
+.chat-bubble-deleted {
+  opacity: 0.7;
+}
+
+.chat-bubble-deleted-text {
+  font-style: italic;
+  font-weight: 400;
+  color: rgba(0, 0, 0, 0.5);
+}
+.chat-bubble-mine .chat-bubble-deleted-text {
+  color: rgba(255, 255, 255, 0.7);
+}
