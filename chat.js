@@ -1,7 +1,8 @@
 /* ============================================================
    DESKLY · SINGLE CONVERSATION
    Includes: presence, typing, reply, reactions, soft delete,
-             delivery status, loading state, search, pin, mute
+             delivery status, loading state, search, pin, mute,
+             toast notifications
    ============================================================ */
 
 (function initChat(){
@@ -690,7 +691,7 @@
         await refreshMessages();
       } catch(e) {
         console.error(e);
-        alert(e.message || 'Could not delete.');
+        TOAST.show(e.message || 'Could not delete.', { kind: 'error' });
       }
     });
     menu.appendChild(delMe);
@@ -710,7 +711,7 @@
           await refreshMessages();
         } catch(e) {
           console.error(e);
-          alert(e.message || 'Could not delete for everyone.');
+          TOAST.show(e.message || 'Could not delete for everyone.', { kind: 'error' });
         }
       });
       menu.appendChild(delAll);
@@ -953,7 +954,7 @@
         }
       } catch(err) {
         console.error(err);
-        alert(err.message || 'Could not send.');
+        TOAST.show(err.message || 'Could not send.', { kind: 'error' });
         if (input) {
           input.value = body;
           updateSendState();
@@ -981,7 +982,7 @@
         if (preview) preview.hidden = false;
       } catch(err) {
         console.error(err);
-        alert('Could not read that photo.');
+        TOAST.show('Could not read that photo.', { kind: 'error' });
       } finally {
         photoInput.value = '';
       }
@@ -1035,7 +1036,7 @@
         hideReplyBar();
       } catch(err) {
         console.error(err);
-        alert(err.message || 'Could not send photo.');
+        TOAST.show(err.message || 'Could not send photo.', { kind: 'error' });
       } finally {
         previewSend.disabled = false;
         previewSend.textContent = 'Send';
@@ -1076,7 +1077,7 @@
         updatePinMuteLabels();
       } catch(e) {
         console.error(e);
-        alert(e.message || 'Could not update pin.');
+        TOAST.show(e.message || 'Could not update pin.', { kind: 'error' });
       }
     });
   }
@@ -1091,7 +1092,7 @@
         updatePinMuteLabels();
       } catch(e) {
         console.error(e);
-        alert(e.message || 'Could not update mute.');
+        TOAST.show(e.message || 'Could not update mute.', { kind: 'error' });
       }
     });
   }
@@ -1104,10 +1105,10 @@
       if (reason === null) return;
       try {
         await DB.reportUser(otherId, reason || 'other', threadId);
-        alert('Report sent. Thank you.');
+        TOAST.show('Report sent. Thank you.', { kind: 'success' });
       } catch(e) {
         console.error(e);
-        alert('Could not send report.');
+        TOAST.show('Could not send report.', { kind: 'error' });
       }
     });
   }
@@ -1119,11 +1120,11 @@
       if (!confirm('Block this person?\n\nThey won\'t be able to message you again.')) return;
       try {
         await DB.blockUser(otherId);
-        alert('Blocked.');
+        TOAST.show('Blocked.', { kind: 'success' });
         window.location.replace('chats.html');
       } catch(e) {
         console.error(e);
-        alert(e.message || 'Could not block.');
+        TOAST.show(e.message || 'Could not block.', { kind: 'error' });
       }
     });
   }
