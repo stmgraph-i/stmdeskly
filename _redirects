@@ -10,3 +10,6 @@
 
 # Gig — /gig/{id} → gig.html?id={id}
 /gig/:id            /gig.html?id=:id                 200
+
+# SPA fallback — comment out if pages break
+# /*                  /index.html                    200
