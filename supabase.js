@@ -1396,7 +1396,7 @@ window.DB = (function(){
     if (!isReady() || !messageId || !emoji) throw new Error('Database not configured.');
     const me = currentUser();
     if (!me) throw new Error('You must be logged in.');
-    const allowed = ['heart', 'thumbsup', 'fire', 'wow', 'pray', 'like'];
+    const allowed = ['thumbsup', 'handshake', 'briefcase', 'hundred', 'fire', 'pray'];
     if (!allowed.includes(emoji)) throw new Error('Invalid reaction.');
     const c = cfg();
     const checkUrl = c.url + '/rest/v1/chat_reactions' +
@@ -1452,17 +1452,26 @@ window.DB = (function(){
   async function deleteMessageForEveryone(messageId){
     if (!isReady() || !messageId) throw new Error('Database not configured.');
     const c = cfg();
-
     const res = await fetch(c.url + '/rest/v1/rpc/delete_message_for_everyone', {
       method: 'POST',
       headers: authHeaders(),
       body: JSON.stringify({ msg_id: messageId })
     });
-
     if (!res.ok) {
       const err = await res.text();
       console.error('deleteMessageForEveryone failed:', err);
-      alert('Server said:\n\nStatus: ' + res.status + '\nBody: ' + err.slice(0, 500));
+      try {
+        const parsed = JSON.parse(err);
+        if (parsed.message && parsed.message.indexOf('Too late') !== -1) {
+          throw new Error('Too late to delete for everyone (24h limit).');
+        }
+        if (parsed.message && parsed.message.indexOf('Only the sender') !== -1) {
+          throw new Error('You can only delete your own messages for everyone.');
+        }
+      } catch(e) {
+        if (e.message && e.message.indexOf('Too late') !== -1) throw e;
+        if (e.message && e.message.indexOf('Only the sender') !== -1) throw e;
+      }
       throw new Error('Could not delete for everyone.');
     }
     return true;
@@ -1814,7 +1823,7 @@ window.DB = (function(){
             presence: { key: '' },
             postgres_changes: [
               {
-                event: 'INSERT',
+                event: '*',
                 schema: 'public',
                 table: 'chat_messages',
                 filter: 'thread_id=eq.' + threadId
@@ -1840,7 +1849,7 @@ window.DB = (function(){
       try {
         const msg = JSON.parse(event.data);
         if (msg.event === 'postgres_changes' && msg.payload && msg.payload.data) {
-          const record = msg.payload.data.record;
+          const record = msg.payload.data.record || msg.payload.data.old_record;
           if (record) onMessage(record);
         }
       } catch(e) {}
