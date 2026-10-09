@@ -7769,3 +7769,19 @@ body.pattern-rings .content-band{
   opacity:.5;
   cursor:not-allowed;
 }
+/* ============================================================
+   CHAT · Photo size cap
+   Added 2026-10-09 to stop tall screenshots from dominating
+   the chat view and hiding the composer.
+   ============================================================ */
+
+.chat-bubble-photo {
+  max-height: 60vh;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}
+
+.chat-log {
+  padding-bottom: 80px;
+}
