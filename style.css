@@ -7785,3 +7785,19 @@ body.pattern-rings .content-band{
 .chat-log {
   padding-bottom: 80px;
 }
+
+/* ============================================================
+   CHAT · Photo thumbnail override
+   Added 2026-10-09. Overrides earlier .chat-bubble-photo rules.
+   ============================================================ */
+
+.chat-bubble-photo {
+  display: block !important;
+  max-height: 320px !important;
+  max-width: 240px !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 14px !important;
+  object-fit: cover !important;
+  cursor: pointer !important;
+}
