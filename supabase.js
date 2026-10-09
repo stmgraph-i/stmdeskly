@@ -1069,7 +1069,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/desk_wall?id=eq.' + encodeURIComponent(postId);
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({ pinned: !!pinState })
     });
     if (!res.ok) throw new Error('Could not update pin.');
@@ -1243,7 +1243,7 @@ window.DB = (function(){
     }
     await fetch(c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId), {
       method: 'PATCH',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({ last_message_at: new Date().toISOString() })
     });
     const rows = await res.json();
@@ -1282,7 +1282,7 @@ window.DB = (function(){
     }
     await fetch(c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId), {
       method: 'PATCH',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({ last_message_at: new Date().toISOString() })
     });
     const rows = await res.json();
@@ -1411,14 +1411,14 @@ window.DB = (function(){
       const delUrl = c.url + '/rest/v1/chat_reactions?id=eq.' + encodeURIComponent(existing[0].id);
       const delRes = await fetch(delUrl, {
         method: 'DELETE',
-        headers: authHeaders({ 'Prefer': 'return=minimal' })
+        headers: authHeaders({ 'Prefer': 'return:minimal' })
       });
       if (!delRes.ok) throw new Error('Could not remove reaction.');
       return false;
     }
     const addRes = await fetch(c.url + '/rest/v1/chat_reactions', {
       method: 'POST',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({
         message_id: messageId,
         user_id: me.id,
@@ -1484,7 +1484,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/chat_threads' +
                 '?or=(user_a.eq.' + encodeURIComponent(me.id) +
                 ',user_b.eq.' + encodeURIComponent(me.id) + ')' +
-                '&select=id,user_a,user_b,status,initiated_by,last_message_at,created_at,archived_at' +
+                '&select=id,user_a,user_b,status,initiated_by,last_message_at,created_at,archived_at,pinned_at,muted' +
                 '&order=last_message_at.desc&limit=100';
     try {
       const res = await fetch(url, { headers: authHeaders() });
@@ -1576,7 +1576,7 @@ window.DB = (function(){
     try {
       const res = await fetch(url, {
         method: 'PATCH',
-        headers: authHeaders({ 'Prefer': 'return=minimal' }),
+        headers: authHeaders({ 'Prefer': 'return:minimal' }),
         body: JSON.stringify({ read_at: new Date().toISOString() })
       });
       return res.ok;
@@ -1590,7 +1590,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId);
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({ status: 'accepted' })
     });
     if (!res.ok) throw new Error('Could not accept.');
@@ -1604,7 +1604,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId);
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({ status: 'declined' })
     });
     if (!res.ok) throw new Error('Could not decline.');
@@ -1619,7 +1619,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId);
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({
         archived_at: archived ? new Date().toISOString() : null
       })
@@ -1632,6 +1632,40 @@ window.DB = (function(){
     return true;
   }
 
+  async function pinThread(threadId, pinned){
+    const me = currentUser();
+    if (!me) throw new Error('Not logged in.');
+    if (!threadId) throw new Error('Missing thread.');
+
+    const c = cfg();
+    const url = c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId);
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      body: JSON.stringify({
+        pinned_at: pinned ? new Date().toISOString() : null
+      })
+    });
+    if (!res.ok) throw new Error('Could not ' + (pinned ? 'pin' : 'unpin') + '.');
+    return true;
+  }
+
+  async function muteThread(threadId, muted){
+    const me = currentUser();
+    if (!me) throw new Error('Not logged in.');
+    if (!threadId) throw new Error('Missing thread.');
+
+    const c = cfg();
+    const url = c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId);
+    const res = await fetch(url, {
+      method: 'PATCH',
+      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      body: JSON.stringify({ muted: !!muted })
+    });
+    if (!res.ok) throw new Error('Could not ' + (muted ? 'mute' : 'unmute') + '.');
+    return true;
+  }
+
   async function deleteThread(threadId){
     const me = currentUser();
     if (!me) throw new Error('Not logged in.');
@@ -1639,11 +1673,11 @@ window.DB = (function(){
     const c = cfg();
     await fetch(c.url + '/rest/v1/chat_messages?thread_id=eq.' + encodeURIComponent(threadId), {
       method: 'DELETE',
-      headers: authHeaders({ 'Prefer': 'return=minimal' })
+      headers: authHeaders({ 'Prefer': 'return:minimal' })
     });
     const res = await fetch(c.url + '/rest/v1/chat_threads?id=eq.' + encodeURIComponent(threadId), {
       method: 'DELETE',
-      headers: authHeaders({ 'Prefer': 'return=minimal' })
+      headers: authHeaders({ 'Prefer': 'return:minimal' })
     });
     if (!res.ok) {
       const err = await res.text();
@@ -1660,7 +1694,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/desks?user_id=eq.' + encodeURIComponent(me.id);
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({ last_seen_at: new Date().toISOString() })
     });
     return res.ok;
@@ -1694,7 +1728,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/desks?user_id=eq.' + encodeURIComponent(me.id);
     const res = await fetch(url, {
       method: 'PATCH',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({ presence_privacy: level })
     });
     if (!res.ok) throw new Error('Could not update privacy.');
@@ -1708,7 +1742,7 @@ window.DB = (function(){
     const c = cfg();
     const blockRes = await fetch(c.url + '/rest/v1/chat_blocks', {
       method: 'POST',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({
         blocker_id: me.id,
         blocked_id: blockedId
@@ -1722,7 +1756,7 @@ window.DB = (function(){
                 '?user_a=eq.' + encodeURIComponent(a) +
                 '&user_b=eq.' + encodeURIComponent(b), {
       method: 'PATCH',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify({ status: 'blocked' })
     });
     return true;
@@ -1737,7 +1771,7 @@ window.DB = (function(){
                 '&blocked_id=eq.' + encodeURIComponent(blockedId);
     const res = await fetch(url, {
       method: 'DELETE',
-      headers: authHeaders({ 'Prefer': 'return=minimal' })
+      headers: authHeaders({ 'Prefer': 'return:minimal' })
     });
     return res.ok;
   }
@@ -1769,7 +1803,7 @@ window.DB = (function(){
     if (threadId) payload.thread_id = threadId;
     const res = await fetch(c.url + '/rest/v1/chat_reports', {
       method: 'POST',
-      headers: authHeaders({ 'Prefer': 'return=minimal' }),
+      headers: authHeaders({ 'Prefer': 'return:minimal' }),
       body: JSON.stringify(payload)
     });
     if (!res.ok) throw new Error('Could not send report.');
@@ -1927,7 +1961,7 @@ window.DB = (function(){
     const url = c.url + '/rest/v1/desks?id=eq.' + encodeURIComponent(deskId);
     const res = await fetch(url, {
       method: 'DELETE',
-      headers: authHeaders({ 'Prefer': 'return=minimal' })
+      headers: authHeaders({ 'Prefer': 'return:minimal' })
     });
     if (!res.ok) throw new Error('Could not delete your Desk.');
     return true;
@@ -2010,7 +2044,7 @@ window.DB = (function(){
     toggleChatReaction,
     hideMessageForMe, deleteMessageForEveryone,
     getUnreadCount, getUnreadPerThread, markThreadRead, acceptThread, declineThread,
-    archiveThread, deleteThread,
+    archiveThread, deleteThread, pinThread, muteThread,
     updateLastSeen, getPresence, setPresencePrivacy,
     blockUser, unblockUser, getMyBlocks, reportUser, isBlocked,
     getPublicUser,
