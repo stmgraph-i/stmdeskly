@@ -1,7 +1,7 @@
 /* ============================================================
    STMDESKLY · INBOX
-   Tabs: Inbox, Requests, Updates, Archived, Sent, + (add)
-   Sliding pill indicator. Long-press a row for context menu.
+   Tabs: Inbox, Requests, Updates, Archived, Sent
+   Long-press a row for actions: Archive, Pin, Mute, Delete
    ============================================================ */
 
 (function initChats(){
@@ -22,6 +22,10 @@
   const ICON_CLOSE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6L6 18M6 6l12 12"/></svg>';
   const ICON_ARCHIVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M10 12h4"/></svg>';
   const ICON_UNARCHIVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="4" rx="1"/><path d="M5 8v11a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8"/><path d="M12 17v-5M9.5 14.5L12 12l2.5 2.5"/></svg>';
+  const ICON_PIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="17" x2="12" y2="22"/><path d="M5 17h14v-1.76a2 2 0 0 0-1.11-1.79l-1.78-.9A2 2 0 0 1 15 10.76V6h1a2 2 0 0 0 0-4H8a2 2 0 0 0 0 4h1v4.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24Z"/></svg>';
+  const ICON_UNPIN = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="2" x2="22" y2="22"/><line x1="12" y1="17" x2="12" y2="22"/><path d="M9 9v1.76a2 2 0 0 1-1.11 1.79l-1.78.9A2 2 0 0 0 5 15.24V17h9.5"/><path d="M16 6V4"/><path d="M8 4h8"/></svg>';
+  const ICON_MUTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-9.33-5"/><path d="M6 8c0 7-3 9-3 9h16"/><path d="M6.26 6.26A6 6 0 0 0 6 8c0 7-3 9-3 9h14"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="2" y1="2" x2="22" y2="22"/></svg>';
+  const ICON_UNMUTE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>';
   const ICON_TRASH = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2"/><path d="M6 6l1 14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1l1-14"/></svg>';
 
   let currentTab = 'chats';
@@ -69,6 +73,17 @@
     }
   }
 
+  function sortThreads(list){
+    return list.slice().sort((a, b) => {
+      const aPinned = a.thread.pinned_at ? 1 : 0;
+      const bPinned = b.thread.pinned_at ? 1 : 0;
+      if (aPinned !== bPinned) return bPinned - aPinned;
+      const aT = a.thread.last_message_at ? new Date(a.thread.last_message_at).getTime() : 0;
+      const bT = b.thread.last_message_at ? new Date(b.thread.last_message_at).getTime() : 0;
+      return bT - aT;
+    });
+  }
+
   function classify(all){
     const myId = currentUser.id;
     const inbox = [];
@@ -91,7 +106,12 @@
       }
     });
 
-    return { inbox, sent, requests, archived };
+    return {
+      inbox: sortThreads(inbox),
+      sent: sortThreads(sent),
+      requests: sortThreads(requests),
+      archived: sortThreads(archived)
+    };
   }
 
   async function loadAll(){
@@ -165,17 +185,6 @@
               unreadCache = freshUnread;
               render();
             }
-
-            const totalUnread = Object.values(freshUnread).reduce((a,b) => a+b, 0);
-            if (lastTotalUnread !== null && totalUnread > lastTotalUnread && window.NOTIFY) {
-              const diff = totalUnread - lastTotalUnread;
-              NOTIFY.show(
-                'New message' + (diff > 1 ? 's' : ''),
-                diff + ' new message' + (diff > 1 ? 's' : '') + ' on STMDeskly',
-                { threadId: null }
-              );
-            }
-            lastTotalUnread = totalUnread;
           } catch(e) { /* skip */ }
         }
         return;
@@ -205,17 +214,6 @@
           unreadCache = await DB.getUnreadPerThread(allIds);
         } catch(e) { unreadCache = {}; }
       }
-
-      const totalUnread = Object.values(unreadCache).reduce((a,b) => a+b, 0);
-      if (lastTotalUnread !== null && totalUnread > lastTotalUnread && window.NOTIFY) {
-        const diff = totalUnread - lastTotalUnread;
-        NOTIFY.show(
-          'New message' + (diff > 1 ? 's' : ''),
-          diff + ' new message' + (diff > 1 ? 's' : '') + ' on STMDeskly',
-          { threadId: null }
-        );
-      }
-      lastTotalUnread = totalUnread;
 
       render();
     } catch(e) {
@@ -332,15 +330,14 @@
       });
     }
 
-    /* Long-press to open menu */
+    /* Long-press for menu */
     row.addEventListener('contextmenu', (e) => {
       e.preventDefault();
       showRowMenu(row, thread, mode);
     });
 
-    /* Touch long-press fallback */
     let pressTimer = null;
-    row.addEventListener('touchstart', (e) => {
+    row.addEventListener('touchstart', () => {
       pressTimer = setTimeout(() => {
         showRowMenu(row, thread, mode);
       }, 550);
@@ -378,11 +375,20 @@
     name.textContent = (other && other.name) ? other.name : 'Someone';
     top.appendChild(name);
 
-    if (mode === 'archived') {
-      const chip = document.createElement('span');
-      chip.className = 'chat-row-archived';
-      chip.textContent = 'Archived';
-      top.appendChild(chip);
+    if (thread.pinned_at) {
+      const pin = document.createElement('span');
+      pin.className = 'chat-row-pin';
+      pin.innerHTML = ICON_PIN;
+      pin.title = 'Pinned';
+      top.appendChild(pin);
+    }
+
+    if (thread.muted) {
+      const mute = document.createElement('span');
+      mute.className = 'chat-row-mute';
+      mute.innerHTML = ICON_MUTE;
+      mute.title = 'Muted';
+      top.appendChild(mute);
     }
 
     if (other && other.role) {
@@ -426,9 +432,14 @@
     row.appendChild(body);
 
     const unreadCount = unreadCache[thread.id] || 0;
-    if (unreadCount > 0) {
+    if (unreadCount > 0 && !thread.muted) {
       const pillEl = document.createElement('span');
       pillEl.className = 'chat-row-unread';
+      pillEl.textContent = String(unreadCount > 99 ? '99+' : unreadCount);
+      row.appendChild(pillEl);
+    } else if (unreadCount > 0 && thread.muted) {
+      const pillEl = document.createElement('span');
+      pillEl.className = 'chat-row-unread chat-row-unread-muted';
       pillEl.textContent = String(unreadCount > 99 ? '99+' : unreadCount);
       row.appendChild(pillEl);
     }
@@ -484,7 +495,7 @@
   }
 
   /* ============================================================
-     ROW CONTEXT MENU (long-press)
+     ROW CONTEXT MENU
      ============================================================ */
 
   function closeRowMenu(){
@@ -505,6 +516,44 @@
     menu.className = 'chat-row-menu';
 
     const isArchived = mode === 'archived';
+    const isPinned = !!thread.pinned_at;
+    const isMuted = !!thread.muted;
+
+    /* Pin / Unpin */
+    const pinItem = document.createElement('button');
+    pinItem.type = 'button';
+    pinItem.className = 'chat-row-menu-item';
+    pinItem.innerHTML = (isPinned ? ICON_UNPIN : ICON_PIN) +
+      '<span>' + (isPinned ? 'Unpin' : 'Pin to top') + '</span>';
+    pinItem.addEventListener('click', async () => {
+      closeRowMenu();
+      try {
+        await DB.pinThread(thread.id, !isPinned);
+        await loadAll();
+      } catch(e) {
+        console.error(e);
+        alert(e.message || 'Could not ' + (isPinned ? 'unpin' : 'pin') + '.');
+      }
+    });
+    menu.appendChild(pinItem);
+
+    /* Mute / Unmute */
+    const muteItem = document.createElement('button');
+    muteItem.type = 'button';
+    muteItem.className = 'chat-row-menu-item';
+    muteItem.innerHTML = (isMuted ? ICON_UNMUTE : ICON_MUTE) +
+      '<span>' + (isMuted ? 'Unmute' : 'Mute') + '</span>';
+    muteItem.addEventListener('click', async () => {
+      closeRowMenu();
+      try {
+        await DB.muteThread(thread.id, !isMuted);
+        await loadAll();
+      } catch(e) {
+        console.error(e);
+        alert(e.message || 'Could not ' + (isMuted ? 'unmute' : 'mute') + '.');
+      }
+    });
+    menu.appendChild(muteItem);
 
     /* Archive / Unarchive */
     const archiveItem = document.createElement('button');
@@ -524,51 +573,43 @@
     });
     menu.appendChild(archiveItem);
 
-    /* Delete (only for accepted or archived) */
-    if (kind_allows_delete(thread)) {
-      const deleteItem = document.createElement('button');
-      deleteItem.type = 'button';
-      deleteItem.className = 'chat-row-menu-item chat-row-menu-item-danger';
-      deleteItem.innerHTML = ICON_TRASH + '<span>Delete</span>';
-      deleteItem.addEventListener('click', async () => {
-        closeRowMenu();
-        if (!confirm('Delete this conversation? This cannot be undone.')) return;
-        try {
-          await DB.deleteThread(thread.id);
-          await loadAll();
-        } catch(e) {
-          console.error(e);
-          alert('Could not delete.');
-        }
-      });
-      menu.appendChild(deleteItem);
-    }
+    /* Delete */
+    const deleteItem = document.createElement('button');
+    deleteItem.type = 'button';
+    deleteItem.className = 'chat-row-menu-item chat-row-menu-item-danger';
+    deleteItem.innerHTML = ICON_TRASH + '<span>Delete</span>';
+    deleteItem.addEventListener('click', async () => {
+      closeRowMenu();
+      if (!confirm('Delete this conversation? This cannot be undone.')) return;
+      try {
+        await DB.deleteThread(thread.id);
+        await loadAll();
+      } catch(e) {
+        console.error(e);
+        alert('Could not delete.');
+      }
+    });
+    menu.appendChild(deleteItem);
 
-    /* Position the menu near the row */
     document.body.appendChild(backdrop);
     document.body.appendChild(menu);
 
     const rect = row.getBoundingClientRect();
-    const menuWidth = 180;
+    const menuWidth = 220;
     const padding = 8;
     let left = rect.left + 16;
     if (left + menuWidth > window.innerWidth - padding) {
       left = window.innerWidth - menuWidth - padding;
     }
     let top = rect.top + 20;
-    if (top + 200 > window.innerHeight) {
-      top = window.innerHeight - 220;
+    if (top + 260 > window.innerHeight) {
+      top = window.innerHeight - 280;
     }
 
     menu.style.left = left + 'px';
     menu.style.top = top + 'px';
 
     openMenu = { backdrop, menu };
-  }
-
-  function kind_allows_delete(thread){
-    /* Any thread can be deleted from the user's list */
-    return true;
   }
 
   /* ============================================================
@@ -595,10 +636,7 @@
 
   tabsEl.addEventListener('click', (e) => {
     const addBtn = e.target.closest('.chats-tab-add');
-    if (addBtn) {
-      /* Placeholder — wired in a later step */
-      return;
-    }
+    if (addBtn) return;
 
     const btn = e.target.closest('.chats-tab');
     if (!btn) return;
