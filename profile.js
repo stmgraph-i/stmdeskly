@@ -718,7 +718,7 @@
             await loadAll();
           } catch(e) {
             console.error(e);
-            alert(e.message || 'Could not delete.');
+            TOAST.show(e.message || 'Could not delete.', { kind: 'error' });
           }
         });
         head.appendChild(del);
