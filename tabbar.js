@@ -1,6 +1,7 @@
 /* ============================================================
-   DESKLY · BOTTOM TAB BAR
+   STMDESKLY · BOTTOM TAB BAR
    Injected on signed-in pages. 5 tabs, always visible on mobile.
+   Advanced badge: count pill + pulsing request dot.
    ============================================================ */
 
 (function initTabbar(){
@@ -40,8 +41,9 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-5.5A8 8 0 0 1 11 4h2a8 8 0 0 1 8 8z"/>
       </svg>
-      <span>Chats</span>
+      <span>Inbox</span>
       <span class="tabbar-badge" id="tabbarChatsBadge" hidden>0</span>
+      <span class="tabbar-request-dot" id="tabbarRequestDot" hidden></span>
     </a>
 
     <a class="tabbar-item" data-tab="settings" href="settings.html">
@@ -80,35 +82,53 @@
     if (el) el.classList.add('active');
   }
 
-  /* ---- Show badge: only incoming requests + unread received messages ---- */
+  /* ---- Advanced badge ---- */
   (async function loadChatsBadge(){
     try {
       if (!window.DB || !DB.ready || !DB.currentUser()) return;
 
       const me = DB.currentUser();
 
-      /* Count incoming pending requests only */
+      /* Incoming pending requests */
       const all = await DB.getMyThreads();
       const incoming = (all.pending || []).filter(t => t.initiated_by !== me.id);
       const requestCount = incoming.length;
 
-      /* Count unread messages from others */
+      /* Unread messages from others */
       let unreadCount = 0;
       try {
         unreadCount = await DB.getUnreadCount();
       } catch(e) { unreadCount = 0; }
 
-      const total = requestCount + unreadCount;
-
       const badge = document.getElementById('tabbarChatsBadge');
+      const dot   = document.getElementById('tabbarRequestDot');
+      const item  = bar.querySelector('[data-tab="chats"]');
+
+      /* Count pill — unread messages */
       if (badge) {
-        if (total > 0) {
-          badge.textContent = String(total > 99 ? '99+' : total);
+        if (unreadCount > 0) {
+          badge.textContent = String(unreadCount > 99 ? '99+' : unreadCount);
           badge.hidden = false;
         } else {
           badge.hidden = true;
         }
       }
+
+      /* Pulse dot — incoming requests */
+      if (dot) {
+        if (requestCount > 0) {
+          dot.hidden = false;
+        } else {
+          dot.hidden = true;
+        }
+      }
+
+      /* Container modifier when both are shown */
+      if (item) {
+        item.classList.toggle('has-count', unreadCount > 0);
+        item.classList.toggle('has-requests', requestCount > 0);
+      }
+
     } catch(e) { /* silent */ }
   })();
 
