@@ -8150,3 +8150,85 @@ body.pattern-rings .content-band{
 .tabbar-request-dot[hidden] {
   display: none !important;
 }
+/* ============================================================
+   INBOX · Row context menu + archived state
+   ============================================================ */
+
+/* Row menu (shown on long-press) */
+.chat-row-menu {
+  position: fixed;
+  z-index: 100;
+  min-width: 180px;
+  padding: 6px;
+  background: #FFFFFF;
+  border-radius: 12px;
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+  animation: chat-row-menu-in 160ms ease-out;
+}
+
+@keyframes chat-row-menu-in {
+  from { opacity: 0; transform: scale(0.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+.chat-row-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: #1D1D1F;
+  text-align: left;
+  border-radius: 8px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chat-row-menu-item:hover,
+.chat-row-menu-item:active {
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.chat-row-menu-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  opacity: 0.65;
+}
+
+.chat-row-menu-item-danger {
+  color: #E53535;
+}
+
+.chat-row-menu-item-danger svg {
+  opacity: 0.85;
+}
+
+/* Backdrop behind the menu */
+.chat-row-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: rgba(0, 0, 0, 0.15);
+  animation: chat-row-menu-in 140ms ease-out;
+}
+
+/* Archived badge (small chip in row) */
+.chat-row-archived {
+  display: inline-block;
+  padding: 1px 6px;
+  margin-left: 6px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: #6E6E73;
+  background: rgba(0, 0, 0, 0.06);
+  border-radius: 4px;
+  vertical-align: middle;
+}
