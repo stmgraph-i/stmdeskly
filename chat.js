@@ -69,6 +69,7 @@
   let pollTimer = null;
   let realtimeUnsub = null;
   let lastMessageId = null;
+  let presenceTimer = null;
 
   /* ============================================================
      HELPERS
@@ -138,6 +139,16 @@
         const initials = otherUser.initials || (otherUser.name || '?').charAt(0);
         headAvatar.textContent = String(initials).toUpperCase().slice(0, 2);
       }
+
+      /* Presence: add dot wrapper */
+      headAvatar.classList.add('presence-avatar');
+      let dot = headAvatar.querySelector('.presence-dot');
+      if (!dot) {
+        dot = document.createElement('span');
+        dot.className = 'presence-dot';
+        headAvatar.appendChild(dot);
+      }
+      dot.style.display = 'none';
     }
 
     if (headUser) {
@@ -145,6 +156,43 @@
         ? 'profile.html?u=' + encodeURIComponent(otherUser.username)
         : '#';
     }
+
+    renderPresenceInHeader();
+  }
+
+  async function renderPresenceInHeader(){
+    if (!otherId || !window.PRESENCE) return;
+    if (!headAvatar || !headStatus) return;
+
+    try {
+      const p = await PRESENCE.getPresence(otherId);
+
+      const dot = headAvatar.querySelector('.presence-dot');
+
+      if (!p.visible) {
+        if (dot) dot.style.display = 'none';
+        headStatus.textContent = otherUser.role || '';
+        headStatus.classList.remove('presence-text', 'offline');
+        return;
+      }
+
+      if (p.online) {
+        if (dot) dot.style.display = '';
+        headStatus.textContent = 'Online';
+        headStatus.classList.add('presence-text');
+        headStatus.classList.remove('offline');
+      } else {
+        if (dot) dot.style.display = 'none';
+        headStatus.textContent = PRESENCE.formatLastSeen(p.lastSeen);
+        headStatus.classList.add('presence-text', 'offline');
+      }
+    } catch(e) { /* silent */ }
+  }
+
+  function startPresencePolling(){
+    if (presenceTimer) clearInterval(presenceTimer);
+    if (!otherId) return;
+    presenceTimer = setInterval(renderPresenceInHeader, 20000);
   }
 
   /* ============================================================
@@ -416,6 +464,7 @@
           window.history.replaceState({}, '', 'chat.html?id=' + encodeURIComponent(threadId));
           startRealtime();
           startPolling();
+          startPresencePolling();
           await refreshMessages();
         } else {
           await DB.sendChatMessage(threadId, { body: body });
@@ -484,6 +533,7 @@
           await DB.sendChatMessage(threadId, { photoBlob: pendingPhotoBlob });
           startRealtime();
           startPolling();
+          startPresencePolling();
           await refreshMessages();
         } else {
           await DB.sendChatMessage(threadId, { photoBlob: pendingPhotoBlob });
@@ -603,6 +653,7 @@
 
         startRealtime();
         startPolling();
+        startPresencePolling();
       }
       else if (toUserId) {
         const ok = await loadNewRecipient();
@@ -619,6 +670,7 @@
           try { await DB.markThreadRead(threadId); } catch(e) {}
           startRealtime();
           startPolling();
+          startPresencePolling();
         } else {
           renderMessages(true);
         }
@@ -633,6 +685,7 @@
 
       window.addEventListener('beforeunload', () => {
         if (pollTimer) clearInterval(pollTimer);
+        if (presenceTimer) clearInterval(presenceTimer);
         if (realtimeUnsub) {
           try { realtimeUnsub(); } catch(e) {}
         }
