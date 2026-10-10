@@ -979,16 +979,29 @@
       if (pressTimer) clearTimeout(pressTimer);
     });
 
+    /* ---------- Avatar (image + initials fallback) ---------- */
     const avatar = document.createElement('div');
     avatar.className = 'chat-avatar';
+
+    const initials = (other && other.initials) ||
+                     (other && other.name ? other.name.charAt(0) : '?');
+    avatar.textContent = String(initials).toUpperCase().slice(0, 2);
+
     if (other && other.avatar_url) {
+      avatar.classList.add('has-image');
       avatar.style.backgroundImage = 'url("' + other.avatar_url + '")';
       avatar.style.backgroundSize = 'cover';
       avatar.style.backgroundPosition = 'center';
-    } else {
-      const initials = (other && other.initials) || (other && other.name ? other.name.charAt(0) : '?');
-      avatar.textContent = String(initials).toUpperCase().slice(0, 2);
+
+      const img = new Image();
+      img.onload = () => { avatar.textContent = ''; };
+      img.onerror = () => {
+        avatar.classList.remove('has-image');
+        avatar.style.backgroundImage = '';
+      };
+      img.src = other.avatar_url;
     }
+
     row.appendChild(avatar);
 
     const body = document.createElement('div');
@@ -1032,7 +1045,7 @@
 
     body.appendChild(top);
 
-    /* ---- Preview line ---- */
+    /* ---------- Preview line ---------- */
     const preview = document.createElement('div');
     preview.className = 'chat-row-preview';
 
