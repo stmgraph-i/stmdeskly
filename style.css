@@ -7051,3 +7051,130 @@ body:has(.desk-bot-panel[data-open="true"]) {
     padding-bottom: 10px !important;
   }
 }
+/* ============================================================
+   PART 9 — BOT (owner training page)
+   ------------------------------------------------------------
+   The owner's chat with their bot.
+   Fixed frame: header locked, log scrolls, input at bottom.
+   ============================================================ */
+
+/* Page — locked to viewport */
+.page-bot {
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+#botRoot.form-shell {
+  max-width: 640px;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 20px 14px;
+  padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  gap: 12px;
+  overflow: hidden;
+}
+
+@media (min-width: 760px) {
+  #botRoot.form-shell {
+    padding-bottom: 14px;
+  }
+}
+
+/* Header — locked at top */
+#botRoot .settings-head {
+  flex-shrink: 0;
+  margin: 0;
+}
+
+/* ---------- Owner bot card ---------- */
+
+.owner-bot-wrap {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+
+/* Message log — the only thing that scrolls */
+.owner-bot-wrap .desk-bot-log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 18px 12px;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* Chips sit above input row, both anchored to the bottom */
+.owner-bot-wrap .desk-bot-chips {
+  flex-shrink: 0;
+  padding: 8px 14px 12px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+
+.owner-bot-wrap .desk-bot-input-row {
+  flex-shrink: 0;
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--surface);
+}
+
+/* The bot send button in this page uses the standard accent,
+   not the teal — this is a working tool, not a personality. */
+.owner-bot-wrap .desk-bot-send {
+  background: var(--accent);
+}
+
+.owner-bot-wrap .desk-bot-send:hover {
+  background: var(--accent-hover);
+}
+
+/* Loading + auth fallback use the shell */
+#botLoading.dash-loading {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 520px) {
+  #botRoot.form-shell {
+    padding: 12px 12px 0;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+    gap: 10px;
+  }
+
+  .owner-bot-wrap {
+    border-radius: var(--r-lg) var(--r-lg) 0 0;
+    border-bottom: 0;
+  }
+
+  .owner-bot-wrap .desk-bot-log {
+    padding: 16px 14px 8px;
+  }
+
+  .owner-bot-wrap .desk-bot-chips {
+    padding: 6px 12px 10px;
+  }
+
+  .owner-bot-wrap .desk-bot-input-row {
+    padding: 10px 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .owner-bot-wrap .desk-bot-log {
+    scroll-behavior: auto;
+  }
+}
