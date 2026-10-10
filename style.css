@@ -10339,3 +10339,401 @@ body:has(#exploreRoot) .explore-head,
     opacity: 1;
   }
 }
+/* ============================================================
+   CHAT — sage identity (matches the reference mockup)
+   ------------------------------------------------------------
+   Chat has its own color: dusty sage, not vivid brand green.
+   Header is sage green with white text. Sender bubbles are
+   sage. Receiver bubbles are white. Everything is soft and
+   pill-shaped.
+   ============================================================ */
+
+:root {
+  --chat-sage:        #7C9B7A;   /* main sage — sender bubbles + header */
+  --chat-sage-deep:   #6A8768;   /* pressed / hover */
+  --chat-sage-soft:   #E8EFE6;   /* pale tint — composer, badges */
+  --chat-sage-ink:    #FFFFFF;   /* text on sage */
+  --chat-receiver:    #FFFFFF;   /* receiver bubble */
+  --chat-receiver-border: rgba(20, 24, 22, 0.06);
+  --chat-page:        #F7F8F5;   /* page background */
+}
+
+/* ---------- Page shell ---------- */
+
+.page-chat {
+  background: var(--chat-page);
+}
+
+/* ---------- Header — sage green ---------- */
+
+.chat-head {
+  background: var(--chat-sage) !important;
+  border-bottom: 0 !important;
+  padding: 12px 10px 12px 8px !important;
+}
+
+.chat-back {
+  color: #fff !important;
+}
+
+.chat-back:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+.chat-head-avatar {
+  background: rgba(255, 255, 255, 0.2) !important;
+  color: #fff !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+}
+
+.chat-head-name {
+  color: #fff !important;
+}
+
+.chat-head-status {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.chat-head-status.presence-text {
+  color: rgba(255, 255, 255, 0.95) !important;
+}
+
+.chat-head-status.presence-text.offline {
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.chat-search-btn,
+.chat-menu-btn {
+  color: #fff !important;
+}
+
+.chat-search-btn:hover,
+.chat-menu-btn:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+}
+
+/* Presence dot on avatar — white ring on sage background */
+.chat-head-avatar .presence-dot,
+.chat-head-avatar.presence-avatar .presence-dot {
+  border-color: var(--chat-sage) !important;
+}
+
+/* ---------- Log ---------- */
+
+.chat-log {
+  background: var(--chat-page) !important;
+  background-image: none !important;
+  padding: 18px 14px 20px !important;
+}
+
+/* ---------- Day divider ---------- */
+
+.chat-day-divider {
+  background: transparent !important;
+  border: 0 !important;
+  color: var(--ink-3);
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  padding: 6px 12px !important;
+}
+
+/* ---------- Bubbles ---------- */
+
+.chat-bubble {
+  padding: 10px 14px !important;
+  border-radius: 20px !important;
+  font-size: 15px !important;
+  line-height: 1.45 !important;
+}
+
+.chat-bubble-mine {
+  background: var(--chat-sage) !important;
+  color: var(--chat-sage-ink) !important;
+  border: 0 !important;
+  border-bottom-right-radius: 6px !important;
+}
+
+.chat-bubble-theirs {
+  background: var(--chat-receiver) !important;
+  color: var(--ink) !important;
+  border: 0 !important;
+  box-shadow: 0 0 0 1px var(--chat-receiver-border) !important;
+  border-bottom-left-radius: 6px !important;
+}
+
+/* Meta (time + delivery) inside mine */
+.chat-bubble-mine .chat-bubble-meta {
+  color: rgba(255, 255, 255, 0.82) !important;
+}
+
+.chat-bubble-theirs .chat-bubble-meta {
+  color: var(--ink-4) !important;
+}
+
+/* Quotes */
+.chat-bubble-mine .chat-bubble-quote {
+  background: rgba(255, 255, 255, 0.18) !important;
+  border-left-color: rgba(255, 255, 255, 0.75) !important;
+}
+
+/* Reactions — sage when mine */
+.chat-reaction-pill.mine {
+  background: var(--chat-sage-soft) !important;
+  border-color: var(--chat-sage) !important;
+  color: var(--chat-sage-deep) !important;
+}
+
+/* ---------- Reply bar ---------- */
+
+.chat-reply-bar {
+  background: var(--chat-page) !important;
+  border-top: 1px solid rgba(20, 24, 22, 0.06) !important;
+}
+
+.chat-reply-bar-accent {
+  background: var(--chat-sage) !important;
+}
+
+.chat-reply-bar-name {
+  color: var(--chat-sage-deep) !important;
+}
+
+/* ---------- Composer — pale sage tint, pill ---------- */
+
+.chat-composer {
+  background: var(--chat-page) !important;
+  border-top: 1px solid rgba(20, 24, 22, 0.06) !important;
+  padding: 10px 12px !important;
+  padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  gap: 8px !important;
+}
+
+.chat-attach {
+  background: var(--chat-sage-soft) !important;
+  color: var(--chat-sage-deep) !important;
+}
+
+.chat-attach:hover {
+  background: #DCE6D9 !important;
+  color: var(--chat-sage-deep) !important;
+}
+
+.chat-input-wrap {
+  background: var(--chat-sage-soft) !important;
+  border-radius: 24px !important;
+  padding: 10px 18px !important;
+}
+
+.chat-input-wrap:focus-within {
+  background: #fff !important;
+  box-shadow: inset 0 0 0 1.5px var(--chat-sage) !important;
+}
+
+.chat-input {
+  font-size: 15px !important;
+  color: var(--ink) !important;
+}
+
+.chat-input::placeholder {
+  color: var(--chat-sage-deep) !important;
+  opacity: 0.55 !important;
+}
+
+.chat-send {
+  background: var(--chat-sage) !important;
+  color: #fff !important;
+}
+
+.chat-send:hover:not(:disabled) {
+  background: var(--chat-sage-deep) !important;
+}
+
+.chat-send:disabled {
+  background: var(--chat-sage-soft) !important;
+  color: var(--chat-sage-deep) !important;
+  opacity: 0.5 !important;
+}
+
+/* ---------- Menu + search + context menu keep sage accents ---------- */
+
+.chat-menu-item:hover {
+  background: var(--chat-sage-soft) !important;
+}
+
+.chat-search-input:focus {
+  border-color: var(--chat-sage) !important;
+}
+
+.chat-search-result-name {
+  color: var(--chat-sage-deep) !important;
+}
+
+.chat-search-result-body mark {
+  background: var(--chat-sage-soft) !important;
+  color: var(--chat-sage-deep) !important;
+}
+
+.chat-ctx-emoji:hover {
+  background: var(--chat-sage-soft) !important;
+}
+
+.chat-ctx-item:hover {
+  background: var(--chat-sage-soft) !important;
+}
+
+.chat-photo-send {
+  color: var(--chat-sage-deep) !important;
+}
+
+/* ---------- Chat loading dots ---------- */
+
+.chat-loading-dot {
+  background: var(--chat-sage) !important;
+}
+
+/* ============================================================
+   INBOX (chats.html) — sage header + sage pills
+   ============================================================ */
+
+/* Inbox page shell */
+.page-chats {
+  background: var(--chat-page) !important;
+}
+
+/* Inbox title area stays neutral (title on plain bg) */
+.chats-head {
+  background: var(--chat-page) !important;
+}
+
+/* Tabs strip — sage segmented control */
+.chats-tabs {
+  background: var(--chat-sage-soft) !important;
+}
+
+.chats-tabs-pill {
+  background: var(--chat-sage) !important;
+}
+
+.chats-tab.active {
+  color: #fff !important;
+}
+
+.chats-tab.active .chats-tab-badge {
+  background: rgba(255, 255, 255, 0.3) !important;
+  color: #fff !important;
+}
+
+/* Row unread badge sage */
+.chat-row-unread {
+  background: var(--chat-sage) !important;
+}
+
+.chat-row.has-unread .chat-row-name::before {
+  background: var(--chat-sage) !important;
+}
+
+.chat-row.has-unread .chat-row-time {
+  color: var(--chat-sage-deep) !important;
+}
+
+.chat-row-tappable:hover {
+  background: var(--chat-sage-soft) !important;
+}
+
+.chat-row-tappable:active {
+  background: #DCE6D9 !important;
+}
+
+/* Chat avatar tinted sage */
+.chat-avatar {
+  background: var(--chat-sage-soft) !important;
+  color: var(--chat-sage-deep) !important;
+}
+
+/* Empty state icon circle — sage */
+.chats-empty-icon {
+  background: var(--chat-sage-soft) !important;
+  color: var(--chat-sage) !important;
+}
+
+.chats-empty-btn {
+  background: var(--chat-sage) !important;
+}
+
+.chats-empty-btn:hover {
+  background: var(--chat-sage-deep) !important;
+}
+
+/* Accept button in requests — sage */
+.chat-action-accept {
+  background: var(--chat-sage) !important;
+}
+
+.chat-action-accept:hover {
+  background: var(--chat-sage-deep) !important;
+}
+
+/* Notif mark-all link — sage */
+.notif-mark-all {
+  color: var(--chat-sage-deep) !important;
+}
+
+.notif-mark-all:hover {
+  background: var(--chat-sage-soft) !important;
+}
+
+/* Notification unread tint — sage */
+.notif-card-unread {
+  background: var(--chat-sage-soft) !important;
+}
+
+.notif-dot {
+  background: var(--chat-sage) !important;
+}
+
+/* Tab picker — sage accents */
+.tab-picker-row.on .tab-picker-row-toggle {
+  background: var(--chat-sage) !important;
+}
+
+.tab-picker-done,
+.tab-picker-save {
+  background: var(--chat-sage) !important;
+}
+
+.tab-picker-done:hover,
+.tab-picker-save:hover {
+  background: var(--chat-sage-deep) !important;
+}
+
+.tab-picker-new-btn {
+  border-color: var(--chat-sage) !important;
+  color: var(--chat-sage-deep) !important;
+}
+
+.tab-picker-new-btn:hover {
+  background: var(--chat-sage-soft) !important;
+}
+
+.tab-picker-input:focus {
+  border-color: var(--chat-sage) !important;
+}
+
+/* Row context menu — sage hover */
+.chat-row-menu-item:hover {
+  background: var(--chat-sage-soft) !important;
+}
+
+/* Loading skeleton — sage tint (optional, keeps consistency) */
+.chats-loading .skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(124, 155, 122, 0.08) 0%,
+    rgba(124, 155, 122, 0.14) 50%,
+    rgba(124, 155, 122, 0.08) 100%
+  ) !important;
+  background-size: 200% 100% !important;
+}
