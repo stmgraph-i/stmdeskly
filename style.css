@@ -3040,3 +3040,483 @@ body:has(#newPasswordForm) .form-fields {
     padding: 24px 0 32px;
   }
 }
+/* ============================================================
+   LANDING — bolder
+   ------------------------------------------------------------
+   Bigger hero, stronger section titles, heavier weights.
+   Still matte, still restrained. Just more confident.
+   ============================================================ */
+
+/* ---------- Hero — bigger, bolder ---------- */
+
+.hero {
+  padding: 100px 0 64px;
+}
+
+@media (min-width: 720px) {
+  .hero {
+    padding: 140px 0 88px;
+  }
+}
+
+.hero-logo {
+  max-width: 340px;
+  margin-bottom: 32px;
+}
+
+.hero-tagline {
+  font-family: var(--sans);
+  font-size: clamp(1.15rem, 4.4vw, 1.55rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  max-width: 440px;
+  margin: 0 auto 44px;
+  line-height: 1.35;
+}
+
+.hero-cta {
+  padding: 18px 44px;
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: -0.008em;
+}
+
+.hero-login {
+  margin-top: 26px;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+/* ---------- Section titles — bigger, heavier ---------- */
+
+.section-eyebrow {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: var(--sans);
+  font-size: clamp(2.1rem, 8vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  color: var(--ink);
+  margin-bottom: 18px;
+  max-width: 720px;
+}
+
+.section-sub {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 540px;
+  margin: 0 auto 48px;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Triple cards — heavier titles, bigger type ---------- */
+
+.triple-card {
+  padding: 28px 24px;
+  gap: 18px;
+}
+
+.triple-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+}
+
+.triple-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2;
+}
+
+.triple-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.triple-text {
+  font-size: 15.5px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* ---------- Steps — bolder numbers + titles ---------- */
+
+.steps-list {
+  margin-top: 16px;
+  border-top: 2px solid var(--ink);
+}
+
+.step-item {
+  padding: 36px 0;
+}
+
+.step-num {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.step-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+
+.step-text {
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+
+@media (min-width: 720px) {
+  .step-item {
+    padding: 44px 32px 44px 0;
+  }
+  .step-item:not(:first-child) {
+    padding-left: 32px;
+  }
+  .step-num {
+    margin-bottom: 10px;
+  }
+}
+
+/* ---------- Final CTA — bolder ---------- */
+
+.final-block {
+  padding: 80px 32px;
+}
+
+@media (min-width: 720px) {
+  .final-block {
+    padding: 120px 60px;
+  }
+}
+
+.final-title {
+  font-size: clamp(2rem, 7vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+  margin-bottom: 36px;
+  max-width: 560px;
+}
+
+.final-btn {
+  padding: 18px 40px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.008em;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 520px) {
+  .hero {
+    padding: 72px 0 48px;
+  }
+
+  .hero-logo {
+    max-width: 260px;
+    margin-bottom: 26px;
+  }
+
+  .hero-tagline {
+    font-size: 1.1rem;
+    margin-bottom: 34px;
+  }
+
+  .hero-cta {
+    padding: 16px 38px;
+    font-size: 15.5px;
+  }
+
+  .section-title {
+    font-size: clamp(1.85rem, 8vw, 2.5rem);
+  }
+
+  .section-sub {
+    font-size: 15.5px;
+    margin-bottom: 34px;
+  }
+
+  .triple-title {
+    font-size: 17.5px;
+  }
+
+  .triple-text {
+    font-size: 14.5px;
+  }
+
+  .step-title {
+    font-size: 19px;
+  }
+
+  .final-block {
+    padding: 60px 24px;
+  }
+
+  .final-title {
+    font-size: clamp(1.7rem, 7vw, 2.2rem);
+    margin-bottom: 28px;
+  }
+
+  .final-btn {
+    padding: 16px 34px;
+    font-size: 15px;
+  }
+   }
+/* ============================================================
+   LANDING — bolder
+   ------------------------------------------------------------
+   Bigger hero, stronger section titles, heavier weights.
+   Still matte, still restrained. Just more confident.
+   ============================================================ */
+
+/* ---------- Hero — bigger, bolder ---------- */
+
+.hero {
+  padding: 100px 0 64px;
+}
+
+@media (min-width: 720px) {
+  .hero {
+    padding: 140px 0 88px;
+  }
+}
+
+.hero-logo {
+  max-width: 340px;
+  margin-bottom: 32px;
+}
+
+.hero-tagline {
+  font-family: var(--sans);
+  font-size: clamp(1.15rem, 4.4vw, 1.55rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  max-width: 440px;
+  margin: 0 auto 44px;
+  line-height: 1.35;
+}
+
+.hero-cta {
+  padding: 18px 44px;
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: -0.008em;
+}
+
+.hero-login {
+  margin-top: 26px;
+  font-size: 14.5px;
+  font-weight: 600;
+}
+
+/* ---------- Section titles — bigger, heavier ---------- */
+
+.section-eyebrow {
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: var(--sans);
+  font-size: clamp(2.1rem, 8vw, 3.25rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  color: var(--ink);
+  margin-bottom: 18px;
+  max-width: 720px;
+}
+
+.section-sub {
+  font-size: 17px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 540px;
+  margin: 0 auto 48px;
+  letter-spacing: -0.01em;
+}
+
+/* ---------- Triple cards — heavier titles, bigger type ---------- */
+
+.triple-card {
+  padding: 28px 24px;
+  gap: 18px;
+}
+
+.triple-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+}
+
+.triple-icon svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2;
+}
+
+.triple-title {
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+  margin-bottom: 8px;
+}
+
+.triple-text {
+  font-size: 15.5px;
+  line-height: 1.6;
+  font-weight: 400;
+}
+
+/* ---------- Steps — bolder numbers + titles ---------- */
+
+.steps-list {
+  margin-top: 16px;
+  border-top: 2px solid var(--ink);
+}
+
+.step-item {
+  padding: 36px 0;
+}
+
+.step-num {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  margin-bottom: 6px;
+}
+
+.step-title {
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  margin-bottom: 4px;
+}
+
+.step-text {
+  font-size: 15.5px;
+  line-height: 1.65;
+}
+
+@media (min-width: 720px) {
+  .step-item {
+    padding: 44px 32px 44px 0;
+  }
+  .step-item:not(:first-child) {
+    padding-left: 32px;
+  }
+  .step-num {
+    margin-bottom: 10px;
+  }
+}
+
+/* ---------- Final CTA — bolder ---------- */
+
+.final-block {
+  padding: 80px 32px;
+}
+
+@media (min-width: 720px) {
+  .final-block {
+    padding: 120px 60px;
+  }
+}
+
+.final-title {
+  font-size: clamp(2rem, 7vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.05;
+  margin-bottom: 36px;
+  max-width: 560px;
+}
+
+.final-btn {
+  padding: 18px 40px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.008em;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 520px) {
+  .hero {
+    padding: 72px 0 48px;
+  }
+
+  .hero-logo {
+    max-width: 260px;
+    margin-bottom: 26px;
+  }
+
+  .hero-tagline {
+    font-size: 1.1rem;
+    margin-bottom: 34px;
+  }
+
+  .hero-cta {
+    padding: 16px 38px;
+    font-size: 15.5px;
+  }
+
+  .section-title {
+    font-size: clamp(1.85rem, 8vw, 2.5rem);
+  }
+
+  .section-sub {
+    font-size: 15.5px;
+    margin-bottom: 34px;
+  }
+
+  .triple-title {
+    font-size: 17.5px;
+  }
+
+  .triple-text {
+    font-size: 14.5px;
+  }
+
+  .step-title {
+    font-size: 19px;
+  }
+
+  .final-block {
+    padding: 60px 24px;
+  }
+
+  .final-title {
+    font-size: clamp(1.7rem, 7vw, 2.2rem);
+    margin-bottom: 28px;
+  }
+
+  .final-btn {
+    padding: 16px 34px;
+    font-size: 15px;
+  }
+   }
