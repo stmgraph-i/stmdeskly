@@ -1200,3 +1200,42 @@ textarea.form-input {
     font-size: 14.5px;
   }
    }
+/* ============================================================
+   FONT — Apple San Francisco + Inter fallback
+   ------------------------------------------------------------
+   On iOS/Mac: uses the real San Francisco (built into the OS).
+   On Android/Windows/Linux: uses Inter (SF's closest match).
+   Same visual weight, same rhythm, same restraint.
+   ============================================================ */
+
+:root {
+  --display: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+             "SF Pro Text", "Inter", system-ui, sans-serif;
+  --sans:    -apple-system, BlinkMacSystemFont, "SF Pro Text",
+             "Inter", system-ui, sans-serif;
+}
+
+body,
+h1, h2, h3, h4,
+.form-head-title,
+.form-label,
+.btn,
+.form-submit,
+.type-title,
+.account-name,
+.occ-title,
+input, textarea, select, button {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text",
+               "Inter", system-ui, sans-serif;
+}
+
+/* San Francisco sits slightly tighter than Manrope/Poppins.
+   Restore the natural tracking for text — but keep display
+   headings tight for impact. */
+body {
+  letter-spacing: -0.008em;
+}
+
+.form-head-title {
+  letter-spacing: -0.03em;
+}
