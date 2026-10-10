@@ -4149,3 +4149,666 @@ body:has(#newPasswordForm) .form-fields {
      Part 11 — Explore + Gigs
      Part 12 — Toasts + misc
    ============================================================ */
+
+
+/* ============================================================
+   38. LANDING · hero with logo
+   ------------------------------------------------------------
+   The first thing anyone sees on index.html.
+   Now includes the actual logo mark above the brand name,
+   so it feels like a real branded hero instead of a text wall.
+   ============================================================ */
+
+/* Landing page background — dot pattern, gentler now */
+body.landing {
+  background-image: var(--dots);
+  background-size: var(--dots-size);
+  background-position: 0 0;
+  background-attachment: scroll;
+}
+
+.landing-wrap {
+  width: 100%;
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: 0 var(--gutter) 140px;
+}
+
+/* ---- Hero ---- */
+
+.hero {
+  padding: 80px 0 70px;
+  text-align: center;
+  position: relative;
+}
+
+/* Soft radial glow behind the logo — adds depth without weight */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 320px;
+  height: 320px;
+  background: radial-gradient(
+    circle,
+    rgba(1, 118, 76, 0.10) 0%,
+    rgba(1, 118, 76, 0) 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* The logo mark — this is the big change.
+   Uses the real icon-192.png with a green glow ring. */
+.hero-brand {
+  display: block;
+  font-family: var(--display);
+  font-size: clamp(2.2rem, 11vw, 3.6rem);
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  line-height: 1;
+  color: var(--ink);
+  margin-bottom: 8px;
+}
+
+/* Logo above the text — pulls from the real icon */
+.hero-brand::before {
+  content: "";
+  display: block;
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 22px;
+  background-image: url("/icon-192.png");
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  border-radius: 26px;
+  box-shadow:
+    0 8px 24px -8px rgba(1, 118, 76, 0.35),
+    0 2px 6px rgba(28, 28, 30, 0.08),
+    0 0 0 1px rgba(1, 118, 76, 0.08);
+}
+
+.hero-credit {
+  font-size: 13px;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 30px;
+}
+
+.hero-line {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 5.5vw, 2rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.15;
+  color: var(--ink);
+  margin-bottom: 18px;
+  max-width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.hero-sub {
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1.55;
+  color: var(--ink-2);
+  max-width: 480px;
+  margin: 0 auto 32px;
+  letter-spacing: -0.005em;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.hero-alt {
+  margin-top: 22px;
+  font-size: 14px;
+  color: var(--ink-3);
+  text-align: center;
+  letter-spacing: -0.005em;
+}
+.hero-alt a {
+  color: var(--accent);
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+.hero-alt a:hover { color: var(--accent-hover); }
+
+/* ============================================================
+   39. LANDING · welcome section (stats strip)
+   ============================================================ */
+
+.welcome {
+  padding: 48px 32px;
+  margin-bottom: 16px;
+  background: var(--surface-elevated);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.welcome-head {
+  font-family: var(--display);
+  font-size: clamp(1.5rem, 5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.15;
+  color: var(--ink);
+  max-width: 560px;
+  margin: 0 auto 14px;
+}
+
+.welcome-copy {
+  font-size: 15.5px;
+  color: var(--ink-2);
+  max-width: 440px;
+  margin: 0 auto 32px;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+
+.welcome-strip {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.welcome-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.welcome-num {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--accent);
+  line-height: 1.2;
+}
+
+.welcome-lbl {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   40. LANDING · sections (generic)
+   ------------------------------------------------------------
+   Shared shell for most landing sections.
+   ============================================================ */
+
+.section {
+  padding: 44px 32px;
+  margin-bottom: 16px;
+  background: var(--surface-elevated);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  text-align: center;
+  border: 1px solid rgba(255, 255, 255, 0.7);
+}
+
+.section-head {
+  font-family: var(--display);
+  font-size: clamp(1.35rem, 4.5vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.2;
+  color: var(--ink);
+  max-width: 520px;
+  margin: 0 auto 22px;
+}
+
+.section-line {
+  font-size: 15px;
+  color: var(--ink-2);
+  max-width: 440px;
+  margin: 22px auto 0;
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   41. LANDING · chips (colored)
+   ------------------------------------------------------------
+   The "sharing is scattered" section.
+   Each chip gets its own colour — this is where the multi-hue
+   system really shows on the landing.
+   ============================================================ */
+
+.chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.chip {
+  padding: 10px 18px;
+  border-radius: var(--r-pill);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  border: 1px solid var(--line);
+  transition: transform 0.15s ease;
+}
+
+.chip:hover { transform: translateY(-1px); }
+
+/* Each chip its own hue */
+.chips .chip:nth-child(1) {
+  background: var(--g-50);
+  color: var(--g-700);
+  border-color: var(--g-100);
+}
+.chips .chip:nth-child(2) {
+  background: var(--b-50);
+  color: var(--b-700);
+  border-color: var(--b-100);
+}
+.chips .chip:nth-child(3) {
+  background: var(--a-50);
+  color: var(--a-700);
+  border-color: var(--a-100);
+}
+.chips .chip:nth-child(4) {
+  background: var(--p-50);
+  color: var(--p-700);
+  border-color: var(--p-100);
+}
+.chips .chip:nth-child(5) {
+  background: var(--pk-50);
+  color: var(--pk-700);
+  border-color: var(--pk-100);
+}
+.chips .chip:nth-child(6) {
+  background: var(--t-50);
+  color: var(--t-700);
+  border-color: var(--t-100);
+}
+
+/* ============================================================
+   42. LANDING · 3-column block
+   ------------------------------------------------------------
+   The "A Desk can be for" section.
+   Each column gets a tint: green / blue / purple.
+   ============================================================ */
+
+.cols-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  text-align: left;
+  margin-top: 20px;
+}
+
+.col {
+  padding: 20px 20px;
+  border-radius: var(--r-lg);
+  background: var(--surface-2);
+}
+
+.col-head {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.col-list {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--ink-2);
+  letter-spacing: -0.005em;
+}
+
+/* Column tints */
+.cols-3 .col:nth-child(1) {
+  background: var(--g-50);
+}
+.cols-3 .col:nth-child(1) .col-head { color: var(--g-700); }
+
+.cols-3 .col:nth-child(2) {
+  background: var(--b-50);
+}
+.cols-3 .col:nth-child(2) .col-head { color: var(--b-700); }
+
+.cols-3 .col:nth-child(3) {
+  background: var(--p-50);
+}
+.cols-3 .col:nth-child(3) .col-head { color: var(--p-700); }
+
+/* ============================================================
+   43. LANDING · wide card + url card
+   ============================================================ */
+
+.wide-card {
+  background: var(--surface-2);
+  border-radius: var(--r-lg);
+  padding: 32px 26px;
+  border: 1px solid var(--line);
+}
+
+.url-card {
+  background: linear-gradient(
+    135deg,
+    var(--g-50) 0%,
+    var(--t-50) 100%
+  );
+  border-radius: var(--r-lg);
+  padding: 26px 22px;
+  max-width: 520px;
+  margin: 0 auto;
+  border: 1px solid var(--g-100);
+}
+
+.url-tag {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--g-700);
+  opacity: 0.7;
+  margin-bottom: 12px;
+}
+
+.url-text {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--g-700);
+  word-break: break-all;
+  line-height: 1.4;
+  letter-spacing: -0.01em;
+}
+
+/* ============================================================
+   44. LANDING · why + final + footer
+   ============================================================ */
+
+.why {
+  max-width: 520px;
+  margin: 0 auto;
+  font-size: 15.5px;
+  line-height: 1.65;
+  color: var(--ink-2);
+  letter-spacing: -0.005em;
+}
+
+.final {
+  padding: 52px 32px;
+  margin-top: 16px;
+  background: linear-gradient(
+    135deg,
+    var(--g-600) 0%,
+    var(--g-700) 100%
+  );
+  border-radius: var(--r-xl);
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 12px 32px -12px rgba(1, 118, 76, 0.5),
+    0 2px 6px rgba(28, 28, 30, 0.06);
+}
+
+/* Soft highlight on the gradient */
+.final::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    circle at 30% 0%,
+    rgba(255, 255, 255, 0.22) 0%,
+    rgba(255, 255, 255, 0) 60%
+  );
+  pointer-events: none;
+}
+
+.final-head {
+  font-family: var(--display);
+  font-size: clamp(1.85rem, 6vw, 2.5rem);
+  font-weight: 900;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  color: #fff;
+  margin-bottom: 26px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Override the primary button inside the final card — white on green */
+.final .btn-primary {
+  background: #fff;
+  color: var(--g-700);
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.08),
+    0 12px 24px -8px rgba(0, 0, 0, 0.24);
+  position: relative;
+  z-index: 1;
+}
+.final .btn-primary:hover {
+  background: #F5FBF6;
+  box-shadow:
+    0 4px 6px rgba(0, 0, 0, 0.10),
+    0 18px 32px -10px rgba(0, 0, 0, 0.28);
+}
+
+/* ---- Footer ---- */
+
+.foot {
+  padding: 36px 0 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+}
+
+.foot-brand {
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink-2);
+}
+
+.foot-credit {
+  font-size: 12.5px;
+  opacity: 0.75;
+}
+
+/* ============================================================
+   45. LANDING · explore preview section
+   ------------------------------------------------------------
+   The "Explore users" section (only shows if there are Desks).
+   Reuses explore-card styling from the explore page (Part 11),
+   but with slightly tighter proportions for the landing slot.
+   ============================================================ */
+
+.explore-landing {
+  padding: 44px 26px;
+}
+
+.explore-landing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+  text-align: left;
+}
+
+@media (min-width: 600px) {
+  .explore-landing-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.explore-landing-more {
+  margin-top: 18px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.explore-landing-more a {
+  color: var(--accent);
+  font-weight: 600;
+  transition: color 0.15s ease;
+}
+
+.explore-landing-more a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+   46. LANDING · responsive
+   ============================================================ */
+
+@media (max-width: 760px) {
+  .hero {
+    padding: 60px 0 50px;
+  }
+
+  .hero-brand::before {
+    width: 84px;
+    height: 84px;
+    margin-bottom: 18px;
+    border-radius: 22px;
+  }
+
+  .hero-credit {
+    margin-bottom: 24px;
+  }
+
+  .welcome {
+    padding: 36px 24px;
+  }
+
+  .section {
+    padding: 36px 24px;
+  }
+
+  .final {
+    padding: 44px 24px;
+  }
+
+  .cols-3 {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .welcome-strip {
+    gap: 24px;
+  }
+
+  .wide-card {
+    padding: 26px 20px;
+  }
+
+  .url-card {
+    padding: 22px 18px;
+  }
+}
+
+@media (max-width: 520px) {
+  .hero {
+    padding: 48px 0 40px;
+  }
+
+  .hero-brand::before {
+    width: 76px;
+    height: 76px;
+    margin-bottom: 16px;
+    border-radius: 20px;
+  }
+
+  .hero-brand {
+    font-size: clamp(1.9rem, 10vw, 2.6rem);
+  }
+
+  .hero-credit {
+    font-size: 11.5px;
+    margin-bottom: 20px;
+  }
+
+  .hero-line {
+    font-size: 1.35rem;
+  }
+
+  .hero-sub {
+    font-size: 15px;
+    margin-bottom: 26px;
+  }
+
+  .hero-actions {
+    gap: 10px;
+  }
+
+  .hero-actions .btn {
+    padding: 13px 22px;
+    font-size: 14.5px;
+  }
+
+  .welcome-strip {
+    gap: 18px;
+  }
+
+  .welcome-num {
+    font-size: 16.5px;
+  }
+
+  .welcome-lbl {
+    font-size: 11.5px;
+  }
+}
+
+/* ============================================================
+   END OF PART 5
+   ============================================================
+   Now styled:
+     ✓ Landing hero with real logo (icon-192.png) on top
+     ✓ Soft green glow behind the logo
+     ✓ Welcome stats strip
+     ✓ Colored chips (each one its own hue)
+     ✓ 3-column block — green / blue / purple
+     ✓ Wide card, URL card (gradient), Why text
+     ✓ Final CTA card — green gradient with white button
+     ✓ Explore preview section
+     ✓ Footer
+
+   Landing now has 6 distinct colors visible on first scroll:
+   green, blue, amber, purple, pink, teal.
+
+   Next parts:
+     Part 6  — Home (signed-in dashboard feed)
+     Part 7  — Dashboard + Settings
+     Part 8  — Desk + Profile + Reviews + Wall
+     Part 9  — Bot
+     Part 10 — Chat
+     Part 11 — Chats + Updates + Tab picker
+     Part 12 — Explore + Gigs
+     Part 13 — Toasts + misc
+   ============================================================ */
