@@ -7667,3 +7667,31 @@ body:has(.desk-bot-panel[data-open="true"]) {
     font-size: 1.4rem;
   }
 }
+/* ============================================================
+   EXPLORE — stack under the app header
+   ------------------------------------------------------------
+   Explore now has two sticky elements:
+     .app-header    top: 0
+     .explore-head  top: 56px  (sits below the header)
+   ============================================================ */
+
+/* Push the explore page down so it isn't hidden behind the
+   sticky app header */
+body:has(#exploreRoot) .form-shell,
+#exploreRoot.form-shell {
+  padding-top: 0;
+}
+
+/* Sticky explore-head sits at header height */
+body:has(#exploreRoot) .explore-head,
+#exploreRoot .explore-head {
+  top: 56px !important;
+}
+
+/* Mobile — header is a bit shorter */
+@media (max-width: 520px) {
+  body:has(#exploreRoot) .explore-head,
+  #exploreRoot .explore-head {
+    top: 52px !important;
+  }
+}
