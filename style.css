@@ -7062,3 +7062,99 @@ body.page-desk {
 .chats-head {
   border-bottom: 1px solid var(--line);
 }
+/* ============================================================
+   CHAT ROW — clean press state
+   ------------------------------------------------------------
+   Tap on a row: gentle scale, soft tint, rounded corners.
+   Nothing half-lit. No rectangle mid-press.
+   ============================================================ */
+
+.chat-row {
+  border-radius: var(--r-md);
+  border-bottom: 0;              /* kill the rectangle */
+  margin: 0 0 2px;               /* replace divider with gap */
+  padding: 14px 12px;
+  transition:
+    background-color 0.18s ease,
+    transform 0.22s cubic-bezier(0.2, 0.9, 0.2, 1),
+    box-shadow 0.18s ease;
+  -webkit-tap-highlight-color: transparent;
+  transform-origin: center;
+  will-change: transform;
+}
+
+/* Fake the divider with a bottom hairline on every row except last.
+   Uses a pseudo so the pressed bg doesn't fight it. */
+.chat-row::after {
+  content: "";
+  position: absolute;
+  left: 74px;                    /* aligned under the text, past the avatar */
+  right: 12px;
+  bottom: 0;
+  height: 1px;
+  background: var(--line);
+  pointer-events: none;
+}
+
+.chat-row:last-child::after {
+  display: none;
+}
+
+/* Tap / press */
+.chat-row-tappable {
+  cursor: pointer;
+}
+
+.chat-row-tappable:active {
+  background-color: var(--surface);
+  transform: scale(0.982);
+  box-shadow: 0 1px 3px rgba(20, 24, 22, 0.06);
+}
+
+/* Hover on desktop */
+@media (hover: hover) {
+  .chat-row-tappable:hover {
+    background-color: var(--surface-2);
+  }
+}
+
+/* Once finger lifts, snap back with a soft spring */
+.chat-row-tappable:not(:active) {
+  transition:
+    background-color 0.18s ease,
+    transform 0.28s cubic-bezier(0.34, 1.4, 0.4, 1),
+    box-shadow 0.18s ease;
+}
+
+/* Unread rows still keep their identity */
+.chat-row.has-unread {
+  background-color: transparent;
+}
+
+.chat-row.has-unread:active {
+  background-color: var(--surface);
+}
+
+/* Position fix — the ::after needs a positioned parent */
+.chat-row {
+  position: relative;
+}
+
+/* Mobile tightening */
+@media (max-width: 520px) {
+  .chat-row {
+    padding: 12px 10px;
+    margin-bottom: 0;
+  }
+  .chat-row::after {
+    left: 70px;
+    right: 10px;
+  }
+}
+
+/* Reduced motion — no scale, just tint */
+@media (prefers-reduced-motion: reduce) {
+  .chat-row-tappable:active {
+    transform: none;
+  }
+}
