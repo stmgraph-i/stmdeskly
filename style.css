@@ -4812,3 +4812,658 @@ body.landing {
      Part 12 — Explore + Gigs
      Part 13 — Toasts + misc
    ============================================================ */
+
+/* ============================================================
+   47. SCREEN-POWER TREATMENT
+   ------------------------------------------------------------
+   Tricks to make the app feel like a flagship on ANY screen.
+   Not literally AMOLED — but the perceptual effect of it.
+
+   What's happening:
+     - Colored glow shadows (the element's own hue, not grey)
+     - Deep near-black panels where contrast matters
+     - Saturated iOS system colors
+     - Gradient highlights on the top edge of dark cards
+     - Spring animations instead of linear
+   ============================================================ */
+
+:root {
+  /* Saturated iOS-grade colors — vivid on any panel */
+  --sys-blue:   #0A84FF;
+  --sys-green:  #34C759;
+  --sys-red:    #FF3B30;
+  --sys-orange: #FF9F0A;
+  --sys-purple: #BF5AF2;
+  --sys-pink:   #FF375F;
+  --sys-teal:   #5AC8FA;
+
+  /* Deep near-black — used only in specific panels */
+  --deep-0: #000000;
+  --deep-1: #0A0A0C;
+  --deep-2: #121214;
+  --deep-3: #1C1C1E;
+
+  /* Spring curves — iOS-grade feel */
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* ============================================================
+   48. HOME · greeting
+   ------------------------------------------------------------
+   The top of the signed-in home page.
+   Big greeting, small welcome line.
+   ============================================================ */
+
+.home-greet {
+  margin: 28px 0 20px;
+}
+
+.home-hello {
+  font-family: var(--display);
+  font-size: clamp(1.6rem, 6.5vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.home-sub {
+  font-size: 14.5px;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   49. HOME · search bar (glass)
+   ------------------------------------------------------------
+   Frosted input at the top of home.
+   Focused state has a soft blue glow — feels alive.
+   ============================================================ */
+
+.home-search {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--r-pill);
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.home-search:focus-within {
+  border-color: var(--sys-blue);
+  box-shadow:
+    var(--shadow-sm),
+    0 0 0 4px rgba(10, 132, 255, 0.15);
+}
+
+.home-search svg {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+.home-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink);
+}
+
+.home-search input::placeholder {
+  color: #A29B8E;
+}
+
+/* ============================================================
+   50. HOME · quick actions
+   ------------------------------------------------------------
+   Three pill buttons: Post a gig / Edit Desk / Open bot.
+   Each gets its own color identity.
+   ============================================================ */
+
+.home-quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 26px;
+}
+
+.home-quick-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 13px 10px;
+  border-radius: var(--r-pill);
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  text-align: center;
+  text-decoration: none;
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: var(--shadow-xs);
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.15s var(--spring),
+    box-shadow 0.2s ease;
+}
+
+.home-quick-btn svg {
+  flex-shrink: 0;
+}
+
+.home-quick-btn:active {
+  transform: scale(0.98);
+}
+
+/* Button 1 — Post a gig (amber with glow) */
+.home-quick-actions .home-quick-btn:nth-child(1) {
+  background: var(--sys-orange);
+  color: #fff;
+  border-color: var(--sys-orange);
+  box-shadow:
+    0 2px 4px rgba(255, 159, 10, 0.18),
+    0 8px 20px -6px rgba(255, 159, 10, 0.42);
+}
+.home-quick-actions .home-quick-btn:nth-child(1):hover {
+  background: #E68B08;
+  border-color: #E68B08;
+  box-shadow:
+    0 4px 8px rgba(255, 159, 10, 0.22),
+    0 14px 28px -8px rgba(255, 159, 10, 0.5);
+}
+
+/* Button 2 — Edit Desk (blue with glow) */
+.home-quick-actions .home-quick-btn:nth-child(2) {
+  background: var(--sys-blue);
+  color: #fff;
+  border-color: var(--sys-blue);
+  box-shadow:
+    0 2px 4px rgba(10, 132, 255, 0.18),
+    0 8px 20px -6px rgba(10, 132, 255, 0.42);
+}
+.home-quick-actions .home-quick-btn:nth-child(2):hover {
+  background: #0071E3;
+  border-color: #0071E3;
+  box-shadow:
+    0 4px 8px rgba(10, 132, 255, 0.22),
+    0 14px 28px -8px rgba(10, 132, 255, 0.5);
+}
+
+/* Button 3 — Open bot (purple with glow) */
+.home-quick-actions .home-quick-btn:nth-child(3) {
+  background: var(--sys-purple);
+  color: #fff;
+  border-color: var(--sys-purple);
+  box-shadow:
+    0 2px 4px rgba(191, 90, 242, 0.18),
+    0 8px 20px -6px rgba(191, 90, 242, 0.42);
+}
+.home-quick-actions .home-quick-btn:nth-child(3):hover {
+  background: #A94BDB;
+  border-color: #A94BDB;
+  box-shadow:
+    0 4px 8px rgba(191, 90, 242, 0.22),
+    0 14px 28px -8px rgba(191, 90, 242, 0.5);
+}
+
+/* ============================================================
+   51. HOME · sections
+   ------------------------------------------------------------
+   Three sections: Gigs / Your lane / Also on STMDeskly.
+   Each gets a colored icon circle next to the title.
+   ============================================================ */
+
+.home-section {
+  margin-bottom: 26px;
+}
+
+.home-section-title {
+  font-family: var(--display);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Section tint dot next to the title */
+.home-section-title::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  flex-shrink: 0;
+}
+
+/* Gigs — amber */
+#homeGigs .home-section-title { color: var(--a-600); }
+#homeGigs .home-section-title::before {
+  background: var(--sys-orange);
+  box-shadow: 0 0 8px rgba(255, 159, 10, 0.55);
+}
+
+/* Your lane — blue */
+#homeLane .home-section-title { color: var(--b-600); }
+#homeLane .home-section-title::before {
+  background: var(--sys-blue);
+  box-shadow: 0 0 8px rgba(10, 132, 255, 0.55);
+}
+
+/* Also on — purple */
+#homeAlso .home-section-title { color: var(--p-700); }
+#homeAlso .home-section-title::before {
+  background: var(--sys-purple);
+  box-shadow: 0 0 8px rgba(191, 90, 242, 0.55);
+}
+
+.home-section-body {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* ============================================================
+   52. HOME · mini Desk cards (lane + also lists)
+   ------------------------------------------------------------
+   Compact row: avatar + name/role/handle + location.
+   ============================================================ */
+
+.home-desk-mini {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--surface-elevated);
+  border-radius: var(--r-md);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow-xs);
+  text-decoration: none;
+  color: var(--ink);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s var(--spring),
+    box-shadow 0.18s ease;
+}
+
+.home-desk-mini:hover {
+  background: var(--surface);
+  border-color: var(--line-2);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+
+.home-desk-mini:active {
+  transform: scale(0.99);
+}
+
+.home-desk-mini-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.home-desk-mini-info {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.home-desk-mini-name {
+  font-family: var(--display);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-desk-mini-role {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--b-600);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-desk-mini-handle {
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 1px;
+}
+
+.home-desk-mini-loc {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ============================================================
+   53. HOME · YOUR DESK CARD (the big one at the bottom)
+   ------------------------------------------------------------
+   Deep green gradient card with glow. This is the "hero"
+   element of the home page — makes the brand pop.
+   ============================================================ */
+
+.home-desk-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 22px;
+  border-radius: var(--r-xl);
+  text-decoration: none;
+  color: #fff;
+  margin-top: 32px;
+  margin-bottom: 14px;
+  background:
+    radial-gradient(
+      circle at 85% 15%,
+      rgba(90, 200, 250, 0.28) 0%,
+      rgba(90, 200, 250, 0) 55%
+    ),
+    linear-gradient(
+      135deg,
+      #015F3D 0%,
+      #01764C 45%,
+      #0A8456 100%
+    );
+  box-shadow:
+    0 2px 6px rgba(1, 118, 76, 0.20),
+    0 12px 32px -10px rgba(1, 118, 76, 0.55),
+    0 24px 60px -20px rgba(1, 118, 76, 0.35);
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s var(--spring), box-shadow 0.25s ease;
+}
+
+/* Subtle top sheen — mimics light hitting an AMOLED surface */
+.home-desk-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.5) 50%,
+    transparent 100%
+  );
+}
+
+.home-desk-card:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 4px 10px rgba(1, 118, 76, 0.25),
+    0 18px 42px -10px rgba(1, 118, 76, 0.6),
+    0 30px 70px -20px rgba(1, 118, 76, 0.4);
+}
+
+.home-desk-card:active {
+  transform: scale(0.995);
+}
+
+.home-desk-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.home-desk-avatar.has-image {
+  background-color: transparent;
+}
+
+.home-desk-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.home-desk-name {
+  font-family: var(--display);
+  font-size: 17px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: #fff;
+  margin-bottom: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-desk-role {
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.82);
+  letter-spacing: -0.005em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.home-desk-arrow {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  flex-shrink: 0;
+  opacity: 0.9;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  transition: transform 0.2s var(--spring), background 0.15s ease;
+}
+
+.home-desk-card:hover .home-desk-arrow {
+  transform: translateX(3px);
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.home-desk-arrow svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+/* ============================================================
+   54. HOME · empty + see-more + footer
+   ============================================================ */
+
+.home-empty {
+  font-size: 14px;
+  color: var(--ink-3);
+  padding: 14px 4px;
+  letter-spacing: -0.005em;
+  line-height: 1.5;
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  border: 1px dashed var(--line-2);
+  text-align: center;
+}
+
+.home-empty-link {
+  color: var(--accent);
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.home-empty-link:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.home-see-more {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+  letter-spacing: -0.005em;
+  transition: color 0.15s ease;
+}
+.home-see-more:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.home-footer {
+  padding: 24px 0 12px;
+  text-align: center;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  letter-spacing: -0.005em;
+}
+
+.home-footer-link {
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.home-footer-link:hover {
+  color: var(--accent);
+}
+
+.home-footer-sep {
+  opacity: 0.5;
+}
+
+/* ============================================================
+   55. HOME · responsive
+   ============================================================ */
+
+@media (max-width: 520px) {
+  .home-quick-actions {
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 6px;
+  }
+
+  .home-quick-btn {
+    font-size: 11.5px;
+    padding: 12px 6px;
+  }
+
+  .home-desk-card {
+    padding: 18px 18px;
+  }
+
+  .home-desk-avatar {
+    width: 46px;
+    height: 46px;
+    font-size: 18px;
+  }
+
+  .home-desk-name {
+    font-size: 16px;
+  }
+
+  .home-desk-arrow {
+    width: 32px;
+    height: 32px;
+  }
+}
+
+/* ============================================================
+   END OF PART 6
+   ============================================================
+   What's new on home:
+     ✓ Greeting with big title
+     ✓ Glass search bar with blue focus glow
+     ✓ Three quick actions, each a different color with glow
+       (amber / blue / purple)
+     ✓ Sections with colored dot indicators that glow
+     ✓ Mini desk rows
+     ✓ Big brand "Your Desk" card with deep green gradient
+       + soft sheen + colored glow shadow
+     ✓ Home footer
+
+   The screen-power tricks are now live:
+     - Amber, blue, purple buttons with colored glow shadows
+     - Deep green gradient "hero" card with light sheen
+     - Section dots with halo glow
+     - Glass search bar with saturated focus ring
+
+   Next parts:
+     Part 7  — Dashboard + Settings
+     Part 8  — Desk + Profile + Reviews + Wall
+     Part 9  — Bot
+     Part 10 — Chat
+     Part 11 — Chats + Updates + Tab picker
+     Part 12 — Explore + Gigs
+     Part 13 — Toasts + misc
+   ============================================================ */
