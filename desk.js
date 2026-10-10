@@ -1,5 +1,5 @@
 /* ============================================================
-   DESKLY · PUBLIC DESK
+   STMDESKLY · PUBLIC DESK
    Clean portfolio. No reviews, no wall — those live in
    the in-app profile view.
    ============================================================ */
@@ -45,6 +45,11 @@
 
   const type = desk.type || 'person';
 
+  /* Split hero on desktop for desks with an avatar */
+  if (desk.avatar_url) {
+    document.body.classList.add('desk-split');
+  }
+
   let knowledge = { prices: [], facts: [] };
   try {
     if (desk.bot_knowledge) {
@@ -80,7 +85,7 @@
   $('deskRole').textContent    = desk.role || '';
   $('deskTagline').textContent = desk.tagline || '';
 
-  document.title = (desk.name || 'Desk') + ' | Deskly';
+  document.title = (desk.name || 'Desk') + ' | STMDeskly';
 
   /* ----- Offer ----- */
   const offerSource = (type === 'business' && desk.products) ? desk.products : desk.services;
@@ -399,6 +404,7 @@
     function toggle(){
       isOpen = !isOpen;
       botBtn.classList.toggle('active', isOpen);
+      botBtn.setAttribute('data-open', String(isOpen));
       panel.setAttribute('data-open', String(isOpen));
       if (isOpen && input) setTimeout(() => input.focus(), 100);
     }
