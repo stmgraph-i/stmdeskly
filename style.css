@@ -8850,3 +8850,121 @@ body:has(#exploreRoot) .explore-head,
     transition: none;
   }
    }
+/* ============================================================
+   CHATS — fixes + elegance pass
+   ------------------------------------------------------------
+   1. Empty state SVG sized correctly (was rendering huge)
+   2. Top area shrunk — header + title + tabs tighter
+   3. Body gets a subtle dot pattern
+   ============================================================ */
+
+/* ---------- 1. Force empty state icon size ---------- */
+
+.chats-empty-icon {
+  width: 72px !important;
+  height: 72px !important;
+  margin-bottom: 20px !important;
+  display: grid !important;
+  place-items: center !important;
+}
+
+.chats-empty-icon svg {
+  width: 30px !important;
+  height: 30px !important;
+  max-width: 30px !important;
+  max-height: 30px !important;
+  flex-shrink: 0 !important;
+  display: block !important;
+  stroke-width: 1.8 !important;
+}
+
+/* Push the empty state below the sticky header with breathing room */
+.chats-empty {
+  padding: 40px 24px 60px !important;
+}
+
+/* ---------- 2. Shrink the top area ---------- */
+
+.chats-head {
+  padding: 10px 0 8px !important;
+  top: 52px !important;    /* matches .app-header height */
+}
+
+.chats-head-top {
+  margin-bottom: 8px !important;
+}
+
+.chats-title {
+  font-size: 1.45rem !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.03em !important;
+}
+
+.chats-tabs {
+  padding: 2px 0 4px !important;
+}
+
+.chats-tab {
+  padding: 7px 14px !important;
+  font-size: 13.5px !important;
+}
+
+.chats-tabs-pill {
+  top: 2px !important;
+  height: 32px !important;
+}
+
+/* Body sits close under the tabs now */
+.chats-body {
+  padding-top: 2px !important;
+}
+
+/* ---------- 3. Subtle dot pattern on chats body ---------- */
+
+#chatsRoot.form-shell {
+  background-image:
+    radial-gradient(circle at 1px 1px,
+      rgba(1, 118, 76, 0.04) 1px,
+      transparent 1.4px);
+  background-size: 20px 20px;
+  background-position: 0 0;
+  /* Keep the pattern only behind the list, not the header */
+  background-attachment: local;
+}
+
+/* Header stays solid so tabs look clean over the pattern */
+.chats-head {
+  background: var(--bg);
+}
+
+/* ---------- Mobile tightening ---------- */
+
+@media (max-width: 520px) {
+  .chats-head {
+    top: 48px !important;
+    padding: 8px 0 6px !important;
+  }
+
+  .chats-title {
+    font-size: 1.35rem !important;
+  }
+
+  .chats-tab {
+    padding: 6px 13px !important;
+    font-size: 13px !important;
+  }
+
+  .chats-tabs-pill {
+    height: 30px !important;
+  }
+
+  .chats-empty-icon {
+    width: 64px !important;
+    height: 64px !important;
+  }
+
+  .chats-empty-icon svg {
+    width: 26px !important;
+    height: 26px !important;
+  }
+}
