@@ -11243,3 +11243,312 @@ body,
   border: 2.5px solid var(--surface);
   z-index: 2;
 }
+/* ============================================================
+   CHAT — Signal-style matte feel
+   ------------------------------------------------------------
+   Bubble palette matches the reference: dusty sage for sender,
+   warm off-white for receiver. Wide radius, generous padding,
+   soft and matte. No gloss, no glow.
+   ============================================================ */
+
+:root {
+  --msg-mine:      #8FA88A;   /* dusty sage — sender */
+  --msg-mine-deep: #7C9478;
+  --msg-mine-ink:  #FFFFFF;
+  --msg-theirs:    #EDEFE9;   /* warm off-white — receiver */
+  --msg-theirs-ink:#2A2E29;
+  --msg-time-mine:  rgba(255, 255, 255, 0.75);
+  --msg-time-theirs: rgba(42, 46, 41, 0.50);
+  --msg-page:      #FFFFFF;
+}
+
+/* ---------- Chat page shell — clean white like Signal ---------- */
+
+.page-chat {
+  background: var(--msg-page) !important;
+}
+
+.chat-log {
+  background: var(--msg-page) !important;
+  background-image: none !important;
+  padding: 14px 12px 8px !important;
+  gap: 2px !important;
+}
+
+/* ---------- Header — always visible, minimal ---------- */
+
+.chat-head {
+  display: flex !important;
+  background: var(--msg-page) !important;
+  border-bottom: 1px solid rgba(20, 24, 22, 0.06) !important;
+  padding: 10px 8px 10px 4px !important;
+  padding-top: max(10px, env(safe-area-inset-top)) !important;
+  gap: 4px !important;
+}
+
+.chat-back {
+  color: var(--ink) !important;
+  width: 38px !important;
+  height: 38px !important;
+}
+
+.chat-back:hover {
+  background: rgba(20, 24, 22, 0.05) !important;
+}
+
+.chat-head-avatar {
+  background: var(--msg-mine) !important;
+  color: #fff !important;
+  border: 0 !important;
+  width: 38px !important;
+  height: 38px !important;
+  font-size: 14px !important;
+}
+
+.chat-head-name {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.015em !important;
+  color: var(--ink) !important;
+}
+
+.chat-head-status {
+  font-size: 11.5px !important;
+  color: var(--ink-3) !important;
+  font-weight: 500 !important;
+}
+
+.chat-head-avatar .presence-dot {
+  border-color: var(--msg-page) !important;
+  width: 11px !important;
+  height: 11px !important;
+  bottom: 0 !important;
+  right: 0 !important;
+}
+
+.chat-search-btn,
+.chat-menu-btn {
+  width: 38px !important;
+  height: 38px !important;
+  color: var(--ink-2) !important;
+}
+
+.chat-search-btn:hover,
+.chat-menu-btn:hover {
+  background: rgba(20, 24, 22, 0.05) !important;
+}
+
+/* ---------- Bubbles — matte, wide, generous ---------- */
+
+.chat-bubble-wrap {
+  max-width: 82% !important;
+  margin-top: 2px !important;
+}
+
+.chat-bubble-wrap-theirs + .chat-bubble-wrap-mine,
+.chat-bubble-wrap-mine + .chat-bubble-wrap-theirs {
+  margin-top: 10px !important;
+}
+
+.chat-bubble {
+  padding: 10px 16px !important;
+  border-radius: 20px !important;
+  font-size: 15.5px !important;
+  line-height: 1.45 !important;
+  letter-spacing: -0.008em !important;
+  font-weight: 400 !important;
+}
+
+.chat-bubble-mine {
+  background: var(--msg-mine) !important;
+  color: var(--msg-mine-ink) !important;
+  border: 0 !important;
+  border-bottom-right-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+.chat-bubble-theirs {
+  background: var(--msg-theirs) !important;
+  color: var(--msg-theirs-ink) !important;
+  border: 0 !important;
+  border-bottom-left-radius: 6px !important;
+  box-shadow: none !important;
+}
+
+/* Time inside bubble — very quiet */
+.chat-bubble-meta {
+  font-size: 11px !important;
+  font-weight: 400 !important;
+  letter-spacing: 0 !important;
+  opacity: 1 !important;
+  margin-left: 10px !important;
+  margin-top: 3px !important;
+}
+
+.chat-bubble-mine .chat-bubble-meta {
+  color: var(--msg-time-mine) !important;
+}
+
+.chat-bubble-theirs .chat-bubble-meta {
+  color: var(--msg-time-theirs) !important;
+}
+
+/* Delivery dots — smaller and quieter */
+.chat-delivery {
+  width: 7px !important;
+  height: 7px !important;
+}
+
+.chat-delivery-seen {
+  background: rgba(255, 255, 255, 0.95) !important;
+}
+
+.chat-delivery-online {
+  border: 1.5px solid rgba(255, 255, 255, 0.85) !important;
+}
+
+.chat-delivery-offline {
+  border: 1.5px solid rgba(255, 255, 255, 0.40) !important;
+}
+
+/* Day divider — quiet small text, no pill */
+.chat-day-divider {
+  background: transparent !important;
+  border: 0 !important;
+  color: var(--ink-4) !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0 !important;
+  text-transform: none !important;
+  padding: 14px 12px 6px !important;
+  margin: 0 !important;
+}
+
+/* Reactions — pill under bubble, overlapping slightly */
+.chat-reactions-bar {
+  margin-top: -8px !important;
+  margin-left: 10px !important;
+  position: relative !important;
+  z-index: 2 !important;
+  gap: 3px !important;
+}
+
+.chat-bubble-wrap-mine .chat-reactions-bar {
+  margin-left: 0 !important;
+  margin-right: 10px !important;
+}
+
+.chat-reaction-pill {
+  background: var(--msg-page) !important;
+  border: 1px solid rgba(20, 24, 22, 0.08) !important;
+  box-shadow: 0 1px 2px rgba(20, 24, 22, 0.05) !important;
+  color: var(--ink-2) !important;
+  font-weight: 500 !important;
+  padding: 3px 10px !important;
+  font-size: 13px !important;
+}
+
+.chat-reaction-pill.mine {
+  background: #F1F3EC !important;
+  border-color: rgba(20, 24, 22, 0.10) !important;
+  color: var(--ink-2) !important;
+}
+
+/* ---------- Reply bar ---------- */
+
+.chat-reply-bar {
+  background: #F6F7F3 !important;
+  border-top: 1px solid rgba(20, 24, 22, 0.05) !important;
+  padding: 10px 14px !important;
+}
+
+.chat-reply-bar-accent {
+  background: var(--msg-mine-deep) !important;
+  height: 30px !important;
+}
+
+.chat-reply-bar-name {
+  color: var(--msg-mine-deep) !important;
+  font-size: 12px !important;
+}
+
+.chat-reply-bar-body {
+  font-size: 13px !important;
+  color: var(--ink-3) !important;
+}
+
+/* ---------- Composer — soft pill input ---------- */
+
+.chat-composer {
+  background: var(--msg-page) !important;
+  border-top: 1px solid rgba(20, 24, 22, 0.06) !important;
+  padding: 10px 12px !important;
+  padding-bottom: max(10px, env(safe-area-inset-bottom)) !important;
+  gap: 8px !important;
+}
+
+.chat-attach {
+  background: transparent !important;
+  color: var(--ink-3) !important;
+  border: 1px solid rgba(20, 24, 22, 0.10) !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.chat-attach:hover {
+  background: rgba(20, 24, 22, 0.04) !important;
+  color: var(--ink) !important;
+}
+
+.chat-input-wrap {
+  background: #F4F5F1 !important;
+  border-radius: 22px !important;
+  padding: 10px 18px !important;
+  border: 0 !important;
+}
+
+.chat-input-wrap:focus-within {
+  background: #F4F5F1 !important;
+  box-shadow: inset 0 0 0 1px rgba(20, 24, 22, 0.10) !important;
+}
+
+.chat-input {
+  font-size: 15.5px !important;
+  color: var(--ink) !important;
+}
+
+.chat-input::placeholder {
+  color: var(--ink-4) !important;
+  opacity: 1 !important;
+}
+
+.chat-send {
+  background: var(--msg-mine) !important;
+  color: #fff !important;
+  width: 40px !important;
+  height: 40px !important;
+}
+
+.chat-send:hover:not(:disabled) {
+  background: var(--msg-mine-deep) !important;
+}
+
+.chat-send:disabled {
+  background: #E5E7E2 !important;
+  color: var(--ink-4) !important;
+}
+
+/* ---------- Mobile tightening ---------- */
+
+@media (max-width: 520px) {
+  .chat-bubble {
+    font-size: 15px !important;
+    padding: 9px 14px !important;
+  }
+  .chat-bubble-wrap {
+    max-width: 84% !important;
+  }
+  .chat-log {
+    padding: 12px 10px 6px !important;
+  }
+     }
