@@ -2918,3 +2918,125 @@ body:has(#newPasswordForm) .form-fields {
     gap: 10px 18px;
   }
    }
+/* ============================================================
+   LANDING — tighter rhythm, more even spacing
+   ============================================================ */
+
+/* Hero no longer eats a full screen.
+   70vh on desktop, natural height on mobile. */
+.hero {
+  min-height: 0;
+  padding: 88px 0 56px;
+  margin-bottom: 8px;
+}
+
+@media (min-width: 720px) {
+  .hero {
+    padding: 120px 0 72px;
+  }
+}
+
+/* Logo sits a bit closer to the top */
+.hero-logo {
+  max-width: 300px;
+  margin-bottom: 26px;
+}
+
+.hero-tagline {
+  margin-bottom: 36px;
+}
+
+/* Sections now have even rhythm */
+.landing-section {
+  padding: 56px 0;
+}
+
+@media (min-width: 720px) {
+  .landing-section {
+    padding: 72px 0;
+  }
+}
+
+/* The very first section after the hero gets less top padding
+   so the transition is smoother. */
+.hero + .landing-section {
+  padding-top: 40px;
+  border-top: 1px solid var(--line);
+}
+
+@media (min-width: 720px) {
+  .hero + .landing-section {
+    padding-top: 56px;
+  }
+}
+
+/* Tighter eyebrow + title pairing */
+.section-eyebrow {
+  margin-bottom: 12px;
+}
+
+.section-title {
+  margin-bottom: 12px;
+}
+
+.section-sub {
+  margin-bottom: 36px;
+}
+
+/* Steps section gets a bit more breathing below */
+.steps-list {
+  margin-top: 8px;
+}
+
+/* Final CTA tighter to the section above */
+.final-block {
+  margin: 48px 0 40px;
+}
+
+@media (min-width: 720px) {
+  .final-block {
+    margin: 72px 0 56px;
+  }
+}
+
+/* Footer tighter */
+.landing-foot {
+  padding: 28px 0 40px;
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .hero {
+    padding: 64px 0 40px;
+  }
+
+  .hero-logo {
+    max-width: 240px;
+    margin-bottom: 22px;
+  }
+
+  .hero-tagline {
+    margin-bottom: 30px;
+  }
+
+  .landing-section {
+    padding: 44px 0;
+  }
+
+  .hero + .landing-section {
+    padding-top: 32px;
+  }
+
+  .section-sub {
+    margin-bottom: 28px;
+  }
+
+  .final-block {
+    margin: 36px 0 32px;
+    padding: 48px 22px;
+  }
+
+  .landing-foot {
+    padding: 24px 0 32px;
+  }
+}
