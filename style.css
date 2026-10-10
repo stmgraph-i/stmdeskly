@@ -7005,3 +7005,49 @@ body:has(.desk-bot-panel[data-open="true"]) {
     transition: none;
   }
 }
+/* ============================================================
+   BOT PANEL — close button + kill the white bar
+   ============================================================ */
+
+/* Close button inside the panel header.
+   Hidden on desktop (the floating bubble does the toggling there).
+   Visible on mobile because the bubble is hidden when open. */
+.desk-bot-close {
+  display: none;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0;
+  color: var(--ink-3);
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-left: auto;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.desk-bot-close:hover {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+.desk-bot-close svg {
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+@media (max-width: 520px) {
+  .desk-bot-close {
+    display: flex;
+  }
+
+  /* Kill the safe-area padding on the input row — the
+     visualViewport fit script already accounts for it.
+     This removes the white bar at the bottom. */
+  .desk-bot-input-row {
+    padding-bottom: 10px !important;
+  }
+}
