@@ -5295,3 +5295,76 @@ a,
   margin-top: 8px;
   margin-bottom: 8px;
 }
+/* ============================================================
+   HOME — greeting as its own card
+   ============================================================ */
+
+.home-greet {
+  margin: 0 0 12px;
+  padding: 20px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+}
+
+.home-hello {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.home-sub {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+}
+
+/* Search bar gets its own card treatment too, so the rhythm is even */
+.home-search {
+  margin: 0 0 12px;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+}
+
+.home-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.home-search input {
+  font-weight: 400;
+}
+
+.home-search input::placeholder {
+  color: var(--ink-4);
+  font-weight: 400;
+}
+
+/* Quick actions sit on the page or as a card — pick this: card */
+.home-quick-actions {
+  margin: 0 0 12px;
+  padding: 10px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 6px;
+}
+
+.home-quick-btn {
+  background: var(--surface-3);
+  border: 0;
+  border-radius: var(--r-md);
+  padding: 12px 8px;
+}
+
+.home-quick-btn:hover {
+  background: var(--line);
+}
