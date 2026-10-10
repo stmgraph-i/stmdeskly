@@ -7598,3 +7598,1592 @@ body.landing {
      Part 12 — Explore + Gigs
      Part 13 — Toasts + misc
    ============================================================ */
+/* ============================================================
+   78. PUBLIC DESK · page shell
+   ------------------------------------------------------------
+   Public Desk page (desk.html + profile.html).
+
+   Rules:
+     - No app chrome. This is the user's own website.
+     - Uses the user's accent color (set inline by desk.js).
+     - Uses the user's pattern choice (dots, grid, diagonal, etc).
+     - Feels like a standalone site, not a page inside an app.
+   ============================================================ */
+
+.page-desk {
+  background-color: var(--bg);
+  background-image: none;
+  min-height: 100vh;
+  padding: 0;
+  overflow-x: hidden;
+}
+
+/* ============================================================
+   79. DESK · brand band (the "cover")
+   ------------------------------------------------------------
+   Top of the page. Big glowing mark, huge name, role, tagline.
+   Uses the Desk's accent as a soft background tint.
+   Feels like the cover of a business card.
+   ============================================================ */
+
+.brand-band {
+  position: relative;
+  padding: 92px 22px 60px;
+  text-align: center;
+  overflow: hidden;
+  background: var(--band-tint, rgba(1, 118, 76, 0.05));
+  border-bottom: 1px solid var(--band-edge, rgba(1, 118, 76, 0.10));
+}
+
+/* Radial spotlight behind the mark — soft glow using the Desk's accent */
+.brand-band::before {
+  content: "";
+  position: absolute;
+  top: -20%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 120%;
+  max-width: 640px;
+  height: 400px;
+  background: radial-gradient(
+    ellipse at center,
+    var(--band-edge, rgba(1, 118, 76, 0.20)) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
+
+.brand-band-inner {
+  position: relative;
+  z-index: 1;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+/* The brand mark — big glowing circle with initials or avatar */
+.desk-mark {
+  width: 88px;
+  height: 88px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  background: var(--surface-elevated);
+  color: var(--accent, #01764C);
+  border: 2px solid var(--accent, #01764C);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  position: relative;
+  box-shadow:
+    0 4px 12px -2px rgba(1, 118, 76, 0.18),
+    0 16px 40px -12px rgba(1, 118, 76, 0.35),
+    0 0 0 8px rgba(255, 255, 255, 0.6);
+  background-size: cover;
+  background-position: center;
+}
+
+/* Extra glow ring around the mark, matches the accent */
+.desk-mark::after {
+  content: "";
+  position: absolute;
+  inset: -14px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    var(--band-tint, rgba(1, 118, 76, 0.14)) 0%,
+    transparent 70%
+  );
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Avatar image version — no border, has image */
+.desk-mark.has-image {
+  background-size: cover;
+  background-position: center;
+  border: 2px solid var(--surface-elevated);
+  color: transparent;
+}
+
+/* Identity block */
+.desk-name {
+  font-family: var(--display);
+  font-size: clamp(2.2rem, 8vw, 3.2rem);
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1.02;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+
+.desk-role {
+  font-family: var(--display);
+  font-size: clamp(1rem, 3.4vw, 1.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--accent, #01764C);
+  margin-bottom: 16px;
+}
+
+.desk-tagline {
+  font-size: 15.5px;
+  font-weight: 400;
+  letter-spacing: -0.005em;
+  line-height: 1.6;
+  color: var(--ink-2);
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+/* ============================================================
+   80. DESK · content band (the body)
+   ------------------------------------------------------------
+   Everything below the brand band. Uses the Desk's pattern
+   choice (dots, grid, diagonal, waves, plus, rings, or none).
+   ============================================================ */
+
+.content-band {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 24px 22px 32px;
+  position: relative;
+}
+
+/* Pattern variants — applied via body class from desk.js */
+body.pattern-dots .content-band {
+  background-image:
+    radial-gradient(circle,
+      rgba(1, 118, 76, 0.10) 0.5px,
+      rgba(1, 118, 76, 0.04) 1.3px,
+      transparent 2.2px);
+  background-size: 28px 28px;
+  background-position: 0 0;
+}
+body.pattern-grid .content-band {
+  background-image:
+    linear-gradient(rgba(1, 118, 76, 0.08) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(1, 118, 76, 0.08) 1px, transparent 1px);
+  background-size: 26px 26px, 26px 26px;
+  background-position: 0 0, 0 0;
+}
+body.pattern-diagonal .content-band {
+  background-image: repeating-linear-gradient(
+    45deg,
+    rgba(1, 118, 76, 0) 0px,
+    rgba(1, 118, 76, 0) 16px,
+    rgba(1, 118, 76, 0.09) 16px,
+    rgba(1, 118, 76, 0.09) 17px
+  );
+}
+body.pattern-waves .content-band {
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(1, 118, 76, 0) 0px,
+    rgba(1, 118, 76, 0) 22px,
+    rgba(1, 118, 76, 0.10) 22px,
+    rgba(1, 118, 76, 0.10) 23px
+  );
+}
+body.pattern-plus .content-band {
+  background-image:
+    linear-gradient(rgba(1, 118, 76, 0.07) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(1, 118, 76, 0.07) 1px, transparent 1px);
+  background-size: 26px 26px, 26px 26px;
+  background-position: 0 0, 0 0;
+}
+body.pattern-rings .content-band {
+  background-image:
+    radial-gradient(circle,
+      transparent 3px,
+      rgba(1, 118, 76, 0.08) 3px,
+      rgba(1, 118, 76, 0.08) 4px,
+      transparent 4.5px);
+  background-size: 32px 32px;
+  background-position: 0 0;
+}
+
+/* ============================================================
+   81. DESK · content blocks
+   ------------------------------------------------------------
+   Each section on the Desk (Offer, About, Work, Details,
+   Contact) is a "block" — an elevated card with a small
+   uppercase label at the top.
+   ============================================================ */
+
+.desk-block {
+  padding: 32px 28px;
+  margin: 20px 0;
+  background: var(--surface-elevated);
+  border-radius: var(--r-xl);
+  box-shadow:
+    0 1px 2px rgba(28, 28, 30, 0.03),
+    0 12px 32px -20px rgba(28, 28, 30, 0.10);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+.desk-block:first-child {
+  margin-top: 8px;
+}
+.desk-block:last-child {
+  margin-bottom: 0;
+}
+
+.desk-block-title {
+  font-family: var(--display);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Small accent dot before every block title */
+.desk-block-title::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent, #01764C);
+  flex-shrink: 0;
+  box-shadow: 0 0 8px var(--band-tint, rgba(1, 118, 76, 0.35));
+}
+
+/* Contact block gets a unique treatment — no card, no title
+   shadow. Just the buttons and a heading. */
+.desk-block#contactBlock {
+  background: transparent;
+  box-shadow: none;
+  border: 0;
+  padding: 24px 0 8px;
+  margin: 24px 0 0;
+}
+
+/* ============================================================
+   82. DESK · lists (services, programmes, facilities)
+   ------------------------------------------------------------
+   Bulleted lists. Dots match the accent.
+   ============================================================ */
+
+.desk-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.desk-list li {
+  font-size: 15.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  line-height: 1.55;
+  padding-left: 20px;
+  position: relative;
+  letter-spacing: -0.005em;
+}
+.desk-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent, #01764C);
+}
+
+/* ============================================================
+   83. DESK · about text
+   ============================================================ */
+
+.desk-copy {
+  font-size: 15.5px;
+  font-weight: 400;
+  color: var(--ink-2);
+  line-height: 1.75;
+  white-space: pre-line;
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   84. DESK · details (location, hours, times)
+   ------------------------------------------------------------
+   Stacked label/value pairs. Labels are tiny uppercase.
+   ============================================================ */
+
+.desk-details {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.desk-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.desk-detail-label {
+  font-family: var(--display);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.desk-detail-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-2);
+  line-height: 1.55;
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   85. DESK · contact buttons
+   ------------------------------------------------------------
+   Big pill buttons stacked vertically. Primary (WhatsApp)
+   uses the Desk's accent with a glow.
+   ============================================================ */
+
+.desk-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-width: 440px;
+  margin: 0 auto;
+}
+
+.desk-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 16px 24px;
+  border-radius: var(--r-pill);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+  text-align: center;
+  transition:
+    background 0.2s ease,
+    transform 0.12s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+  border: 1px solid transparent;
+}
+
+/* Primary (WhatsApp) — accent colored with glow */
+.desk-btn-primary {
+  background: var(--accent, #01764C);
+  color: var(--accent-ink, #FFFFFF);
+  box-shadow:
+    0 2px 4px rgba(1, 118, 76, 0.20),
+    0 10px 24px -8px var(--band-edge, rgba(1, 118, 76, 0.48));
+}
+.desk-btn-primary:hover {
+  background: var(--accent-hover, #015F3D);
+  box-shadow:
+    0 4px 8px rgba(1, 118, 76, 0.24),
+    0 14px 32px -10px var(--band-edge, rgba(1, 118, 76, 0.58));
+}
+.desk-btn-primary:active {
+  transform: scale(0.99);
+}
+
+/* Secondary (Email, Call, Website) — outline style */
+.desk-btn-secondary {
+  background: var(--surface-elevated);
+  color: var(--ink);
+  border-color: var(--line);
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.03);
+}
+.desk-btn-secondary:hover {
+  background: var(--surface);
+  border-color: var(--line-2);
+}
+.desk-btn-secondary:active {
+  transform: scale(0.99);
+}
+
+/* ============================================================
+   86. DESK · work photos
+   ------------------------------------------------------------
+   Portfolio grid. Four layouts supported (grid, bigfirst,
+   slide, mosaic). Photos lift on hover with a soft shadow.
+   ============================================================ */
+
+.desk-work {
+  display: grid;
+  gap: 10px;
+}
+
+.work-cell {
+  position: relative;
+  border-radius: 18px;
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition:
+    transform 0.25s var(--ease-out),
+    box-shadow 0.25s ease;
+}
+.work-cell:hover {
+  transform: translateY(-3px);
+  box-shadow:
+    0 6px 14px -4px rgba(28, 28, 30, 0.12),
+    0 20px 40px -16px rgba(28, 28, 30, 0.24);
+}
+.work-cell img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Grid — 2 columns */
+.work-grid {
+  grid-template-columns: repeat(2, 1fr);
+}
+.work-grid .work-cell {
+  aspect-ratio: 1 / 1;
+}
+
+/* Big first — 1 big + 3 small */
+.work-bigfirst {
+  grid-template-columns: repeat(3, 1fr);
+}
+.work-bigfirst .work-cell:nth-child(1) {
+  grid-column: 1 / -1;
+  aspect-ratio: 4 / 3;
+}
+.work-bigfirst .work-cell:not(:nth-child(1)) {
+  aspect-ratio: 1 / 1;
+}
+
+/* Slide — horizontal scroll */
+.work-slide {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 8px;
+  margin: 0 -28px;
+  padding-left: 28px;
+  padding-right: 28px;
+}
+.work-slide::-webkit-scrollbar {
+  display: none;
+}
+.work-slide .work-cell {
+  flex: 0 0 auto;
+  width: min(220px, 66vw);
+  aspect-ratio: 3 / 4;
+  scroll-snap-align: start;
+}
+
+/* Mosaic — irregular mix */
+.work-mosaic {
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 100px;
+}
+.work-mosaic .work-cell:nth-child(6n + 1) {
+  grid-column: span 2;
+  grid-row: span 2;
+}
+.work-mosaic .work-cell:nth-child(6n + 2) {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+.work-mosaic .work-cell:nth-child(6n + 3),
+.work-mosaic .work-cell:nth-child(6n + 4) {
+  grid-column: span 1;
+  grid-row: span 1;
+}
+.work-mosaic .work-cell:nth-child(6n + 5),
+.work-mosaic .work-cell:nth-child(6n + 6) {
+  grid-column: span 1;
+  grid-row: span 2;
+}
+
+/* ============================================================
+   87. DESK · fullscreen photo viewer
+   ------------------------------------------------------------
+   Dark overlay when a photo is tapped. Very iOS.
+   ============================================================ */
+
+.photo-full {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  background: rgba(8, 8, 10, 0.94);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.photo-full img {
+  max-width: 100%;
+  max-height: 100%;
+  border-radius: 14px;
+  object-fit: contain;
+}
+
+.photo-full-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  font-size: 16px;
+  display: grid;
+  place-items: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.2s ease, transform 0.12s ease;
+}
+.photo-full-close:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+.photo-full-close:active {
+  transform: scale(0.94);
+}
+.photo-full-close svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+
+/* ============================================================
+   88. DESK · shape variants
+   ------------------------------------------------------------
+   Desk's "corner style" setting (rounded vs sharp).
+   ============================================================ */
+
+body.sharp .desk-mark { border-radius: 12px; }
+body.sharp .desk-btn { border-radius: 8px; }
+body.sharp .work-cell { border-radius: 8px; }
+body.sharp .desk-block { border-radius: 10px; }
+body.sharp .desk-list li::before { border-radius: 2px; }
+body.sharp .photo-btn { border-radius: 6px; }
+
+/* Compact layout — tighter padding */
+body.compact .brand-band { padding: 68px 22px 48px; }
+body.compact .desk-block { padding: 24px 22px; margin: 14px 0; }
+
+/* ============================================================
+   89. DESK · footer
+   ------------------------------------------------------------
+   Minimal footer. "Made with Deskly · Explore"
+   Feels like the footer of a real site.
+   ============================================================ */
+
+.desk-footer {
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 44px 22px 48px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+}
+
+.desk-footer-brand {
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 13px;
+  transition: color 0.15s ease;
+}
+.desk-footer-brand:hover {
+  color: var(--accent, #01764C);
+}
+
+.desk-footer-cta {
+  color: var(--accent, #01764C);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: -0.005em;
+  transition: opacity 0.15s ease;
+}
+.desk-footer-cta:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.desk-footer-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+.desk-footer-sep {
+  color: var(--ink-3);
+  opacity: 0.5;
+}
+.desk-footer-credit {
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.desk-footer-credit:hover {
+  color: var(--ink-2);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.desk-footer-copy {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  opacity: 0.75;
+}
+
+/* ============================================================
+   90. DESK · missing state (Desk not found)
+   ============================================================ */
+
+.desk-missing {
+  max-width: 440px;
+  margin: 100px auto;
+  text-align: center;
+  padding: 0 20px;
+}
+.desk-missing h1 {
+  font-family: var(--display);
+  font-size: 1.85rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.desk-missing p {
+  font-size: 15px;
+  color: var(--ink-3);
+  margin-bottom: 26px;
+  line-height: 1.55;
+}
+
+/* ============================================================
+   91. REVIEWS · block
+   ------------------------------------------------------------
+   Pink identity. Big average number, star summary, list of
+   reviews, then a form for the visitor.
+   ============================================================ */
+
+.reviews-block .desk-block-title {
+  color: var(--pk-700);
+}
+.reviews-block .desk-block-title::before {
+  background: var(--sys-pink);
+  box-shadow: 0 0 8px rgba(255, 55, 95, 0.55);
+}
+
+.reviews-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 18px 0 22px;
+  border-bottom: 1px solid var(--line);
+  margin-bottom: 20px;
+}
+
+.reviews-avg {
+  font-family: var(--display);
+  font-size: 48px;
+  font-weight: 900;
+  letter-spacing: -0.055em;
+  line-height: 1;
+  color: var(--sys-pink);
+}
+
+.reviews-summary-right {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.reviews-stars-big {
+  font-size: 20px;
+  letter-spacing: 3px;
+  color: var(--sys-orange);
+  line-height: 1;
+}
+
+.reviews-count {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+}
+
+/* Review list */
+.reviews-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+.review-card {
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.review-card:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.review-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+
+.review-name {
+  font-family: var(--display);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.review-verified {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--sys-pink);
+  background: var(--pk-50);
+  padding: 3px 8px;
+  border-radius: var(--r-pill);
+}
+
+.review-time {
+  font-size: 12px;
+  color: var(--ink-3);
+  margin-left: auto;
+  letter-spacing: -0.005em;
+}
+
+.review-stars-inline {
+  font-size: 16px;
+  letter-spacing: 2px;
+  color: var(--sys-orange);
+  line-height: 1;
+  display: inline-block;
+}
+
+.review-text {
+  margin-top: 8px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  white-space: pre-line;
+  letter-spacing: -0.005em;
+}
+
+.review-reply {
+  margin-top: 14px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border-radius: 12px;
+  border-left: 3px solid var(--accent);
+}
+.review-reply-label {
+  font-family: var(--display);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.review-reply-text {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  white-space: pre-line;
+}
+
+.reviews-empty {
+  font-size: 14px;
+  color: var(--ink-3);
+  text-align: center;
+  padding: 24px 0;
+  letter-spacing: -0.005em;
+}
+
+/* Your review card (if you've reviewed already) */
+.your-review {
+  padding: 18px 18px;
+  background: var(--pk-50);
+  border: 1px solid rgba(255, 55, 95, 0.14);
+  border-radius: 16px;
+  margin-bottom: 22px;
+}
+
+.your-review-head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.your-review-label {
+  font-family: var(--display);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--pk-700);
+  flex: 1;
+}
+
+.your-review-edit,
+.your-review-delete {
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--pk-700);
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.your-review-edit:hover {
+  background: rgba(255, 255, 255, 0.6);
+  border-color: var(--sys-pink);
+}
+.your-review-delete {
+  color: var(--danger);
+}
+.your-review-delete:hover {
+  background: rgba(255, 59, 48, 0.08);
+  border-color: var(--danger);
+}
+
+.your-review-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
+  flex-wrap: wrap;
+}
+.your-review-text {
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  white-space: pre-line;
+  margin-top: 6px;
+  letter-spacing: -0.005em;
+}
+.review-name-inline {
+  font-family: var(--display);
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--ink);
+  letter-spacing: -0.02em;
+}
+
+/* Review form */
+.review-form {
+  padding-top: 20px;
+  border-top: 1px solid var(--line);
+}
+
+.review-form-title {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 14px;
+}
+
+.review-stars {
+  display: flex;
+  justify-content: flex-start;
+  gap: 4px;
+  margin-bottom: 16px;
+}
+
+.review-star {
+  background: transparent;
+  border: 0;
+  padding: 2px 4px;
+  font-size: 32px;
+  line-height: 1;
+  color: var(--line-2);
+  cursor: pointer;
+  transition: color 0.15s ease, transform 0.12s var(--spring);
+  font-family: inherit;
+}
+.review-star:hover,
+.review-star.hover,
+.review-star.active {
+  color: var(--sys-orange);
+  transform: scale(1.1);
+}
+.review-star:active {
+  transform: scale(0.92);
+}
+
+.review-name,
+.review-text {
+  width: 100%;
+  margin-bottom: 12px;
+}
+.review-text {
+  resize: vertical;
+  min-height: 80px;
+  font-family: var(--sans);
+}
+
+.review-submit {
+  display: block;
+  width: 100%;
+  padding: 14px 22px;
+  border-radius: var(--r-pill);
+  background: var(--sys-pink);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  border: 0;
+  box-shadow:
+    0 2px 4px rgba(255, 55, 95, 0.20),
+    0 10px 24px -8px rgba(255, 55, 95, 0.45);
+  transition:
+    background 0.2s ease,
+    transform 0.12s ease,
+    box-shadow 0.2s ease;
+  margin-top: 6px;
+}
+.review-submit:hover {
+  background: var(--pk-700);
+  box-shadow:
+    0 4px 8px rgba(255, 55, 95, 0.24),
+    0 14px 32px -10px rgba(255, 55, 95, 0.55);
+}
+.review-submit:active {
+  transform: scale(0.99);
+}
+.review-submit:disabled {
+  opacity: 0.85;
+  cursor: wait;
+}
+
+.review-cancel {
+  display: block;
+  width: 100%;
+  padding: 12px 22px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  border: 1px solid var(--line-2);
+  color: var(--ink-3);
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.review-cancel:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+
+/* ============================================================
+   92. WALL · block
+   ------------------------------------------------------------
+   Purple identity. Posts + replies + reactions.
+   ============================================================ */
+
+.wall-block .desk-block-title {
+  color: var(--p-700);
+}
+.wall-block .desk-block-title::before {
+  background: var(--sys-purple);
+  box-shadow: 0 0 8px rgba(191, 90, 242, 0.55);
+}
+
+.wall-composer {
+  margin-bottom: 22px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.wall-composer-row {
+  margin-bottom: 8px;
+}
+
+.wall-name,
+.wall-body {
+  width: 100%;
+}
+
+.wall-body {
+  resize: vertical;
+  min-height: 72px;
+  font-family: var(--sans);
+  margin-bottom: 10px;
+}
+
+.wall-photo-preview {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 12px;
+  border-radius: 14px;
+  overflow: hidden;
+  max-width: 100%;
+}
+.wall-photo-preview img {
+  display: block;
+  max-width: 200px;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 14px;
+}
+
+.wall-photo-remove {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(28, 28, 30, 0.65);
+  color: #fff;
+  border: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(4px);
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.wall-photo-remove:active {
+  transform: scale(0.92);
+}
+.wall-photo-remove svg {
+  width: 14px;
+  height: 14px;
+}
+
+.wall-composer-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.wall-message {
+  flex: 1;
+  margin: 0;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  border-radius: 8px;
+}
+.wall-message:not([hidden]) {
+  display: inline-block;
+}
+
+.wall-attach-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 10px 14px;
+  border-radius: var(--r-pill);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+.wall-attach-btn:hover {
+  background: var(--surface);
+  border-color: var(--line-2);
+  color: var(--ink);
+}
+.wall-attach-btn:active {
+  transform: scale(0.98);
+}
+.wall-attach-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.wall-submit {
+  padding: 11px 22px;
+  border-radius: var(--r-pill);
+  background: var(--sys-purple);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  border: 0;
+  cursor: pointer;
+  box-shadow:
+    0 2px 4px rgba(191, 90, 242, 0.20),
+    0 10px 24px -8px rgba(191, 90, 242, 0.45);
+  transition:
+    background 0.2s ease,
+    transform 0.12s ease,
+    box-shadow 0.2s ease;
+}
+.wall-submit:hover {
+  background: var(--p-700);
+}
+.wall-submit:active {
+  transform: scale(0.99);
+}
+.wall-submit:disabled {
+  opacity: 0.85;
+  cursor: wait;
+}
+
+/* Reply chip above composer */
+.wall-reply-chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 8px 12px;
+  background: var(--p-50);
+  border-radius: 10px;
+  margin-bottom: 10px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--p-700);
+  letter-spacing: -0.005em;
+}
+.wall-reply-chip-text {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wall-reply-chip-close {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0;
+  color: var(--p-700);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  flex-shrink: 0;
+}
+.wall-reply-chip-close:hover {
+  background: rgba(191, 90, 242, 0.12);
+}
+.wall-reply-chip-close svg {
+  width: 12px;
+  height: 12px;
+}
+
+/* Posts */
+.wall-list {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.wall-post {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--line);
+}
+.wall-post:last-child {
+  border-bottom: 0;
+  padding-bottom: 0;
+}
+
+.wall-post-pinned {
+  position: relative;
+}
+
+.wall-post-reply {
+  margin-left: 24px;
+  padding-left: 16px;
+  border-left: 2px solid var(--line);
+  padding-bottom: 12px;
+  border-bottom: 0;
+}
+
+.wall-post-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.wall-post-name {
+  font-family: var(--display);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.wall-post-sep {
+  color: var(--ink-3);
+  opacity: 0.6;
+  font-size: 12px;
+}
+
+.wall-post-time {
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+}
+
+.wall-post-pin {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--p-700);
+  background: var(--p-50);
+  padding: 3px 8px;
+  border-radius: var(--r-pill);
+  margin-left: auto;
+}
+.wall-post-pin svg {
+  width: 11px;
+  height: 11px;
+  flex-shrink: 0;
+}
+
+.wall-post-delete {
+  margin-left: auto;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0;
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+  flex-shrink: 0;
+}
+.wall-post-delete:hover {
+  background: var(--danger-soft);
+  color: var(--danger-ink);
+}
+.wall-post-delete svg {
+  width: 13px;
+  height: 13px;
+}
+
+.wall-post-pin + .wall-post-delete {
+  margin-left: 6px;
+}
+
+.wall-post-photo {
+  border-radius: 16px;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.wall-post-photo img {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: cover;
+  cursor: zoom-in;
+  transition: transform 0.25s var(--ease-out);
+}
+.wall-post-photo img:hover {
+  transform: scale(1.01);
+}
+
+.wall-post-body {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  white-space: pre-line;
+  letter-spacing: -0.005em;
+}
+
+.wall-post-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+/* Reactions */
+.wall-reactions {
+  display: flex;
+  gap: 6px;
+}
+
+.wall-reaction {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 10px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-3);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s var(--spring);
+}
+.wall-reaction:hover {
+  background: var(--surface-2);
+  border-color: var(--line-2);
+  color: var(--ink-2);
+}
+.wall-reaction:active {
+  transform: scale(0.96);
+}
+.wall-reaction:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+.wall-reaction svg {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+}
+.wall-reaction.mine {
+  background: var(--p-50);
+  border-color: var(--p-100);
+  color: var(--sys-purple);
+}
+.wall-reaction-count {
+  font-variant-numeric: tabular-nums;
+}
+
+.wall-reply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 12px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--ink-3);
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.wall-reply-btn:hover {
+  background: var(--surface-2);
+  color: var(--ink-2);
+}
+.wall-reply-btn:active {
+  transform: scale(0.97);
+}
+.wall-reply-btn svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.wall-empty {
+  font-size: 14px;
+  color: var(--ink-3);
+  text-align: center;
+  padding: 24px 0;
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   93. DESK + PROFILE · responsive
+   ============================================================ */
+
+@media (max-width: 760px) {
+  .work-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .brand-band {
+    padding: 80px 18px 52px;
+  }
+
+  .desk-mark {
+    width: 76px;
+    height: 76px;
+    font-size: 28px;
+    margin-bottom: 20px;
+  }
+
+  .desk-name {
+    font-size: clamp(1.9rem, 8vw, 2.4rem);
+  }
+
+  .desk-role {
+    font-size: 1rem;
+    margin-bottom: 12px;
+  }
+
+  .desk-tagline {
+    font-size: 14.5px;
+  }
+
+  .content-band {
+    padding: 20px 16px 24px;
+  }
+
+  .desk-block {
+    padding: 26px 22px;
+    margin: 14px 0;
+    border-radius: var(--r-lg);
+  }
+
+  .desk-copy {
+    font-size: 15px;
+  }
+
+  .desk-list li {
+    font-size: 15px;
+  }
+
+  .desk-detail-value {
+    font-size: 14.5px;
+  }
+
+  .work-mosaic {
+    grid-auto-rows: 88px;
+  }
+
+  .work-slide {
+    margin: 0 -22px;
+    padding-left: 22px;
+    padding-right: 22px;
+  }
+
+  .desk-footer {
+    padding: 36px 18px 40px;
+  }
+
+  /* Reviews + wall mobile */
+  .reviews-avg {
+    font-size: 40px;
+  }
+  .review-star {
+    font-size: 28px;
+    padding: 2px 3px;
+  }
+  .wall-post-reply {
+    margin-left: 16px;
+    padding-left: 12px;
+  }
+  .wall-photo-preview img {
+    max-width: 160px;
+    max-height: 160px;
+  }
+}
+
+/* ============================================================
+   END OF PART 8
+   ============================================================
+   What this delivers:
+
+   DESK (the shareable page):
+     ✓ Brand band with big glowing mark using the Desk's accent
+     ✓ Radial spotlight behind the mark
+     ✓ Huge confident name in display font
+     ✓ Role in the accent color
+     ✓ Tagline with editorial breathing room
+     ✓ Content blocks with colored dot + label
+     ✓ Bulleted lists with accent-colored dots
+     ✓ Details stacked with tiny uppercase labels
+     ✓ Contact buttons: primary (accent, glowing) + secondaries
+     ✓ Portfolio photo grid (4 layouts: grid/bigfirst/slide/mosaic)
+     ✓ Photos lift on hover with real shadow
+     ✓ Fullscreen photo viewer
+     ✓ Sharp / rounded corner variants from Desk setting
+     ✓ Compact / spacious layout variant
+     ✓ Minimal footer — feels like a real site
+     ✓ Uses the Desk's OWN accent color throughout
+
+   REVIEWS:
+     ✓ Pink identity (pink dot, pink title, pink stars avg)
+     ✓ Big 48px average number
+     ✓ Star summary row
+     ✓ Review cards with verified badge
+     ✓ Owner reply block
+     ✓ "Your review" card (pink tinted)
+     ✓ Star picker with hover pop
+     ✓ Pink submit button with glow
+
+   WALL:
+     ✓ Purple identity (purple dot, purple title)
+     ✓ Composer with photo attach
+     ✓ Reply chip
+     ✓ Posts with pinned badge
+     ✓ Photo posts (big, click-to-zoom)
+     ✓ Reaction pills (purple when active)
+     ✓ Reply button
+     ✓ Wall posts feel like forum threads
+
+   Next parts:
+     Part 9  — Bot (public Desk bot + owner bot page)
+     Part 10 — Chat (single conversation)
+     Part 11 — Chats (inbox) + Updates + Tab picker
+     Part 12 — Explore + Gigs
+     Part 13 — Toasts + misc
+   ============================================================ */
