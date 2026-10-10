@@ -12763,3 +12763,894 @@ body.compact .desk-block { padding: 24px 22px; margin: 14px 0; }
      Part 12 — Explore + Gigs
      Part 13 — Toasts + misc
    ============================================================ */
+/* ============================================================
+   138. EXPLORE · page shell
+   ------------------------------------------------------------
+   Play Store / App Store aesthetic. Editorial layout.
+   Search at top, chips below, sections with headlines.
+   ============================================================ */
+
+.explore-head {
+  background: transparent;
+  border-bottom: 0;
+  padding: 12px 0 18px;
+  text-align: left;
+}
+
+.explore-title {
+  font-family: var(--display);
+  font-size: clamp(2.1rem, 8vw, 2.7rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1.02;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.explore-sub {
+  font-size: 14.5px;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+  margin-bottom: 20px;
+  line-height: 1.4;
+}
+
+/* ============================================================
+   139. EXPLORE · search bar
+   ------------------------------------------------------------
+   Rounded rectangle. Rounded square search icon inside a
+   subtle surface. Feels like Play Store's search field.
+   ============================================================ */
+
+.explore-search {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  margin-bottom: 16px;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.explore-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+  background: var(--surface-elevated);
+}
+
+/* Rounded square icon container */
+.explore-search svg {
+  width: 20px;
+  height: 20px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+  padding: 6px;
+  box-sizing: content-box;
+  background: var(--surface-2);
+  border-radius: 10px;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.explore-search:focus-within svg {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+.explore-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  outline: none;
+  font-family: var(--sans);
+  font-size: 15.5px;
+  color: var(--ink);
+  letter-spacing: -0.005em;
+}
+.explore-search input::placeholder {
+  color: #A29B8E;
+}
+
+/* Hint text under search */
+.explore-hint {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--ink-3);
+  text-align: left;
+  margin: 0 0 14px;
+  letter-spacing: -0.005em;
+  padding-left: 2px;
+}
+.explore-hint strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* ============================================================
+   140. EXPLORE · category chips (horizontal scroll)
+   ------------------------------------------------------------
+   Play Store chips: horizontal scroll, pill-shaped,
+   active chip is filled. Idle is soft outline.
+   ============================================================ */
+
+.explore-tabs,
+.explore-chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 4px 0 14px;
+  margin: 0 -22px;
+  padding-left: 22px;
+  padding-right: 22px;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.explore-tabs::-webkit-scrollbar,
+.explore-chips::-webkit-scrollbar {
+  display: none;
+}
+
+.explore-tab {
+  flex: 0 0 auto;
+  padding: 9px 18px;
+  border-radius: var(--r-pill);
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  white-space: nowrap;
+  transition:
+    background 0.18s ease,
+    color 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.15s var(--spring),
+    box-shadow 0.2s ease;
+}
+.explore-tab:hover {
+  border-color: var(--line-2);
+  background: var(--surface);
+}
+.explore-tab:active {
+  transform: scale(0.97);
+}
+
+.explore-tab.active {
+  background: linear-gradient(
+    135deg,
+    #018655 0%,
+    #01764C 55%,
+    #015F3D 100%
+  );
+  color: #fff;
+  border-color: transparent;
+  box-shadow:
+    0 2px 4px rgba(1, 118, 76, 0.20),
+    0 8px 18px -6px rgba(1, 118, 76, 0.42);
+}
+
+/* ============================================================
+   141. EXPLORE · content + popular chips
+   ------------------------------------------------------------
+   The section between search and results.
+   "Popular searches" area styled like Play Store's
+   curated row.
+   ============================================================ */
+
+.explore-content {
+  padding: 10px 0 24px;
+}
+
+.explore-popular {
+  padding: 8px 0 12px;
+}
+
+.explore-popular-label {
+  font-family: var(--display);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+  padding-left: 2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Small colored dot before popular label */
+.explore-popular-label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sys-orange);
+  box-shadow: 0 0 8px rgba(255, 159, 10, 0.55);
+}
+
+.explore-popular-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* Popular chip — pill with soft surface */
+.explore-popular-chip {
+  padding: 11px 16px;
+  border-radius: var(--r-pill);
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    color 0.18s ease,
+    transform 0.15s var(--spring),
+    box-shadow 0.2s ease;
+}
+.explore-popular-chip:hover {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  transform: translateY(-1px);
+  box-shadow:
+    0 2px 6px rgba(1, 118, 76, 0.10),
+    0 8px 18px -8px rgba(1, 118, 76, 0.28);
+}
+.explore-popular-chip:active {
+  transform: scale(0.97);
+}
+
+/* ============================================================
+   142. EXPLORE · sections + results
+   ------------------------------------------------------------
+   Section header with colored dot, big title, and a
+   "See all" link on the right. This is the Play Store pattern.
+   ============================================================ */
+
+.explore-section {
+  margin-bottom: 32px;
+}
+
+.explore-section-title {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  margin-bottom: 14px;
+  line-height: 1.2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-left: 2px;
+}
+
+/* Colored dot before section title */
+.explore-section-title::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sys-green);
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.55);
+  flex-shrink: 0;
+}
+
+/* Desks section — green dot */
+#exploreDesksSection .explore-section-title::before {
+  background: var(--sys-green);
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.55);
+}
+/* Gigs section — amber dot */
+#exploreGigsSection .explore-section-title::before {
+  background: var(--sys-orange);
+  box-shadow: 0 0 8px rgba(255, 159, 10, 0.55);
+}
+
+/* ============================================================
+   143. EXPLORE · desk grid (Play Store style)
+   ------------------------------------------------------------
+   The signature shift: rounded SQUARE avatars, not circles.
+   This is what makes it feel like Play Store instead of
+   a contacts list.
+   ============================================================ */
+
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+}
+
+@media (min-width: 600px) {
+  .explore-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Card — no border, no shadow. Just spacing + hover lift. */
+.explore-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 12px 12px 14px;
+  background: transparent;
+  border: 0;
+  border-radius: 18px;
+  text-decoration: none;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background 0.2s ease,
+    transform 0.2s var(--spring);
+  position: relative;
+  overflow: hidden;
+}
+
+.explore-card:hover {
+  background: var(--surface);
+  transform: translateY(-2px);
+}
+.explore-card:active {
+  transform: scale(0.99);
+}
+
+/* Rounded square avatar — the Play Store signature */
+.explore-avatar {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 20px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: -0.06em;
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+  position: relative;
+  box-shadow:
+    0 2px 6px rgba(28, 28, 30, 0.06),
+    0 12px 28px -14px rgba(28, 28, 30, 0.16);
+  overflow: hidden;
+}
+
+/* Subtle radial highlight inside the avatar — 3D feel */
+.explore-avatar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    135deg,
+    rgba(255, 255, 255, 0.35) 0%,
+    rgba(255, 255, 255, 0) 45%
+  );
+  pointer-events: none;
+  border-radius: inherit;
+}
+
+/* Name and role text under the avatar */
+.explore-name {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  color: var(--ink);
+  word-break: break-word;
+  margin-top: 2px;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.explore-role {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.explore-handle {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  letter-spacing: -0.005em;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
+}
+
+.explore-tagline {
+  display: none; /* Play Store doesn't show taglines on cards */
+}
+
+.explore-loc {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  margin-top: 2px;
+  padding-left: 14px;
+  position: relative;
+}
+/* Small location pin before text */
+.explore-loc::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--sys-green);
+  opacity: 0.75;
+  box-shadow: 0 0 4px rgba(52, 199, 89, 0.5);
+}
+
+/* ============================================================
+   144. EXPLORE · gig list
+   ------------------------------------------------------------
+   Full redesign. Gigs are editorial discovery cards now,
+   not list items. Richer layout, more confidence.
+   ============================================================ */
+
+.explore-gigs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Gig card — editorial, no border, has a colored left accent */
+.explore-gig {
+  display: block;
+  padding: 18px 20px 18px 22px;
+  background: var(--surface-elevated);
+  border-radius: 18px;
+  text-decoration: none;
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+  box-shadow:
+    0 1px 2px rgba(28, 28, 30, 0.03),
+    0 8px 20px -12px rgba(28, 28, 30, 0.10);
+  transition:
+    transform 0.2s var(--spring),
+    box-shadow 0.25s ease,
+    background 0.2s ease;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+/* Left accent strip — amber gradient */
+.explore-gig::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 4px;
+  background: linear-gradient(
+    180deg,
+    var(--sys-orange) 0%,
+    #E68B08 100%
+  );
+  border-radius: 4px 0 0 4px;
+}
+
+/* Soft amber corner glow — screen-power trick */
+.explore-gig::after {
+  content: "";
+  position: absolute;
+  top: -40px;
+  left: -40px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(
+    circle,
+    rgba(255, 159, 10, 0.08) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+.explore-gig:hover {
+  transform: translateY(-2px);
+  background: var(--surface);
+  box-shadow:
+    0 4px 10px rgba(28, 28, 30, 0.06),
+    0 20px 42px -16px rgba(28, 28, 30, 0.18);
+}
+.explore-gig:active {
+  transform: scale(0.995);
+}
+
+/* Gig type badge — top-left, colored by type */
+.explore-gig-type {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* "Looking for" — amber */
+.explore-gig-type {
+  background: var(--a-50);
+  color: var(--a-700);
+  border: 1px solid rgba(255, 159, 10, 0.20);
+}
+
+/* If the JS marks it as available, could override — keeping
+   neutral for now since we can't touch HTML */
+
+/* Title */
+.explore-gig-title {
+  font-family: var(--display);
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  line-height: 1.3;
+  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Meta line — location, days, pay */
+.explore-gig-meta {
+  font-size: 13px;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+  line-height: 1.5;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Each meta item gets a tiny colored dot separator */
+.explore-gig-meta::before {
+  content: "📍";
+  font-size: 11px;
+  display: none; /* not needed, keeping meta text plain */
+}
+
+/* ============================================================
+   145. EXPLORE · empty + status
+   ------------------------------------------------------------
+   When nothing matches or while searching.
+   ============================================================ */
+
+.explore-status {
+  text-align: center;
+  font-size: 14px;
+  color: var(--ink-3);
+  padding: 40px 20px;
+  letter-spacing: -0.005em;
+}
+
+.explore-empty {
+  text-align: center;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.explore-empty-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.explore-empty-sub {
+  font-size: 14.5px;
+  color: var(--ink-3);
+  line-height: 1.55;
+  max-width: 300px;
+  margin: 0 auto;
+  letter-spacing: -0.005em;
+}
+
+/* Big soft circle before empty text */
+.explore-empty::before {
+  content: "";
+  width: 84px;
+  height: 84px;
+  margin: 0 auto 22px;
+  border-radius: 24px;
+  background: var(--surface-2);
+  box-shadow:
+    0 4px 12px -2px rgba(28, 28, 30, 0.06),
+    0 12px 32px -14px rgba(28, 28, 30, 0.14);
+  position: relative;
+}
+
+/* ============================================================
+   146. EXPLORE · explore-landing (index.html preview)
+   ------------------------------------------------------------
+   Same card language as the main grid, tuned for the
+   landing section slot.
+   ============================================================ */
+
+.explore-landing-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-top: 22px;
+  text-align: left;
+}
+
+@media (min-width: 600px) {
+  .explore-landing-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+/* Landing cards slightly smaller */
+.explore-landing-grid .explore-card {
+  padding: 10px;
+}
+
+.explore-landing-grid .explore-avatar {
+  border-radius: 16px;
+  font-size: 30px;
+}
+
+.explore-landing-grid .explore-name {
+  font-size: 13.5px;
+}
+
+.explore-landing-grid .explore-role {
+  font-size: 12px;
+}
+
+.explore-landing-more {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+}
+.explore-landing-more a {
+  color: var(--accent);
+  font-weight: 700;
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+.explore-landing-more a:hover {
+  color: var(--accent-hover);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* ============================================================
+   147. GIGS · single gig page (gig.html)
+   ------------------------------------------------------------
+   Full gig view. Reuses the same accent pattern as the Desk.
+   Type badge at top, title, body, info rows, contact buttons.
+   ============================================================ */
+
+/* Gig type badge — sits above the name in the brand band */
+.gig-type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 6px 14px;
+  border-radius: var(--r-pill);
+  font-family: var(--sans);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 16px;
+  background: rgba(255, 159, 10, 0.14);
+  color: var(--a-700);
+  border: 1px solid rgba(255, 159, 10, 0.22);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* ============================================================
+   148. POST-GIG · pay row
+   ------------------------------------------------------------
+   Range inputs (From – To) plus a unit dropdown.
+   ============================================================ */
+
+.pay-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 8px;
+  align-items: center;
+}
+
+.pay-row .form-input {
+  padding: 14px 12px;
+  font-size: 15px;
+  text-align: center;
+}
+
+.pay-dash {
+  color: var(--ink-3);
+  font-size: 16px;
+  font-weight: 600;
+  text-align: center;
+}
+
+/* Unit dropdown sits on its own row below */
+.pay-unit {
+  grid-column: 1 / -1;
+  margin-top: 8px;
+}
+
+@media (min-width: 520px) {
+  .pay-row {
+    grid-template-columns: 1fr auto 1fr 1fr;
+  }
+  .pay-unit {
+    grid-column: auto;
+    margin-top: 0;
+  }
+}
+
+/* ============================================================
+   149. EXPLORE · responsive
+   ============================================================ */
+
+@media (max-width: 520px) {
+  .explore-title {
+    font-size: 2rem;
+  }
+  .explore-search {
+    padding: 11px 14px;
+    border-radius: 14px;
+  }
+  .explore-search svg {
+    width: 18px;
+    height: 18px;
+    padding: 5px;
+    border-radius: 9px;
+  }
+  .explore-tabs,
+  .explore-chips {
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  .explore-tab {
+    padding: 8px 16px;
+    font-size: 13px;
+  }
+  .explore-grid {
+    gap: 12px;
+  }
+  .explore-card {
+    padding: 10px 10px 12px;
+    border-radius: 16px;
+  }
+  .explore-avatar {
+    border-radius: 16px;
+    font-size: 32px;
+  }
+  .explore-name {
+    font-size: 14px;
+  }
+  .explore-role {
+    font-size: 12.5px;
+  }
+  .explore-gig {
+    padding: 16px 18px 16px 20px;
+    border-radius: 16px;
+  }
+  .explore-gig-title {
+    font-size: 15.5px;
+  }
+  .explore-empty::before {
+    width: 72px;
+    height: 72px;
+    border-radius: 20px;
+    margin-bottom: 18px;
+  }
+}
+
+/* ============================================================
+   150. EXPLORE · reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .explore-card,
+  .explore-gig,
+  .explore-tab,
+  .explore-popular-chip {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   END OF PART 12
+   ============================================================
+   What changed:
+
+   EXPLORE FROM "list of names" → "Play Store-like discovery"
+
+   ✓ Search bar: rounded rect with a rounded SQUARE icon
+     inside. Focus state turns the icon green.
+   ✓ Chips scroll horizontally (like Play Store genres)
+   ✓ Active chip: gradient green with colored glow
+   ✓ Popular chips lift on hover with green tint
+   ✓ Sections have colored dots (green for Desks, amber for Gigs)
+   ✓ Section titles are 18px bold, editorial
+   ✓ Desk cards: NO border, rounded SQUARE avatar (20px radius)
+     — the Play Store signature. Hover lifts the card.
+   ✓ Avatar has a soft radial highlight inside (3D feel)
+   ✓ No taglines on cards — Play Store doesn't show them
+   ✓ Location has a small green dot as a pin indicator
+   ✓ Empty state has a big soft square placeholder
+
+   GIGS FROM "odd list" → "editorial discovery cards"
+
+   ✓ Full card with amber gradient left strip
+   ✓ Soft amber corner glow (screen-power trick)
+   ✓ Rounded corners, real shadow
+   ✓ Uppercase amber badge for type
+   ✓ 16.5px bold title
+   ✓ Meta line with location, days, pay
+   ✓ Hover lifts the card with a bigger shadow
+   ✓ Zero borders — spacing + elevation only
+
+   GIG PAGE
+   ✓ Type badge is a glass pill with amber tint
+
+   POST-GIG
+   ✓ Pay row: From – To range with proper alignment
+   ✓ Unit dropdown on its own row on mobile
+
+   The whole explore page reads like a store now.
+   Discovery first, search second. Steve-approved.
+
+   Next part:
+     Part 13 — Toasts + misc pages (start, how, terms, demo, test)
+   ============================================================ */
