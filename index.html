@@ -4,24 +4,23 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#F2EEE3">
-<title>STM Deskly — Your own place on the internet</title>
+<title>STMDeskly — Your own place on the internet</title>
 <meta name="description" content="Create a Desk for yourself, your business, or an organisation. One link that shows who you are and how to reach you.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#74926F">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="STMDeskly">
 <meta name="application-name" content="STMDeskly">
 <meta property="og:image" content="https://stmdeskly.pages.dev/og-image.png">
-<meta property="og:title" content="STM Deskly">
+<meta property="og:title" content="STMDeskly">
 <meta property="og:description" content="Your own place on the internet.">
 <meta property="og:url" content="https://stmdeskly.pages.dev/">
 <meta property="og:type" content="website">
@@ -29,119 +28,56 @@
 
 <body class="page-landing">
 
-<header class="landing-wrap landing-nav">
-  <a href="index.html" class="landing-brand">
-    <span class="landing-brand-mark">D</span>
-    STM Deskly
-  </a>
-  <nav class="landing-nav-links">
-    <a href="#what">What it is</a>
-    <a href="#how">How it works</a>
-    <a href="explore.html">Explore</a>
-    <a href="demo.html">Example</a>
-  </nav>
-  <a href="start.html" class="landing-nav-cta">Create a Desk</a>
-</header>
-
 <main class="landing-wrap">
 
   <!-- ============================================================
-       HERO
+       HERO — brand first
        ============================================================ -->
   <section class="hero">
-    <div class="hero-grid">
-
-      <div>
-        <p class="hero-eyebrow">A quiet place to be found</p>
-        <h1 class="hero-title">
-          Your own place<br>
-          on the <em>internet</em>.
-        </h1>
-        <p class="hero-sub">
-          One link that shows who you are, what you offer, and how to reach you.
-          For a person, a business, or a place. Ready in a minute.
-        </p>
-        <div class="hero-actions">
-          <a href="signup.html" class="hero-pill hero-pill-primary">Create your Desk</a>
-          <a href="demo.html" class="hero-pill hero-pill-quiet">See an example</a>
-          <a href="login.html" class="hero-link">Log in →</a>
-        </div>
-      </div>
-
-      <!-- Hero art: flowing topographic lines -->
-      <div class="hero-art" aria-hidden="true">
-        <svg viewBox="0 0 500 500" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <radialGradient id="heroFade" cx="50%" cy="50%" r="60%">
-              <stop offset="0%" stop-color="#74926F" stop-opacity="0.18"/>
-              <stop offset="100%" stop-color="#74926F" stop-opacity="0"/>
-            </radialGradient>
-            <linearGradient id="heroLine" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stop-color="#8EAA89" stop-opacity="0.55"/>
-              <stop offset="100%" stop-color="#74926F" stop-opacity="0.35"/>
-            </linearGradient>
-          </defs>
-
-          <!-- Soft radial glow behind -->
-          <circle cx="250" cy="250" r="220" fill="url(#heroFade)"/>
-
-          <!-- Flowing topographic contours -->
-          <g fill="none" stroke="url(#heroLine)" stroke-width="1.2" stroke-linecap="round">
-            <path d="M 60,250 C 60,160 130,90 220,80 C 310,70 400,120 430,200 C 450,260 420,340 350,380 C 280,420 180,410 120,350 C 80,310 60,290 60,250 Z"/>
-            <path d="M 100,250 C 100,180 160,120 230,115 C 300,110 370,150 395,220 C 415,280 385,340 320,370 C 250,400 170,390 130,340 C 105,310 100,280 100,250 Z"/>
-            <path d="M 140,250 C 140,200 190,155 245,150 C 300,145 350,180 365,235 C 375,285 350,325 300,345 C 245,365 185,355 155,315 C 140,295 140,270 140,250 Z"/>
-            <path d="M 175,250 C 175,215 210,185 250,182 C 290,180 330,205 340,245 C 348,285 325,315 290,325 C 250,335 205,325 185,300 C 175,285 175,265 175,250 Z"/>
-            <path d="M 205,250 C 205,232 225,215 250,213 C 275,212 305,228 310,250 C 315,275 300,295 275,300 C 250,305 220,300 210,285 C 205,275 205,262 205,250 Z"/>
-            <path d="M 232,250 C 232,242 240,235 250,234 C 260,234 272,242 272,250 C 272,260 265,268 255,268 C 245,268 235,262 232,250 Z"/>
-          </g>
-
-          <!-- Small accent dots -->
-          <g fill="#74926F" opacity="0.35">
-            <circle cx="80" cy="120" r="2.5"/>
-            <circle cx="430" cy="90" r="3"/>
-            <circle cx="420" cy="420" r="2"/>
-            <circle cx="70" cy="400" r="2.5"/>
-          </g>
-        </svg>
-      </div>
-
+    <div class="hero-logo">
+      <svg class="hero-logo-mark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <!-- Left bright green form (tilted) -->
+        <path d="M 26 34
+                 C 26 28 29 25 34 23
+                 L 46 18
+                 C 51 16 54 19 54 25
+                 L 54 87
+                 C 54 93 51 96 46 98
+                 L 34 103
+                 C 29 105 26 102 26 96
+                 Z"
+              fill="#0E8A5F"/>
+        <!-- Right deep forest form -->
+        <path d="M 62 22
+                 C 62 16 65 13 70 13
+                 L 86 13
+                 C 91 13 94 16 94 21
+                 L 94 87
+                 C 94 92 91 95 86 95
+                 L 70 95
+                 C 65 95 62 92 62 87
+                 Z"
+              fill="#0D3B26"/>
+      </svg>
+      <h1 class="hero-logo-word">STMDeskly</h1>
     </div>
-  </section>
 
-  <!-- ============================================================
-       PROOF
-       ============================================================ -->
-  <section class="proof reveal">
-    <div class="proof-item">
-      <span class="proof-num">Free</span>
-      <span class="proof-lbl">Forever</span>
-    </div>
-    <div class="proof-item">
-      <span class="proof-num">One minute</span>
-      <span class="proof-lbl">To set up</span>
-    </div>
-    <div class="proof-item">
-      <span class="proof-num">One link</span>
-      <span class="proof-lbl">To share</span>
-    </div>
-    <div class="proof-item">
-      <span class="proof-num">No tech</span>
-      <span class="proof-lbl">Required</span>
-    </div>
+    <p class="hero-tagline">Your own place on the internet.</p>
+
+    <a href="signup.html" class="hero-cta">Create your Desk</a>
+    <a href="login.html" class="hero-login">Already have one? Log in</a>
   </section>
 
   <!-- ============================================================
        WHAT IT IS
        ============================================================ -->
-  <section class="landing-section reveal" id="what">
-    <div class="landing-section-head">
-      <p class="landing-section-eyebrow">What it is</p>
-      <h2 class="landing-section-title">A Desk for anyone<br>who needs to be found.</h2>
-      <p class="landing-section-sub">
-        Fill in the basics. Deskly gives you a page. You share the link —
-        in your bio, on a business card, in a WhatsApp message.
-      </p>
-    </div>
+  <section class="landing-section reveal">
+    <p class="section-eyebrow">What it is</p>
+    <h2 class="section-title">A Desk for anyone<br>who needs to be found.</h2>
+    <p class="section-sub">
+      One link that shows who you are, what you offer, and how to reach you. For a
+      person, a business, or a place. Ready in a minute.
+    </p>
 
     <div class="triple-grid">
 
@@ -155,8 +91,8 @@
         <div>
           <h3 class="triple-title">For you</h3>
           <p class="triple-text">
-            A photographer. A tailor. A phone engineer. Show your work and how to
-            reach you, without building a website.
+            A photographer. A tailor. A phone engineer. Show your work and how
+            people reach you — without building a website.
           </p>
         </div>
       </div>
@@ -172,8 +108,8 @@
         <div>
           <h3 class="triple-title">For your business</h3>
           <p class="triple-text">
-            A shop. A food brand. A fashion label. Show what you offer, where
-            you are, and how to order — in one clean place.
+            A shop. A food brand. A fashion label. Show what you offer, where you
+            are, and how to order — all in one clean place.
           </p>
         </div>
       </div>
@@ -184,14 +120,13 @@
             <path d="M3 21h18"/>
             <path d="M5 21V7l7-4 7 4v14"/>
             <path d="M10 21v-6h4v6"/>
-            <path d="M9 10h.01M15 10h.01M9 14h.01M15 14h.01"/>
           </svg>
         </div>
         <div>
           <h3 class="triple-title">For a place</h3>
           <p class="triple-text">
-            A church. A mosque. A venue. A school. Service times, programmes,
-            location — all on one page your members can share.
+            A church. A venue. A school. Service times, programmes, location —
+            on one page your members can share.
           </p>
         </div>
       </div>
@@ -202,34 +137,32 @@
   <!-- ============================================================
        HOW IT WORKS
        ============================================================ -->
-  <section class="landing-section reveal" id="how">
-    <div class="landing-section-head">
-      <p class="landing-section-eyebrow">How it works</p>
-      <h2 class="landing-section-title">Three steps.<br>Then you share it.</h2>
-    </div>
+  <section class="landing-section reveal">
+    <p class="section-eyebrow">How it works</p>
+    <h2 class="section-title">Ready in a minute.</h2>
 
     <div class="steps-list">
 
       <div class="step-item">
-        <span class="step-num">— 01</span>
+        <span class="step-num">01</span>
         <h3 class="step-title">Create your Desk</h3>
         <p class="step-text">
-          Pick what it is for — you, your business, or a place. Enter the basics.
-          You get a link immediately.
+          Pick what it is for — you, your business, or a place. Enter the
+          basics. You get a link immediately.
         </p>
       </div>
 
       <div class="step-item">
-        <span class="step-num">— 02</span>
+        <span class="step-num">02</span>
         <h3 class="step-title">Add what matters</h3>
         <p class="step-text">
           Services, photos, location, hours. Anything you want. Come back any
-          time to change it. Your Desk updates instantly.
+          time. Your Desk updates instantly.
         </p>
       </div>
 
       <div class="step-item">
-        <span class="step-num">— 03</span>
+        <span class="step-num">03</span>
         <h3 class="step-title">Share the link</h3>
         <p class="step-text">
           Put it in your bio. Send it in a chat. Anyone who opens it sees your
@@ -241,56 +174,10 @@
   </section>
 
   <!-- ============================================================
-       PREVIEW
-       ============================================================ -->
-  <section class="landing-section reveal">
-    <div class="landing-section-head">
-      <p class="landing-section-eyebrow">What it looks like</p>
-      <h2 class="landing-section-title">A page that feels<br>like yours.</h2>
-      <p class="landing-section-sub">
-        Your colours, your photos, your words. No template feel. Every Desk is
-        its own small site.
-      </p>
-    </div>
-
-    <div class="preview-frame">
-      <div class="preview-card">
-        <div class="preview-mark">TA</div>
-        <h3 class="preview-name">Tunde Adeyemi</h3>
-        <p class="preview-role">Photographer</p>
-        <p class="preview-tagline">
-          Portraits, weddings and events in Lagos. Eight years behind the lens.
-        </p>
-        <a href="demo.html" class="preview-btn">Message on WhatsApp</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       WHY
-       ============================================================ -->
-  <section class="landing-section reveal">
-    <div class="why-block">
-      <p class="why-quote">
-        “Not everyone needs a complicated website. Sometimes you just need
-        somewhere clean to put your name.”
-      </p>
-      <p class="why-text">
-        A Desk is one page that does the job. It is not a social network,
-        not a marketplace, not a marketing platform. It is somewhere for
-        people to find you.
-      </p>
-    </div>
-  </section>
-
-  <!-- ============================================================
        FINAL CTA
        ============================================================ -->
   <section class="final-block reveal">
-    <p class="final-eyebrow">Ready in a minute</p>
-    <h2 class="final-title">
-      Your Desk is one minute away.
-    </h2>
+    <h2 class="final-title">Your Desk is one minute away.</h2>
     <a href="signup.html" class="final-btn">
       Create a Desk
       <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
@@ -304,11 +191,10 @@
        ============================================================ -->
   <footer class="landing-foot">
     <span>© 2026 STMGraph</span>
-    <nav class="landing-foot-links">
-      <a href="terms.html">Terms & Privacy</a>
-      <a href="how.html">How it works</a>
-      <a href="explore.html">Explore</a>
-    </nav>
+    <a href="terms.html">Terms &amp; Privacy</a>
+    <a href="how.html">How it works</a>
+    <a href="explore.html">Explore</a>
+    <a href="demo.html">See an example</a>
   </footer>
 
 </main>
@@ -325,11 +211,10 @@
     if (params.get('deleted') !== '1') return;
 
     const banner = document.createElement('div');
-    banner.className = 'deleted-banner';
     banner.textContent = 'Your account has been deleted.';
     banner.style.cssText =
       'position:fixed;top:16px;left:50%;transform:translateX(-50%);' +
-      'z-index:100;padding:12px 20px;background:#292519;color:#FAF7F0;' +
+      'z-index:100;padding:12px 20px;background:#0D3B26;color:#FAF7F0;' +
       'border-radius:999px;font-size:13.5px;font-weight:600;' +
       'box-shadow:0 8px 24px rgba(41,37,25,.20);';
     document.body.prepend(banner);
@@ -368,57 +253,6 @@
     });
 
     els.forEach(el => io.observe(el));
-  })();
-
-  /* Explore preview — fetch 4 real Desks and show them
-     (kept minimal; section hidden if no DB or no results) */
-  (async function loadExplorePreview(){
-    const section = document.getElementById('exploreLanding');
-    if (!section) return;
-    if (!window.DB || !DB.ready) return;
-
-    try {
-      const list = await DB.searchDesks('', 'all');
-      if (!list || !list.length) return;
-      const preview = list.slice(0, 4);
-      const grid = document.getElementById('exploreLandingGrid');
-      if (!grid) return;
-
-      grid.innerHTML = '';
-      preview.forEach(desk => {
-        const card = document.createElement('a');
-        card.className = 'explore-card';
-        card.href = 'profile.html?u=' + encodeURIComponent(desk.username);
-
-        const avatar = document.createElement('div');
-        avatar.className = 'explore-avatar';
-        if (desk.avatar_url) {
-          avatar.style.backgroundImage = 'url("' + desk.avatar_url + '")';
-          avatar.style.backgroundSize = 'cover';
-          avatar.style.backgroundPosition = 'center';
-        } else {
-          const initials = desk.initials || (desk.name || 'D').charAt(0).toUpperCase();
-          avatar.textContent = initials.toUpperCase();
-        }
-        card.appendChild(avatar);
-
-        const nameEl = document.createElement('div');
-        nameEl.className = 'explore-name';
-        nameEl.textContent = desk.name || 'Desk';
-        card.appendChild(nameEl);
-
-        if (desk.role) {
-          const roleEl = document.createElement('div');
-          roleEl.className = 'explore-role';
-          roleEl.textContent = desk.role;
-          card.appendChild(roleEl);
-        }
-
-        grid.appendChild(card);
-      });
-
-      section.hidden = false;
-    } catch(e) { /* silent */ }
   })();
 </script>
 
