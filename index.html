@@ -3,18 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#F2EEE3">
+<meta name="theme-color" content="#F8F9F7">
 <title>STMDeskly — Your own place on the internet</title>
 <meta name="description" content="Create a Desk for yourself, your business, or an organisation. One link that shows who you are and how to reach you.">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#01764C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="STMDeskly">
@@ -30,35 +31,9 @@
 
 <main class="landing-wrap">
 
-  <!-- ============================================================
-       HERO — brand first
-       ============================================================ -->
   <section class="hero">
     <div class="hero-logo">
-      <svg class="hero-logo-mark" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <!-- Left bright green form (tilted) -->
-        <path d="M 26 34
-                 C 26 28 29 25 34 23
-                 L 46 18
-                 C 51 16 54 19 54 25
-                 L 54 87
-                 C 54 93 51 96 46 98
-                 L 34 103
-                 C 29 105 26 102 26 96
-                 Z"
-              fill="#0E8A5F"/>
-        <!-- Right deep forest form -->
-        <path d="M 62 22
-                 C 62 16 65 13 70 13
-                 L 86 13
-                 C 91 13 94 16 94 21
-                 L 94 87
-                 C 94 92 91 95 86 95
-                 L 70 95
-                 C 65 95 62 92 62 87
-                 Z"
-              fill="#0D3B26"/>
-      </svg>
+      <img src="/icon-192.png" alt="STMDeskly" class="hero-logo-img">
       <h1 class="hero-logo-word">STMDeskly</h1>
     </div>
 
@@ -68,15 +43,12 @@
     <a href="login.html" class="hero-login">Already have one? Log in</a>
   </section>
 
-  <!-- ============================================================
-       WHAT IT IS
-       ============================================================ -->
   <section class="landing-section reveal">
     <p class="section-eyebrow">What it is</p>
     <h2 class="section-title">A Desk for anyone<br>who needs to be found.</h2>
     <p class="section-sub">
-      One link that shows who you are, what you offer, and how to reach you. For a
-      person, a business, or a place. Ready in a minute.
+      One link that shows who you are, what you offer, and how to reach you.
+      For a person, a business, or a place. Ready in a minute.
     </p>
 
     <div class="triple-grid">
@@ -91,8 +63,8 @@
         <div>
           <h3 class="triple-title">For you</h3>
           <p class="triple-text">
-            A photographer. A tailor. A phone engineer. Show your work and how
-            people reach you — without building a website.
+            A photographer. A tailor. A phone engineer. Show your work and
+            how people reach you — without building a website.
           </p>
         </div>
       </div>
@@ -108,8 +80,8 @@
         <div>
           <h3 class="triple-title">For your business</h3>
           <p class="triple-text">
-            A shop. A food brand. A fashion label. Show what you offer, where you
-            are, and how to order — all in one clean place.
+            A shop. A food brand. A fashion label. Show what you offer,
+            where you are, and how to order — all in one clean place.
           </p>
         </div>
       </div>
@@ -134,9 +106,6 @@
     </div>
   </section>
 
-  <!-- ============================================================
-       HOW IT WORKS
-       ============================================================ -->
   <section class="landing-section reveal">
     <p class="section-eyebrow">How it works</p>
     <h2 class="section-title">Ready in a minute.</h2>
@@ -156,8 +125,8 @@
         <span class="step-num">02</span>
         <h3 class="step-title">Add what matters</h3>
         <p class="step-text">
-          Services, photos, location, hours. Anything you want. Come back any
-          time. Your Desk updates instantly.
+          Services, photos, location, hours. Anything you want. Come back
+          any time. Your Desk updates instantly.
         </p>
       </div>
 
@@ -165,17 +134,14 @@
         <span class="step-num">03</span>
         <h3 class="step-title">Share the link</h3>
         <p class="step-text">
-          Put it in your bio. Send it in a chat. Anyone who opens it sees your
-          Desk — clean, fast, on any phone.
+          Put it in your bio. Send it in a chat. Anyone who opens it sees
+          your Desk — clean, fast, on any phone.
         </p>
       </div>
 
     </div>
   </section>
 
-  <!-- ============================================================
-       FINAL CTA
-       ============================================================ -->
   <section class="final-block reveal">
     <h2 class="final-title">Your Desk is one minute away.</h2>
     <a href="signup.html" class="final-btn">
@@ -186,9 +152,6 @@
     </a>
   </section>
 
-  <!-- ============================================================
-       FOOTER
-       ============================================================ -->
   <footer class="landing-foot">
     <span>© 2026 STMGraph</span>
     <a href="terms.html">Terms &amp; Privacy</a>
@@ -205,7 +168,6 @@
 <script src="ripple.js" defer></script>
 
 <script>
-  /* Deleted account banner */
   (function showDeletedMessage(){
     const params = new URLSearchParams(location.search);
     if (params.get('deleted') !== '1') return;
@@ -214,9 +176,9 @@
     banner.textContent = 'Your account has been deleted.';
     banner.style.cssText =
       'position:fixed;top:16px;left:50%;transform:translateX(-50%);' +
-      'z-index:100;padding:12px 20px;background:#0D3B26;color:#FAF7F0;' +
+      'z-index:100;padding:12px 20px;background:#003D2E;color:#FAF7F0;' +
       'border-radius:999px;font-size:13.5px;font-weight:600;' +
-      'box-shadow:0 8px 24px rgba(41,37,25,.20);';
+      'box-shadow:0 8px 24px rgba(20,24,22,.20);';
     document.body.prepend(banner);
 
     if (window.history && history.replaceState) {
@@ -230,7 +192,6 @@
     }, 5000);
   })();
 
-  /* Scroll reveal */
   (function revealOnScroll(){
     const els = document.querySelectorAll('.reveal');
     if (!els.length) return;
