@@ -5516,3 +5516,34 @@ body:has(#exploreRoot) .form-shell,
     padding-top: 16px;
   }
 }
+/* ============================================================
+   EXPLORE · force sticky to work
+   ------------------------------------------------------------
+   overflow-x: clip doesn't create a scroll container the way
+   hidden does, so position: sticky on descendants still works.
+   ============================================================ */
+
+html, body {
+  overflow-x: clip;
+}
+
+/* Also reset any overflow on the explore ancestors */
+#exploreRoot,
+#exploreRoot.form-shell,
+body:has(#exploreRoot) .form-shell {
+  overflow: visible;
+}
+
+/* Force the head to stick — overrides any earlier rule */
+body:has(#exploreRoot) .explore-head,
+#exploreRoot .explore-head {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 30 !important;
+  background: var(--bg);
+}
+
+/* Keep the border-bottom transition from the previous block */
+.explore-head.is-stuck {
+  border-bottom: 1px solid var(--line) !important;
+}
