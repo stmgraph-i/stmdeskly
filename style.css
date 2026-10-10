@@ -5157,3 +5157,141 @@ a,
   padding: 24px 0 12px;
   font-weight: 500;
 }
+/* ============================================================
+   HOME — soft section cards
+   ============================================================ */
+
+#homeRoot.form-shell {
+  padding: 20px 20px 100px;
+  max-width: 620px;
+}
+
+/* Each section = a soft card */
+.home-section {
+  margin: 0 0 12px;
+  padding: 20px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+}
+
+.home-section:last-of-type {
+  margin-bottom: 0;
+}
+
+/* Remove the hairline divider */
+.home-section {
+  border-top: 1px solid var(--line);
+}
+
+/* Section title sits tight at top */
+.home-section-title {
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.home-section-title::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+/* Empty state inside a card is now a soft inline box */
+.home-empty {
+  background: var(--surface-3);
+  border: 0;
+  border-radius: var(--r-md);
+  padding: 16px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink-3);
+  line-height: 1.5;
+  margin: 0;
+}
+
+.home-empty-link {
+  color: var(--accent);
+  font-weight: 600;
+  margin-left: 4px;
+}
+
+/* Cards inside a section get a lighter tint so they read differently */
+.home-desk-mini {
+  background: var(--surface-3);
+  border: 0;
+  border-radius: var(--r-md);
+  padding: 12px;
+}
+
+.home-desk-mini:hover {
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgba(20, 24, 22, 0.06);
+}
+
+/* Gig cards */
+.home-gig-card {
+  background: var(--surface-3);
+  border: 0;
+  border-radius: var(--r-md);
+  padding: 16px;
+}
+
+.home-gig-card:hover {
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgba(20, 24, 22, 0.06);
+}
+
+/* "See all" link sits inside the section, aligned right */
+.home-see-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 12px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+.home-see-more svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Greeting sits on the page, above the cards */
+.home-greet {
+  margin: 4px 0 18px;
+  padding: 0;
+  background: transparent;
+  border: 0;
+}
+
+/* Search sits on the page too, above the cards */
+.home-search {
+  margin-bottom: 20px;
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-pill);
+  padding: 13px 18px;
+}
+
+/* Quick actions — keep on the page, above the cards */
+.home-quick-actions {
+  margin-bottom: 20px;
+}
+
+/* Feature card sits at the bottom as the hero */
+.home-desk-card {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
