@@ -4628,3 +4628,110 @@ body:has(#newPasswordForm) .form-fields {
     gap: 6px;
   }
 }
+/* ============================================================
+   CARD SYSTEM — three levels, applied consistently
+   ------------------------------------------------------------
+   L1 · CARD     — primary blocks. White surface + border.
+   L2 · PLAIN    — rows and lists. Just spacing, no chrome.
+   L3 · FEATURE  — one per page. Full-attention block.
+   ============================================================ */
+
+/* ============================================================
+   LEVEL 1 — PRIMARY CARDS
+   ------------------------------------------------------------
+   Apply to: dashboard sections, settings accordions, landing
+   triple cards, link boxes, invite cards, mini desk rows,
+   preview blocks, form fields wrappers.
+   ============================================================ */
+
+/* Everything at L1 uses the same skin. */
+.dash-section,
+.link-box,
+.acc,
+.triple-card,
+.home-desk-mini,
+.home-gig-card,
+.preview-block,
+.confirm-sheet,
+.logout-sheet,
+.account-actions .account-action,
+.dash-invite,
+.danger-zone {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+/* ============================================================
+   LEVEL 2 — PLAIN
+   ------------------------------------------------------------
+   Apply to: home sections, steps, footer, greeting areas,
+   detail rows, list items, timeline entries, empty messages.
+   Nothing gets a border. Nothing gets a surface. Just space.
+   ============================================================ */
+
+/* Kill any leftover card chrome on these. */
+.home-section,
+.landing-section,
+.steps-list,
+.dash-welcome,
+.settings-footer-links,
+.landing-foot,
+.home-footer,
+.dash-footer,
+.home-empty,
+.chats-loading,
+.chats-empty,
+.chat-empty,
+.reviews-empty,
+.wall-empty {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+}
+
+/* Rows inside lists stay flat, separated only by hairline */
+.dash-row,
+.home-desk-mini,
+.notif-card {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+}
+
+.dash-row:last-child,
+.home-desk-mini:last-child,
+.notif-card:last-child {
+  border-bottom: 0;
+}
+
+/* Small tinted stat blocks live INSIDE a primary card, so they
+   keep their tint but no border. */
+.dash-view-stat {
+  border: 0;
+  box-shadow: none;
+}
+
+/* Option buttons — quiet by default, no border unless active */
+.option-btn {
+  border: 1px solid transparent;
+}
+.option-btn.active {
+  border-color: var(--accent);
+}
+
+/* ============================================================
+   LEVEL 3 — FEATURE BLOCKS
+   ------------------------------------------------------------
+   One per page, maximum. Full-attention moments.
+   ============================================================ */
+
+.final-block,
+.home-desk-card {
+  background: var(--brand-800);
+  border: 0;
+  border-radius: var(--r-2xl);
+  color: var(--n-0);
+}
