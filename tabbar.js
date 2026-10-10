@@ -1,6 +1,7 @@
 /* ============================================================
    STMDESKLY · BOTTOM TAB BAR
-   Injected on signed-in pages. 5 tabs, always visible on mobile.
+   Injected on signed-in pages. 4 tabs, always visible on mobile.
+   Settings lives in the top-right menu, not here.
    Advanced badge: count pill + pulsing request dot.
    ============================================================ */
 
@@ -45,14 +46,6 @@
       <span class="tabbar-badge" id="tabbarChatsBadge" hidden>0</span>
       <span class="tabbar-request-dot" id="tabbarRequestDot" hidden></span>
     </a>
-
-    <a class="tabbar-item" data-tab="settings" href="settings.html">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="3"/>
-        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
-      </svg>
-      <span>Settings</span>
-    </a>
   `;
 
   document.body.appendChild(bar);
@@ -68,12 +61,11 @@
     'dashboard': 'desk',
     'chats':     'chats',
     'chat':      'chats',
-    'settings':  'settings',
-    'bot':       'settings',
     'profile':   'explore',
     'desk':      'explore',
     'gig':       'explore',
     'post-gig':  'chats'
+    /* settings, bot — no tab highlight (they live in the menu) */
   };
 
   const activeTab = activeMap[base];
@@ -104,7 +96,6 @@
       const dot   = document.getElementById('tabbarRequestDot');
       const item  = bar.querySelector('[data-tab="chats"]');
 
-      /* Count pill — unread messages */
       if (badge) {
         if (unreadCount > 0) {
           badge.textContent = String(unreadCount > 99 ? '99+' : unreadCount);
@@ -114,7 +105,6 @@
         }
       }
 
-      /* Pulse dot — incoming requests */
       if (dot) {
         if (requestCount > 0) {
           dot.hidden = false;
@@ -123,7 +113,6 @@
         }
       }
 
-      /* Container modifier when both are shown */
       if (item) {
         item.classList.toggle('has-count', unreadCount > 0);
         item.classList.toggle('has-requests', requestCount > 0);
