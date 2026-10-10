@@ -6686,3 +6686,86 @@ body.compact .desk-block { padding: 22px 20px; margin-bottom: 12px; }
     height: min(70dvh, 520px);
   }
 }
+/* ============================================================
+   BOT · keyboard-aware panel on mobile
+   ------------------------------------------------------------
+   When the keyboard opens, the panel becomes a full-height
+   sheet that hugs the visual viewport. It resizes, never
+   shifts off screen.
+   ============================================================ */
+
+/* Lock body scroll while the bot is open — stops the page
+   from jumping when the keyboard appears. */
+body:has(.desk-bot-panel[data-open="true"]) {
+  overflow: hidden;
+}
+
+/* Use dvh units everywhere inside the panel so the height
+   tracks the visual viewport as the keyboard opens/closes. */
+.desk-bot-panel {
+  height: min(560px, calc(100dvh - 120px));
+  max-height: calc(100dvh - 96px);
+}
+
+.desk-bot-log {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* ---------- Mobile: full-screen sheet ---------- */
+
+@media (max-width: 520px) {
+  .desk-bot-panel {
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    width: 100%;
+    height: 100dvh;
+    max-height: 100dvh;
+    border-radius: var(--r-xl) var(--r-xl) 0 0;
+    padding-bottom: env(safe-area-inset-bottom);
+    transform-origin: bottom center;
+    transform: translateY(12px) scale(1);
+    opacity: 0;
+  }
+
+  .desk-bot-panel[data-open="true"] {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+
+  /* Hide the floating bubble while the panel is open —
+     the panel is now full-screen so the bubble has nowhere
+     to sit without overlapping content. */
+  .desk-float-btn#deskBotBtn[data-open="true"] {
+    display: none;
+  }
+
+  /* Input row sits at the bottom of the panel — directly above
+     the keyboard. */
+  .desk-bot-input-row {
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+  }
+
+  /* Slight tightening of chips on mobile */
+  .desk-bot-chips {
+    padding: 6px 12px 10px;
+  }
+}
+
+/* ---------- Fallback for browsers without dvh ---------- */
+
+@supports not (height: 1dvh) {
+  .desk-bot-panel {
+    height: min(560px, calc(100vh - 120px));
+    max-height: calc(100vh - 96px);
+  }
+
+  @media (max-width: 520px) {
+    .desk-bot-panel {
+      height: 100vh;
+      max-height: 100vh;
+    }
+  }
+}
