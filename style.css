@@ -1904,3 +1904,584 @@ body:has(#newPasswordForm) .form-fields {
     padding: 14px 30px;
   }
      }
+/* ============================================================
+   PART 5 — DASHBOARD
+   ------------------------------------------------------------
+   Owner's workspace. Calm, practical, scannable.
+   Section identities from the palette. No decoration.
+   ============================================================ */
+
+/* ---------- Welcome header ---------- */
+
+.dash-welcome {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.dash-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  background-size: cover;
+  background-position: center;
+  border: 1px solid var(--line);
+}
+
+.dash-avatar.has-image > * {
+  display: none;
+}
+
+.dash-greet {
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-bottom: 3px;
+}
+
+.dash-headline {
+  font-size: clamp(1.5rem, 5.5vw, 1.9rem);
+  font-weight: 700;
+  letter-spacing: -0.035em;
+  line-height: 1.1;
+  color: var(--ink);
+}
+
+/* ---------- Link box (your Desk URL) ---------- */
+
+.link-box {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+  padding: 18px 20px;
+  margin-bottom: 14px;
+}
+
+.link-box-tag {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 8px;
+}
+
+.link-box-url {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--accent);
+  word-break: break-all;
+  margin-bottom: 14px;
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+.link-box-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: nowrap;
+}
+
+.link-action {
+  flex: 1;
+  padding: 10px 12px;
+  border-radius: var(--r-pill);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-align: center;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.link-action:hover {
+  background: var(--surface-3);
+  border-color: var(--line-2);
+}
+
+.link-action:active {
+  transform: scale(0.98);
+}
+
+.link-action-primary {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.link-action-primary:hover {
+  background: var(--accent-hover);
+  border-color: var(--accent-hover);
+}
+
+/* ---------- Edit my Desk button ---------- */
+
+.dash-edit {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 22px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  margin-bottom: 24px;
+  transition: background 0.15s ease;
+}
+
+.dash-edit:hover {
+  background: var(--accent-hover);
+}
+
+.dash-edit:active {
+  transform: scale(0.99);
+}
+
+.dash-edit svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+/* ---------- Section cards ---------- */
+
+.dash-section {
+  padding: 20px 20px;
+  margin-bottom: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-lg);
+}
+
+.dash-section-title {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Colored dot before title — section identity */
+.dash-section-title::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+#secViews .dash-section-title::before {
+  background: var(--c-dash);
+}
+#secUnanswered .dash-section-title::before {
+  background: var(--c-gigs);
+}
+#secOffer .dash-section-title::before,
+#secAbout .dash-section-title::before,
+#secWork .dash-section-title::before,
+#secDetails .dash-section-title::before,
+#secContact .dash-section-title::before {
+  background: var(--accent);
+}
+
+/* ---------- Views stats ---------- */
+
+.dash-view-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.dash-view-stat {
+  text-align: center;
+  padding: 14px 8px;
+  background: var(--c-dash-soft);
+  border-radius: var(--r-md);
+}
+
+.dash-view-num {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  color: var(--c-dash-deep);
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.dash-view-lbl {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--c-dash-deep);
+  opacity: 0.75;
+}
+
+/* ---------- Chart ---------- */
+
+.dash-view-chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 60px;
+  padding: 6px 0 0;
+}
+
+.dash-view-bar {
+  flex: 1;
+  min-height: 4px;
+  background: var(--c-dash);
+  border-radius: 3px 3px 0 0;
+  opacity: 0.75;
+  transition: opacity 0.15s ease;
+}
+
+.dash-view-bar:hover {
+  opacity: 1;
+}
+
+/* ---------- Unanswered questions ---------- */
+
+.dash-unanswered,
+#unansweredList {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+
+.dash-unanswered-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--c-gigs-soft);
+  border-radius: var(--r-md);
+}
+
+.dash-unanswered-q {
+  flex: 1;
+  min-width: 0;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--ink);
+  line-height: 1.45;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.dash-unanswered-count {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--c-gigs-deep);
+  background: rgba(201, 161, 90, 0.2);
+  padding: 2px 7px;
+  border-radius: var(--r-pill);
+}
+
+.dash-unanswered-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.dash-unanswered-answer {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 12px;
+  border-radius: var(--r-pill);
+  background: var(--c-gigs);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.dash-unanswered-answer:hover {
+  background: var(--c-gigs-deep);
+}
+
+.dash-unanswered-answer svg {
+  width: 12px;
+  height: 12px;
+}
+
+.dash-unanswered-dismiss {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0;
+  color: var(--c-gigs-deep);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.dash-unanswered-dismiss:hover {
+  background: rgba(201, 161, 90, 0.18);
+}
+
+.dash-unanswered-dismiss svg {
+  width: 12px;
+  height: 12px;
+}
+
+.dash-unanswered-clear {
+  padding: 8px 16px;
+  border-radius: var(--r-pill);
+  background: transparent;
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.dash-unanswered-clear:hover {
+  background: var(--surface-3);
+  border-color: var(--line-2);
+}
+
+/* ---------- Invite card ---------- */
+
+.dash-invite {
+  background: var(--c-reviews-soft);
+  border-color: transparent;
+}
+
+.dash-invite .dash-section-title {
+  color: var(--c-reviews-deep);
+}
+
+.dash-invite .dash-section-title::before {
+  background: var(--c-reviews);
+}
+
+.dash-invite-copy {
+  font-size: 13.5px;
+  line-height: 1.55;
+  color: var(--ink-2);
+  margin-bottom: 14px;
+}
+
+.dash-invite-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 20px;
+  border-radius: var(--r-pill);
+  background: var(--c-reviews);
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 0;
+  transition: background 0.15s ease;
+}
+
+.dash-invite-btn:hover {
+  background: var(--c-reviews-deep);
+}
+
+.dash-invite-btn:active {
+  transform: scale(0.98);
+}
+
+/* ---------- Rows ---------- */
+
+.dash-rows {
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-row {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 0;
+  border-top: 1px solid var(--line);
+}
+
+.dash-row:first-of-type {
+  border-top: 0;
+  padding-top: 0;
+}
+
+.dash-row:last-of-type {
+  padding-bottom: 0;
+}
+
+.dash-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.dash-value {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-2);
+  line-height: 1.5;
+  letter-spacing: -0.005em;
+}
+
+/* Bulleted list */
+.dash-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.dash-list li {
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  line-height: 1.5;
+  padding-left: 16px;
+  position: relative;
+}
+
+.dash-list li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+/* About text */
+.dash-copy {
+  font-size: 14.5px;
+  color: var(--ink-2);
+  line-height: 1.65;
+  white-space: pre-line;
+  letter-spacing: -0.005em;
+}
+
+/* Photos grid */
+.dash-photos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.dash-photo {
+  aspect-ratio: 1 / 1;
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface-3);
+}
+
+.dash-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ---------- Footer ---------- */
+
+.dash-footer {
+  margin-top: 32px;
+  padding: 26px 20px 20px;
+  text-align: center;
+  color: var(--ink-3);
+  font-size: 12.5px;
+  letter-spacing: -0.005em;
+}
+
+.dash-footer-line {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  margin-bottom: 6px;
+}
+
+.dash-footer-brand {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink-2);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.dash-footer-brand:hover {
+  color: var(--accent);
+}
+
+.dash-footer-sep {
+  color: var(--ink-3);
+  opacity: 0.5;
+}
+
+.dash-footer-credit {
+  color: var(--ink-3);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.dash-footer-credit:hover {
+  color: var(--ink-2);
+}
+
+.dash-footer-copy {
+  font-size: 11.5px;
+  opacity: 0.75;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 520px) {
+  .dash-section {
+    padding: 18px 16px;
+  }
+  .link-box {
+    padding: 16px 16px;
+  }
+  .dash-view-num {
+    font-size: 22px;
+  }
+     }
