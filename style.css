@@ -6769,3 +6769,38 @@ body:has(.desk-bot-panel[data-open="true"]) {
     }
   }
 }
+/* ============================================================
+   BOT PANEL — mobile: anchor to top of visible area
+   ------------------------------------------------------------
+   We stop anchoring to bottom: 0. That was pushing the header
+   off-screen when the keyboard opened.
+   ============================================================ */
+
+@media (max-width: 520px) {
+  .desk-bot-panel {
+    top: 0;
+    bottom: auto;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    border-radius: 0;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .desk-bot-panel[data-open="true"] {
+    transform: none;
+    opacity: 1;
+  }
+}
+
+/* Fallback for browsers without dvh */
+@supports not (height: 1dvh) {
+  @media (max-width: 520px) {
+    .desk-bot-panel {
+      height: 100vh;
+    }
+  }
+}
