@@ -7213,3 +7213,327 @@ body.page-desk {
     font-size: 15px;
   }
 }
+/* ============================================================
+   SETTINGS — soft, color-coded, at-a-glance
+   ------------------------------------------------------------
+   Each section gets its own identity color. You can tell them
+   apart from across the room without reading a word.
+   ============================================================ */
+
+#settingsRoot.form-shell {
+  max-width: 620px;
+  padding: 20px 20px 130px;
+}
+
+/* Header row — softer */
+.settings-head {
+  margin: 12px 0 24px;
+  gap: 10px;
+}
+
+.settings-title {
+  font-size: clamp(1.4rem, 5vw, 1.7rem);
+  font-weight: 900;
+  letter-spacing: -0.045em;
+}
+
+/* ---------- Base accordion — bigger, warmer ---------- */
+
+.acc {
+  background: var(--surface);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-xl);
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition:
+    border-color 0.22s ease,
+    box-shadow 0.22s ease,
+    transform 0.22s cubic-bezier(0.2, 0.9, 0.2, 1);
+}
+
+.acc-head {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  padding: 20px 22px;
+  background: transparent;
+  border: 0;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.18s ease;
+}
+
+.acc-head:active {
+  transform: scale(0.995);
+}
+
+/* ---------- Colored dot before every title ---------- */
+
+.acc-head::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: var(--acc-color, var(--accent));
+  box-shadow: 0 0 0 3px var(--acc-tint, var(--accent-soft));
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.4, 0.4, 1),
+    box-shadow 0.22s ease;
+}
+
+.acc.open .acc-head::before {
+  transform: scale(1.15);
+  box-shadow: 0 0 0 5px var(--acc-tint, var(--accent-soft));
+}
+
+/* ---------- Head text ---------- */
+
+.acc-head-text {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.acc-title {
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+.acc-sub {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ---------- Chevron ---------- */
+
+.acc-chevron {
+  width: 20px;
+  height: 20px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+  margin-left: 8px;
+  transition:
+    transform 0.28s cubic-bezier(0.34, 1.4, 0.4, 1),
+    color 0.18s ease;
+}
+
+.acc.open .acc-chevron {
+  transform: rotate(180deg);
+  color: var(--acc-color, var(--accent));
+}
+
+/* ---------- Open state — colored left accent + tint ---------- */
+
+.acc.open {
+  border-color: var(--acc-color, var(--accent));
+  box-shadow: 0 4px 16px -8px rgba(20, 24, 22, 0.10);
+}
+
+.acc.open .acc-head {
+  background: var(--acc-tint, var(--accent-soft));
+  background-image: linear-gradient(
+    to right,
+    var(--acc-tint, var(--accent-soft)) 0%,
+    transparent 60%
+  );
+}
+
+/* ---------- Body ---------- */
+
+.acc-body {
+  padding: 4px 22px 24px;
+  border-top: 1px solid var(--line);
+  animation: accFade 0.26s ease-out;
+}
+
+@keyframes accFade {
+  from { opacity: 0; transform: translateY(-4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.acc-field {
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.acc-field:first-child {
+  margin-top: 18px;
+}
+
+/* ---------- Per-section identity colors ---------- */
+
+/* Identity — brand green */
+.acc[data-section="identity"] {
+  --acc-color: var(--brand-500);
+  --acc-tint: var(--brand-50);
+}
+
+/* Offer — blue */
+.acc[data-section="offer"] {
+  --acc-color: var(--blue);
+  --acc-tint: var(--blue-soft);
+}
+
+/* Details — violet */
+.acc[data-section="details"] {
+  --acc-color: var(--violet);
+  --acc-tint: var(--violet-soft);
+}
+
+/* Contact — mint */
+.acc[data-section="contact"] {
+  --acc-color: var(--mint-deep);
+  --acc-tint: var(--mint-soft);
+}
+
+/* Photos — purple */
+.acc[data-section="photos"] {
+  --acc-color: var(--purple);
+  --acc-tint: var(--purple-soft);
+}
+
+/* Gigs — amber */
+.acc[data-section="gigs"] {
+  --acc-color: var(--amber);
+  --acc-tint: var(--amber-soft);
+}
+
+/* Notifications — pink */
+.acc[data-section="notifications"] {
+  --acc-color: var(--pink);
+  --acc-tint: var(--pink-soft);
+}
+
+/* Privacy — teal */
+.acc[data-section="privacy"] {
+  --acc-color: var(--teal);
+  --acc-tint: var(--teal-soft);
+}
+
+/* Appearance — indigo */
+.acc[data-section="appearance"] {
+  --acc-color: var(--violet);
+  --acc-tint: var(--violet-soft);
+}
+
+/* ---------- Inputs inside settings — softer ---------- */
+
+.acc-field .form-label {
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-size: 11.5px;
+  margin-bottom: 2px;
+}
+
+.acc-field .form-input {
+  background: var(--surface-3);
+  border-color: transparent;
+  font-weight: 600;
+}
+
+.acc-field .form-input:focus {
+  background: var(--surface);
+  border-color: var(--acc-color, var(--accent));
+  box-shadow: 0 0 0 3px var(--acc-tint, var(--accent-soft));
+}
+
+.acc-field .form-help {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-top: 2px;
+}
+
+/* ---------- Save bar — heavier ---------- */
+
+.settings-save-bar {
+  padding: 16px 20px 12px;
+  background: linear-gradient(
+    180deg,
+    rgba(244, 241, 234, 0) 0%,
+    rgba(244, 241, 234, 0.96) 30%
+  );
+}
+
+.settings-save-btn {
+  padding: 18px 28px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  box-shadow: 0 6px 20px -8px rgba(1, 118, 76, 0.4);
+}
+
+/* ---------- Account actions — softer, cleaner ---------- */
+
+.account-actions {
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1.5px solid var(--line);
+  gap: 10px;
+}
+
+.account-action {
+  padding: 16px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: var(--r-lg);
+  border-width: 1.5px;
+}
+
+.account-action-delete {
+  color: var(--danger);
+  border-color: rgba(196, 69, 54, 0.22);
+}
+
+/* ---------- Footer links ---------- */
+
+.settings-footer-links {
+  font-size: 13px;
+  font-weight: 600;
+  margin-top: 24px;
+}
+
+/* ---------- Mobile ---------- */
+
+@media (max-width: 520px) {
+  #settingsRoot.form-shell {
+    padding: 16px 16px 120px;
+  }
+
+  .acc-head {
+    padding: 18px 18px;
+    gap: 12px;
+  }
+
+  .acc-title {
+    font-size: 15.5px;
+  }
+
+  .acc-sub {
+    font-size: 12.5px;
+  }
+
+  .acc-body {
+    padding: 4px 18px 20px;
+  }
+
+  .acc-field {
+    margin-bottom: 18px;
+  }
+}
