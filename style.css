@@ -5467,3 +5467,146 @@ body.landing {
      Part 12 — Explore + Gigs
      Part 13 — Toasts + misc
    ============================================================ */
+
+
+/* ============================================================
+   56. BACKGROUND SYSTEM
+   ------------------------------------------------------------
+   Four layers stacked. Every page uses this now.
+
+     1. Cool grey base
+     2. Aurora glows (green top-left + blue top-right)
+        — fixed to viewport, feels like ambient light
+     3. Micro dot grid @ 4.5% — almost invisible texture
+     4. SVG film grain @ 22% — the Apple trick. Hides color
+        banding on LCD, adds physicality on AMOLED.
+
+   Nothing scrolls except the content. The background stays
+   still, so it reads as light, not as a wallpaper.
+
+   Why this looks "premium" on cheap screens:
+     - Aurora gives colored depth without needing HDR
+     - Dots give scale reference without being busy
+     - Grain makes flat colors feel like material, not paint
+   ============================================================ */
+
+body {
+  background-color: var(--bg);
+  background-image:
+    /* --- Layer 4 (top): film grain --- */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.22'/%3E%3C/svg%3E"),
+    /* --- Layer 3: micro dot grid --- */
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(28, 28, 30, 0.045) 0.5px,
+      transparent 1px
+    ),
+    /* --- Layer 2b: blue aurora (top-right) --- */
+    radial-gradient(
+      ellipse 90% 55% at 100% -5%,
+      rgba(10, 132, 255, 0.10) 0%,
+      rgba(10, 132, 255, 0.03) 40%,
+      transparent 70%
+    ),
+    /* --- Layer 2a: green aurora (top-left) --- */
+    radial-gradient(
+      ellipse 100% 65% at 10% -10%,
+      rgba(1, 118, 76, 0.16) 0%,
+      rgba(1, 118, 76, 0.05) 40%,
+      transparent 70%
+    );
+  background-attachment: fixed, fixed, fixed, fixed;
+  background-repeat: repeat, repeat, no-repeat, no-repeat;
+  background-size:
+    240px 240px,
+    22px 22px,
+    100% 100%,
+    100% 100%;
+  background-position: 0 0, 0 0, center, center;
+}
+
+/* ---- Remove the legacy per-page dot pattern ----
+   Form pages and the old landing all had their own dot
+   background. Kill them so the body aurora shows through. */
+
+.page-form,
+.page-form.signed-in {
+  background-color: transparent;
+  background-image: none;
+  background-size: auto;
+  background-position: 0 0;
+  background-attachment: scroll;
+}
+
+/* ---- Landing page — richer aurora ----
+   index.html gets a bigger, more expressive version.
+   Three auroras instead of two, deeper colors.
+   Still fixed to viewport, so scrolling feels like
+   moving through light. */
+
+body.landing {
+  background-color: var(--bg);
+  background-image:
+    /* Film grain */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240' viewBox='0 0 240 240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.24'/%3E%3C/svg%3E"),
+    /* Micro dots */
+    radial-gradient(
+      circle at 50% 50%,
+      rgba(28, 28, 30, 0.05) 0.5px,
+      transparent 1px
+    ),
+    /* Purple aurora — bottom-left, subtle */
+    radial-gradient(
+      ellipse 70% 45% at -5% 105%,
+      rgba(191, 90, 242, 0.08) 0%,
+      transparent 60%
+    ),
+    /* Blue aurora — top-right */
+    radial-gradient(
+      ellipse 95% 60% at 100% -10%,
+      rgba(10, 132, 255, 0.13) 0%,
+      rgba(10, 132, 255, 0.04) 40%,
+      transparent 70%
+    ),
+    /* Green aurora — top-left, strongest */
+    radial-gradient(
+      ellipse 110% 70% at 5% -15%,
+      rgba(1, 118, 76, 0.20) 0%,
+      rgba(1, 118, 76, 0.07) 40%,
+      transparent 70%
+    );
+  background-attachment: fixed, fixed, fixed, fixed, fixed;
+  background-repeat: repeat, repeat, no-repeat, no-repeat, no-repeat;
+  background-size:
+    240px 240px,
+    22px 22px,
+    100% 100%,
+    100% 100%,
+    100% 100%;
+  background-position: 0 0, 0 0, center, center, center;
+}
+
+/* ---- Fallback for old browsers without backdrop-filter ----
+   Grain and aurora are still visible; they're just CSS. */
+
+/* ---- Reduced motion — no change here, nothing animates ---- */
+
+/* ============================================================
+   END OF PART 6.5
+   ============================================================
+   What changed:
+     ✓ Old dot pattern removed everywhere
+     ✓ New 4-layer background system (base + aurora + dots + grain)
+     ✓ Aurora is fixed to viewport — reads as ambient light
+     ✓ Landing gets richer aurora (3 glows instead of 2)
+     ✓ Grain applied via inline SVG — no image file needed
+     ✓ Signed-in pages and form pages now transparent so the
+       body aurora shows through
+
+   Why this works on any screen:
+     LCD      →  grain hides color banding, aurora adds depth
+     AMOLED   →  aurora glows like light emission, grain adds
+                 tactile material feel
+     Anywhere →  the "ambient light" effect sells the premium
+                 feel without needing high-end hardware
+   ============================================================ */
