@@ -11552,3 +11552,183 @@ body,
     padding: 12px 10px 6px !important;
   }
      }
+/* ============================================================
+   CHAT ROWS — bulletproof two-line layout
+   ------------------------------------------------------------
+   Guarantees preview shows. Forces explicit flex-basis so
+   nothing collapses it.
+   ============================================================ */
+
+/* Kill any stale rules */
+.chat-row,
+.chat-row-body,
+.chat-row-top,
+.chat-row-preview {
+  box-sizing: border-box !important;
+}
+
+.chat-row {
+  display: flex !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  padding: 12px 8px !important;
+  border-bottom: 1px solid var(--line) !important;
+  position: relative !important;
+  background: transparent !important;
+  min-height: 72px !important;
+}
+
+.chat-row:last-child {
+  border-bottom: 0 !important;
+}
+
+.chat-avatar {
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 50% !important;
+  flex-shrink: 0 !important;
+}
+
+.chat-row-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 3px !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  padding-top: 3px !important;
+}
+
+/* Top line — name + pin + role + time */
+.chat-row-top {
+  display: flex !important;
+  align-items: baseline !important;
+  gap: 6px !important;
+  min-width: 0 !important;
+  flex: 0 0 auto !important;
+}
+
+.chat-row-name {
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+  color: var(--ink) !important;
+  line-height: 1.25 !important;
+  flex: 0 1 auto !important;
+  min-width: 0 !important;
+  max-width: 60% !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.chat-row-role {
+  font-size: 12.5px !important;
+  font-weight: 500 !important;
+  color: var(--ink-3) !important;
+  line-height: 1.25 !important;
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+}
+
+.chat-row-time {
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  color: var(--ink-3) !important;
+  line-height: 1.25 !important;
+  margin-left: auto !important;
+  flex: 0 0 auto !important;
+  padding-left: 8px !important;
+}
+
+/* Preview line — FORCED visible */
+.chat-row-preview {
+  display: block !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+  min-height: 18px !important;
+  font-size: 13.5px !important;
+  font-weight: 400 !important;
+  color: var(--ink-3) !important;
+  line-height: 1.35 !important;
+  letter-spacing: -0.005em !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding-right: 28px !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.chat-row.has-unread .chat-row-preview,
+.chat-row.has-unread .chat-row-preview-quiet {
+  color: var(--ink-2) !important;
+  font-weight: 500 !important;
+}
+
+.chat-row-preview-quiet {
+  color: var(--ink-4) !important;
+  font-style: italic !important;
+}
+
+/* Waiting pill — third line if present */
+.chat-row-waiting {
+  display: block !important;
+  flex: 0 0 auto !important;
+  font-size: 12px !important;
+  font-weight: 600 !important;
+  color: var(--accent) !important;
+  line-height: 1.3 !important;
+  margin-top: 1px !important;
+}
+
+/* Pin + mute icons stay inline */
+.chat-row-pin,
+.chat-row-mute {
+  display: inline-flex !important;
+  width: 13px !important;
+  height: 13px !important;
+  align-items: center !important;
+  justify-content: center !important;
+  flex-shrink: 0 !important;
+  transform: translateY(-1px) !important;
+}
+.chat-row-pin { color: var(--accent) !important; }
+.chat-row-mute { color: var(--ink-3) !important; }
+
+/* Unread pill — floating bottom-right */
+.chat-row-unread {
+  position: absolute !important;
+  right: 8px !important;
+  bottom: 14px !important;
+  min-width: 22px !important;
+  height: 22px !important;
+  padding: 0 7px !important;
+  border-radius: 11px !important;
+  background: var(--accent) !important;
+  color: #fff !important;
+  font-size: 11.5px !important;
+  font-weight: 700 !important;
+  line-height: 22px !important;
+  text-align: center !important;
+}
+
+/* Mobile tightening */
+@media (max-width: 520px) {
+  .chat-row {
+    padding: 12px 4px !important;
+    gap: 12px !important;
+  }
+  .chat-avatar {
+    width: 48px !important;
+    height: 48px !important;
+  }
+  .chat-row-name {
+    font-size: 14.5px !important;
+  }
+  .chat-row-preview {
+    font-size: 13px !important;
+  }
+}
