@@ -9187,3 +9187,748 @@ body.compact .desk-block { padding: 24px 22px; margin: 14px 0; }
      Part 12 — Explore + Gigs
      Part 13 — Toasts + misc
    ============================================================ */
+/* ============================================================
+   94. BOT · floating bubble (public Desk)
+   ------------------------------------------------------------
+   The round teal button bottom-right on public Desk pages.
+   Pulses once when the page loads (first-time visitors).
+   Turns into an X when the panel is open.
+   ============================================================ */
+
+.desk-bot-bubble {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--sys-teal) 0%,
+    var(--t-700) 100%
+  );
+  color: #fff;
+  display: grid;
+  place-items: center;
+  box-shadow:
+    0 4px 12px -2px rgba(20, 184, 184, 0.35),
+    0 12px 28px -10px rgba(20, 184, 184, 0.55);
+  z-index: 60;
+  transition:
+    transform 0.25s var(--spring),
+    box-shadow 0.25s ease,
+    background 0.2s ease;
+  cursor: pointer;
+  border: 0;
+  padding: 0;
+}
+
+/* Soft top sheen */
+.desk-bot-bubble::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 50%;
+  border-radius: 50% 50% 0 0;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.28) 0%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  pointer-events: none;
+}
+
+.desk-bot-bubble:hover {
+  transform: scale(1.06);
+  box-shadow:
+    0 6px 16px -2px rgba(20, 184, 184, 0.42),
+    0 18px 36px -10px rgba(20, 184, 184, 0.62);
+}
+
+.desk-bot-bubble:active {
+  transform: scale(0.96);
+}
+
+.desk-bot-bubble svg {
+  width: 24px;
+  height: 24px;
+  display: block;
+  position: relative;
+}
+
+/* Icon swap — chat bubble vs close X */
+.desk-bot-bubble .icon-close { display: none; }
+.desk-bot-bubble[data-open="true"] .icon-chat { display: none; }
+.desk-bot-bubble[data-open="true"] .icon-close { display: block; }
+
+/* Pulse animation — fires once on first visit */
+@keyframes botPulse {
+  0% {
+    box-shadow:
+      0 4px 12px -2px rgba(20, 184, 184, 0.35),
+      0 12px 28px -10px rgba(20, 184, 184, 0.55),
+      0 0 0 0 rgba(20, 184, 184, 0.55);
+  }
+  40% {
+    box-shadow:
+      0 4px 12px -2px rgba(20, 184, 184, 0.35),
+      0 12px 28px -10px rgba(20, 184, 184, 0.55),
+      0 0 0 16px rgba(20, 184, 184, 0);
+  }
+  100% {
+    box-shadow:
+      0 4px 12px -2px rgba(20, 184, 184, 0.35),
+      0 12px 28px -10px rgba(20, 184, 184, 0.55),
+      0 0 0 0 rgba(20, 184, 184, 0);
+  }
+}
+
+.desk-bot-bubble.pulse {
+  animation: botPulse 1.8s ease-out 2;
+}
+
+/* ============================================================
+   95. BOT · panel (public Desk)
+   ------------------------------------------------------------
+   The chat window that opens from the bubble.
+   Frosted glass, rounded, drops in from the bubble.
+   ============================================================ */
+
+.desk-bot-panel {
+  position: fixed;
+  right: 18px;
+  bottom: 86px;
+  width: min(380px, calc(100vw - 36px));
+  height: min(560px, calc(100vh - 140px));
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow:
+    0 8px 24px -8px rgba(28, 28, 30, 0.14),
+    0 24px 60px -20px rgba(28, 28, 30, 0.28),
+    0 0 0 1px rgba(255, 255, 255, 0.6) inset;
+  z-index: 59;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transform-origin: bottom right;
+  transform: scale(0.88) translateY(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.28s var(--spring),
+    opacity 0.2s ease;
+}
+
+.desk-bot-panel[data-open="true"] {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ============================================================
+   96. BOT · header
+   ------------------------------------------------------------
+   Avatar + name + "online" status. Teal tinted header bar.
+   ============================================================ */
+
+.desk-bot-head {
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--line);
+  background: linear-gradient(
+    180deg,
+    var(--t-50) 0%,
+    rgba(224, 245, 245, 0.4) 100%
+  );
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Soft radial spotlight in the header */
+.desk-bot-head::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  right: -60px;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(
+    circle,
+    rgba(20, 184, 184, 0.20) 0%,
+    transparent 65%
+  );
+  pointer-events: none;
+}
+
+.desk-bot-avatar {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--sys-teal) 0%,
+    var(--t-700) 100%
+  );
+  color: #fff;
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    0 2px 6px rgba(20, 184, 184, 0.25),
+    0 6px 14px -4px rgba(20, 184, 184, 0.45);
+  position: relative;
+  z-index: 1;
+}
+
+.desk-bot-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.desk-bot-head-name {
+  font-family: var(--display);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.desk-bot-head-status {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  letter-spacing: -0.005em;
+}
+
+.desk-bot-head-status::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sys-green);
+  box-shadow: 0 0 6px rgba(52, 199, 89, 0.6);
+}
+
+/* ============================================================
+   97. BOT · message log
+   ------------------------------------------------------------
+   Scrollable area with chat bubbles.
+   Bot bubbles are white with a subtle tint.
+   User bubbles are the teal brand.
+   ============================================================ */
+
+.desk-bot-log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 16px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  scroll-behavior: smooth;
+  background: var(--surface);
+}
+
+.desk-bot-log::-webkit-scrollbar {
+  width: 6px;
+}
+.desk-bot-log::-webkit-scrollbar-thumb {
+  background: var(--line-2);
+  border-radius: 3px;
+}
+
+/* Base bubble */
+.desk-bot-msg {
+  font-size: 13.5px;
+  line-height: 1.55;
+  padding: 10px 14px;
+  border-radius: 16px;
+  max-width: 88%;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  letter-spacing: -0.005em;
+  animation: botBubbleIn 0.24s var(--ease-out);
+}
+
+@keyframes botBubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bot message — white with soft shadow */
+.desk-bot-msg.bot {
+  align-self: flex-start;
+  background: var(--surface-elevated);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.03);
+}
+
+/* User message — teal gradient */
+.desk-bot-msg.user {
+  align-self: flex-end;
+  background: linear-gradient(
+    135deg,
+    var(--sys-teal) 0%,
+    var(--t-700) 100%
+  );
+  color: #fff;
+  font-weight: 500;
+  border-bottom-right-radius: 4px;
+  box-shadow:
+    0 1px 2px rgba(20, 184, 184, 0.20),
+    0 6px 14px -6px rgba(20, 184, 184, 0.45);
+}
+
+/* Rich content inside bot messages */
+.desk-bot-msg a {
+  color: var(--t-700);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+.desk-bot-msg strong { font-weight: 600; }
+.desk-bot-msg ul {
+  list-style: none;
+  margin-top: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.desk-bot-msg ul li {
+  padding-left: 12px;
+  position: relative;
+}
+.desk-bot-msg ul li::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 8px;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--sys-teal);
+}
+
+/* Widen bubbles that contain photos */
+.desk-bot-msg.bot.has-photos {
+  max-width: 95%;
+  padding: 12px 14px;
+}
+
+/* ============================================================
+   98. BOT · typing indicator
+   ------------------------------------------------------------
+   Three dots that pulse while the bot is "thinking".
+   ============================================================ */
+
+.desk-bot-msg.typing {
+  display: flex;
+  gap: 4px;
+  padding: 14px 16px;
+  align-items: center;
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.03);
+}
+
+.desk-bot-msg.typing span {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--sys-teal);
+  animation: botBounce 1.4s infinite ease-in-out both;
+}
+.desk-bot-msg.typing span:nth-child(1) { animation-delay: -0.32s; }
+.desk-bot-msg.typing span:nth-child(2) { animation-delay: -0.16s; }
+
+@keyframes botBounce {
+  0%, 80%, 100% {
+    transform: scale(0.6);
+    opacity: 0.35;
+  }
+  40% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   99. BOT · photo thumbnails in messages
+   ------------------------------------------------------------
+   Grid of tappable photos. Each opens the fullscreen viewer.
+   ============================================================ */
+
+.desk-bot-photos {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.desk-bot-photo {
+  position: relative;
+  aspect-ratio: 1 / 1;
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--surface-2);
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.15s var(--spring);
+}
+.desk-bot-photo:hover {
+  transform: scale(1.03);
+}
+.desk-bot-photo:active {
+  transform: scale(0.97);
+}
+.desk-bot-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* ============================================================
+   100. BOT · suggestion chips
+   ------------------------------------------------------------
+   Quick-question buttons at the bottom of the log.
+   ============================================================ */
+
+.desk-bot-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 16px 12px;
+  background: var(--surface);
+}
+
+.desk-bot-chip {
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.15s var(--spring),
+    box-shadow 0.15s ease;
+  letter-spacing: -0.005em;
+  white-space: nowrap;
+}
+.desk-bot-chip:hover {
+  background: linear-gradient(
+    135deg,
+    var(--sys-teal) 0%,
+    var(--t-700) 100%
+  );
+  color: #fff;
+  border-color: transparent;
+  transform: translateY(-1px);
+  box-shadow:
+    0 2px 4px rgba(20, 184, 184, 0.20),
+    0 8px 16px -6px rgba(20, 184, 184, 0.45);
+}
+.desk-bot-chip:active {
+  transform: scale(0.97);
+}
+.desk-bot-chip:disabled {
+  opacity: 0.4;
+  cursor: wait;
+}
+
+/* ============================================================
+   101. BOT · input row
+   ------------------------------------------------------------
+   Text input + send button. Rounded input, teal send.
+   ============================================================ */
+
+.desk-bot-input-row {
+  display: flex;
+  gap: 8px;
+  padding: 12px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--surface-elevated);
+}
+
+.desk-bot-input {
+  flex: 1;
+  min-width: 0;
+  border: 1.5px solid var(--line);
+  background: var(--surface-2);
+  color: var(--ink);
+  font-family: var(--sans);
+  font-size: 14px;
+  padding: 11px 16px;
+  border-radius: var(--r-pill);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+}
+.desk-bot-input:focus {
+  background: var(--surface-elevated);
+  border-color: var(--sys-teal);
+  box-shadow: 0 0 0 4px rgba(20, 184, 184, 0.15);
+}
+.desk-bot-input::placeholder {
+  color: #A29B8E;
+}
+
+.desk-bot-send {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    var(--sys-teal) 0%,
+    var(--t-700) 100%
+  );
+  color: #fff;
+  border: 0;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s var(--spring),
+    box-shadow 0.2s ease;
+  padding: 0;
+  box-shadow:
+    0 2px 4px rgba(20, 184, 184, 0.20),
+    0 8px 18px -6px rgba(20, 184, 184, 0.45);
+}
+.desk-bot-send:hover {
+  box-shadow:
+    0 4px 8px rgba(20, 184, 184, 0.24),
+    0 12px 22px -8px rgba(20, 184, 184, 0.55);
+}
+.desk-bot-send:active {
+  transform: scale(0.94);
+}
+.desk-bot-send svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ============================================================
+   102. BOT · mobile positioning
+   ------------------------------------------------------------
+   On phones, the panel takes over more of the screen.
+   ============================================================ */
+
+@media (max-width: 520px) {
+  .desk-bot-bubble {
+    right: 14px;
+    bottom: 14px;
+    width: 52px;
+    height: 52px;
+  }
+  .desk-bot-bubble svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .desk-bot-panel {
+    right: 10px;
+    left: 10px;
+    top: 76px;
+    bottom: auto;
+    width: auto;
+    height: min(72vh, 560px);
+    border-radius: 20px;
+    transform-origin: top right;
+  }
+
+  .desk-bot-msg {
+    max-width: 90%;
+    font-size: 13px;
+  }
+}
+
+/* ============================================================
+   103. OWNER BOT · page shell (bot.html)
+   ------------------------------------------------------------
+   The owner's training page. Same bot internals but full-page.
+   Locked height so only the message log scrolls.
+   ============================================================ */
+
+.page-bot {
+  overflow: hidden;
+  height: 100vh;
+  height: 100dvh;
+  padding: 0;
+}
+
+.page-bot .form-shell {
+  height: 100vh;
+  height: 100dvh;
+  padding-top: 14px;
+  padding-bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  max-width: 640px;
+}
+
+.page-bot .settings-head {
+  flex-shrink: 0;
+  margin-top: 0;
+  margin-bottom: 12px;
+}
+
+.page-bot .form-help {
+  flex-shrink: 0;
+  margin-bottom: 12px;
+}
+
+/* ============================================================
+   104. OWNER BOT · wrap
+   ------------------------------------------------------------
+   The chat window as a card. Same visual language as the
+   public bot, but framed.
+   ============================================================ */
+
+.owner-bot-wrap {
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Header at the top of the owner bot */
+.owner-bot-wrap::before {
+  content: "";
+  display: block;
+  height: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--sys-teal) 0%,
+    var(--sys-green) 50%,
+    var(--sys-purple) 100%
+  );
+  flex-shrink: 0;
+}
+
+.owner-bot-wrap .desk-bot-log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 12px;
+  background: var(--surface);
+}
+
+.owner-bot-wrap .desk-bot-chips {
+  padding: 0 20px 12px;
+  gap: 6px;
+  flex-shrink: 0;
+}
+
+.owner-bot-wrap .desk-bot-input-row {
+  padding: 14px 16px;
+  flex-shrink: 0;
+}
+
+/* Mobile tightening */
+@media (max-width: 520px) {
+  .owner-bot-wrap {
+    border-radius: 18px;
+  }
+  .owner-bot-wrap .desk-bot-log {
+    padding: 14px 14px 8px;
+  }
+  .owner-bot-wrap .desk-bot-chips {
+    padding: 0 14px 10px;
+  }
+  .owner-bot-wrap .desk-bot-input-row {
+    padding: 10px 12px;
+  }
+}
+
+/* ============================================================
+   105. BOT · reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .desk-bot-bubble.pulse {
+    animation: none;
+  }
+  .desk-bot-msg.typing span {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   END OF PART 9
+   ============================================================
+   Now styled:
+     ✓ Floating teal bubble with gradient + glow + pulse
+     ✓ Chat panel with spring entrance, frosted shadows
+     ✓ Header with avatar, name, glowing online dot, spotlight
+     ✓ Bot bubbles (white, bordered, soft shadow)
+     ✓ User bubbles (teal gradient, colored glow)
+     ✓ Message links (teal, underlined, bold)
+     ✓ Bulleted lists inside messages (teal dots)
+     ✓ Typing indicator (three pulsing teal dots)
+     ✓ Photo thumbnails (grid, hover pop)
+     ✓ Suggestion chips (white → teal gradient on hover)
+     ✓ Input row (rounded input with teal focus glow)
+     ✓ Send button (teal gradient, spring press)
+     ✓ Mobile positioning (panel takes over more of screen)
+     ✓ Owner bot page (locked height, only log scrolls)
+     ✓ Gradient accent strip on owner bot card
+
+   Teal identity throughout — instantly reads as "the
+   assistant" wherever it appears.
+
+   Next parts:
+     Part 10 — Chat (single conversation)
+     Part 11 — Chats (inbox) + Updates + Tab picker
+     Part 12 — Explore + Gigs
+     Part 13 — Toasts + misc
+   ============================================================ */
