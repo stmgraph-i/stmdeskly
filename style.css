@@ -6977,3 +6977,88 @@ body:has(#q):has(#result) {
 body.page-desk {
   background-image: none;
 }
+/* ============================================================
+   KILL THE PATTERN — back to clean warm paper
+   ============================================================ */
+
+:root {
+  --paper-pattern: none;
+}
+
+body:has(.app-header),
+body.page-chat,
+body.page-chats,
+body.page-settings,
+body.page-bot,
+body.page-form,
+body.page-landing,
+body.page-desk {
+  background-image: none !important;
+  background-color: var(--bg) !important;
+}
+
+/* Make sure scroll areas use the same warm paper */
+.chat-log,
+.desk-bot-log,
+.owner-bot-wrap .desk-bot-log {
+  background-color: var(--bg) !important;
+  background-image: none !important;
+}
+
+/* Headers, tabbar, composer all flat warm paper */
+.app-header,
+.chat-head,
+.chats-head,
+.tabbar,
+.chat-composer,
+.chat-reply-bar {
+  background-color: var(--bg);
+}
+
+.chat-composer,
+.chat-reply-bar {
+  background-color: var(--surface);
+}
+
+/* Cards stay warm paper on top */
+.dash-section,
+.link-box,
+.home-section,
+.home-greet,
+.home-search,
+.home-quick-actions,
+.explore-head > .explore-title,
+.explore-head > .explore-sub,
+.explore-search,
+.explore-tabs,
+.explore-popular,
+.explore-section,
+.desk-block,
+.acc,
+.chat-row-menu,
+.notif-card,
+.tab-picker-list,
+.tab-picker-custom-row,
+.menu-panel,
+.preview-sheet,
+.logout-sheet,
+.confirm-sheet,
+.desk-bot-panel,
+.owner-bot-wrap {
+  background-color: var(--surface);
+}
+
+/* Inbox rows — cleaner spacing, no divider showing through */
+.chat-row {
+  background-color: transparent;
+  border-bottom: 1px solid var(--line);
+}
+
+.chat-row:last-child {
+  border-bottom: 0;
+}
+
+/* Kill that weird divider line the pattern was sitting on */
+.chats-head {
+  border-bottom: 1px solid var(--line);
+}
