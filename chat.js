@@ -171,16 +171,28 @@
     if (headStatus) headStatus.textContent = otherUser.role || '';
 
     if (headAvatar) {
+      /* Always set initials first — visible if no image or image fails */
+      const initials = otherUser.initials || (otherUser.name || '?').charAt(0);
+      headAvatar.textContent = String(initials).toUpperCase().slice(0, 2);
+      headAvatar.style.backgroundImage = '';
+
+      /* If they have an avatar, try to load it. Only swap once it
+         actually loads, so a broken URL never leaves a blank circle. */
       if (otherUser.avatar_url) {
-        headAvatar.textContent = '';
-        headAvatar.style.backgroundImage = 'url("' + otherUser.avatar_url + '")';
-        headAvatar.style.backgroundSize = 'cover';
-        headAvatar.style.backgroundPosition = 'center';
-      } else {
-        const initials = otherUser.initials || (otherUser.name || '?').charAt(0);
-        headAvatar.textContent = String(initials).toUpperCase().slice(0, 2);
+        const img = new Image();
+        img.onload = () => {
+          headAvatar.textContent = '';
+          headAvatar.style.backgroundImage = 'url("' + otherUser.avatar_url + '")';
+          headAvatar.style.backgroundSize = 'cover';
+          headAvatar.style.backgroundPosition = 'center';
+        };
+        img.onerror = () => {
+          /* Leave initials showing */
+        };
+        img.src = otherUser.avatar_url;
       }
 
+      /* Presence dot on top */
       headAvatar.classList.add('presence-avatar');
       let dot = headAvatar.querySelector('.presence-dot');
       if (!dot) {
