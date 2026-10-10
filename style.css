@@ -7695,3 +7695,44 @@ body:has(#exploreRoot) .explore-head,
     top: 52px !important;
   }
 }
+/* ============================================================
+   EXPLORE · fix sticky header
+   ------------------------------------------------------------
+   Kills any leftover overflow:hidden or 100dvh rule that was
+   creating a scroll container and breaking position: sticky.
+   ============================================================ */
+
+body:has(#exploreRoot) {
+  height: auto !important;
+  overflow-y: visible !important;
+  overflow-x: clip !important;
+}
+
+html:has(#exploreRoot) {
+  height: auto !important;
+  overflow-y: visible !important;
+  overflow-x: clip !important;
+}
+
+#exploreRoot,
+#exploreRoot.form-shell {
+  height: auto !important;
+  overflow: visible !important;
+}
+
+/* Belt and braces — force sticky on the header everywhere */
+.app-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 70 !important;
+  background: var(--bg) !important;
+}
+
+/* Explore-head sits just below the header, also sticky */
+body:has(#exploreRoot) .explore-head,
+#exploreRoot .explore-head {
+  position: sticky !important;
+  top: 56px !important;
+  z-index: 20 !important;
+  background: var(--bg) !important;
+}
