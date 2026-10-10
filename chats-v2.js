@@ -202,7 +202,6 @@
       if (t.muted && !t.archived_at) muted.push({ thread: t, kind: kind });
     });
 
-    /* Custom keyword tabs */
     const custom = {};
     const pool = [].concat(inbox, sent, requests);
     customTabs.forEach(ct => {
@@ -425,7 +424,6 @@
      ============================================================ */
 
   function renderOptionalTabs(){
-    /* Remove existing optional/custom tab buttons */
     tabsEl.querySelectorAll('.chats-tab[data-optional="1"]').forEach(el => el.remove());
     tabsEl.querySelectorAll('.chats-tab[data-custom="1"]').forEach(el => el.remove());
 
@@ -545,7 +543,6 @@
 
       sheet.appendChild(list);
 
-      /* Custom tabs section */
       const sectionTitle = document.createElement('div');
       sectionTitle.className = 'tab-picker-section-title';
       sectionTitle.textContent = 'Your tabs';
@@ -812,10 +809,10 @@
     const card = document.createElement('button');
     card.type = 'button';
     card.className = 'notif-card' + (n.read_at ? ' notif-card-read' : ' notif-card-unread');
+    card.setAttribute('data-kind', n.kind || 'default');
 
     const icon = document.createElement('span');
     icon.className = 'notif-icon';
-    icon.style.color = notifColor(n.kind);
     icon.innerHTML = notifIcon(n.kind);
     card.appendChild(icon);
 
@@ -1035,17 +1032,19 @@
 
     body.appendChild(top);
 
+    /* ---- Preview line ---- */
     const preview = document.createElement('div');
     preview.className = 'chat-row-preview';
 
     const last = lastMsgCache[thread.id];
-    if (last) {
-      if (last.photo_url && !last.body) {
-        preview.textContent = '📷 Photo';
-      } else {
-        const isMe = last.sender_id === currentUser.id;
-        preview.textContent = (isMe ? 'You: ' : '') + (last.body || '');
-      }
+    if (last && last.photo_url && !last.body) {
+      preview.textContent = '📷 Photo';
+    } else if (last && last.body && last.body.trim()) {
+      const isMe = last.sender_id === currentUser.id;
+      preview.textContent = (isMe ? 'You: ' : '') + last.body.trim();
+    } else if (last) {
+      preview.textContent = 'No text';
+      preview.classList.add('chat-row-preview-quiet');
     } else {
       preview.textContent = 'No messages yet';
       preview.classList.add('chat-row-preview-quiet');
@@ -1093,7 +1092,7 @@
           console.error(err);
           acceptBtn.disabled = false;
           acceptBtn.textContent = 'Accept';
-          TOAST.show(err.message || 'Could not accept.', { kind: 'error' });
+          if (window.TOAST) TOAST.show(err.message || 'Could not accept.', { kind: 'error' });
         }
       });
       actions.appendChild(acceptBtn);
@@ -1113,7 +1112,7 @@
         } catch(err) {
           console.error(err);
           declineBtn.disabled = false;
-          TOAST.show(err.message || 'Could not decline.', { kind: 'error' });
+          if (window.TOAST) TOAST.show(err.message || 'Could not decline.', { kind: 'error' });
         }
       });
       actions.appendChild(declineBtn);
@@ -1161,7 +1160,7 @@
         await loadAll();
       } catch(e) {
         console.error(e);
-        TOAST.show(e.message || 'Could not ' + (isPinned ? 'unpin' : 'pin') + '.', { kind: 'error' });
+        if (window.TOAST) TOAST.show(e.message || 'Could not ' + (isPinned ? 'unpin' : 'pin') + '.', { kind: 'error' });
       }
     });
     menu.appendChild(pinItem);
@@ -1178,7 +1177,7 @@
         await loadAll();
       } catch(e) {
         console.error(e);
-        TOAST.show(e.message || 'Could not ' + (isMuted ? 'unmute' : 'mute') + '.', { kind: 'error' });
+        if (window.TOAST) TOAST.show(e.message || 'Could not ' + (isMuted ? 'unmute' : 'mute') + '.', { kind: 'error' });
       }
     });
     menu.appendChild(muteItem);
@@ -1195,7 +1194,7 @@
         await loadAll();
       } catch(e) {
         console.error(e);
-        TOAST.show('Could not ' + (isArchived ? 'unarchive' : 'archive') + '.', { kind: 'error' });
+        if (window.TOAST) TOAST.show('Could not ' + (isArchived ? 'unarchive' : 'archive') + '.', { kind: 'error' });
       }
     });
     menu.appendChild(archiveItem);
@@ -1212,7 +1211,7 @@
         await loadAll();
       } catch(e) {
         console.error(e);
-        TOAST.show('Could not delete.', { kind: 'error' });
+        if (window.TOAST) TOAST.show('Could not delete.', { kind: 'error' });
       }
     });
     menu.appendChild(deleteItem);
