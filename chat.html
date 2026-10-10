@@ -3,18 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#F2F0EA">
+<meta name="theme-color" content="#FFFFFF">
 <title>Chat | STMDeskly</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=16">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=21">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#01764C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="STMDeskly">
@@ -22,9 +21,9 @@
 <meta property="og:image" content="https://stmdeskly.pages.dev/og-image.png">
 </head>
 
-<body class="page-chat">
+<body class="page-chat signed-in">
 
-<header class="chat-head" id="chatHead" style="display:none">
+<header class="chat-head" id="chatHead">
   <a class="chat-back" href="chats.html" aria-label="Back">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M15 18l-6-6 6-6"/>
@@ -33,7 +32,7 @@
   <a class="chat-head-user" id="chatHeadUser" href="#">
     <div class="chat-head-avatar" id="chatHeadAvatar">?</div>
     <div class="chat-head-text">
-      <div class="chat-head-name" id="chatHeadName">Someone</div>
+      <div class="chat-head-name" id="chatHeadName">Loading…</div>
       <div class="chat-head-status" id="chatHeadStatus"></div>
     </div>
   </a>
@@ -122,7 +121,7 @@
 
 <div class="chat-log" id="chatLog"></div>
 
-<form class="chat-composer" id="chatForm" style="display:none">
+<form class="chat-composer" id="chatForm">
   <input type="file" id="chatPhotoInput" accept="image/*" hidden>
 
   <button type="button" class="chat-attach" id="chatAttachBtn" aria-label="Attach photo">
@@ -137,7 +136,7 @@
     <textarea
       class="chat-input"
       id="chatInput"
-      placeholder="Message..."
+      placeholder="Message…"
       rows="1"
       autocomplete="off"
     ></textarea>
@@ -175,9 +174,9 @@
 <script src="notifications.js"></script>
 <script src="presence.js"></script>
 <script src="typing.js"></script>
-<script src="chat.js?v=20" defer></script>
-  <script src="toast.js"></script>
+<script src="chat.js?v=22" defer></script>
+<script src="toast.js"></script>
 <script src="ripple.js" defer></script>
 
 </body>
-  </html>
+      </html>
