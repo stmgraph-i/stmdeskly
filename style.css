@@ -1085,3 +1085,173 @@ a:focus:not(:focus-visible) {
     padding: 18px 16px 90px;
   }
 }
+/* ============================================================
+   BRAND ALIGNMENT — from the STMDeskly logo
+   ------------------------------------------------------------
+   The logo tells us:
+     - Two-tone green (bright + deep forest)
+     - Heavy geometric sans wordmark
+     - Confident, minimal, no decoration
+
+   Changes:
+     1. Swap the serif display for Manrope (geometric, minimal)
+     2. Add brand-aligned greens that match the logo
+     3. Kill the serif italic treatment on hero
+     4. Point the accent at the logo's bright green
+   ============================================================ */
+
+:root {
+  /* ---------- Font: geometric sans, matching the wordmark ---------- */
+  --display: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --sans:    'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  --mono:    ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+
+  /* ---------- Brand greens — pulled from the logo ---------- */
+  --brand-50:  #E6F5ED;
+  --brand-100: #C2E6D4;
+  --brand-200: #8FD1AF;
+  --brand-300: #4FB583;
+  --brand-400: #16A06A;
+  --brand-500: #0E8A5F;   /* bright green from logo */
+  --brand-600: #0A6B4A;
+  --brand-700: #085539;
+  --brand-800: #063E2A;
+  --brand-900: #052A1C;
+
+  /* Deep forest — the darker form in the logo */
+  --forest-300: #1A5C3D;
+  --forest-500: #0D3B26;
+  --forest-700: #062217;
+  --forest-900: #031309;
+
+  /* ---------- Point semantic accent at the brand green ---------- */
+  --accent:       var(--brand-500);
+  --accent-hover: var(--brand-600);
+  --accent-soft:  var(--brand-50);
+  --accent-ink:   #FFFFFF;
+}
+
+/* ============================================================
+   Serif italic off — hero and CTA now use the geometric sans
+   ------------------------------------------------------------
+   Removes the italic emphasis on the landing page. The word
+   "internet" now reads in the brand green, straight — not
+   italic serif.
+   ============================================================ */
+
+.hero-title {
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 0.98;
+}
+
+.hero-title em {
+  font-style: normal;
+  font-weight: 800;
+  color: var(--brand-500);
+}
+
+.final-title {
+  font-style: normal;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.why-quote {
+  font-style: normal;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+}
+
+.why-quote::before {
+  background: var(--brand-500);
+}
+
+/* Steps — number no longer italic */
+.step-num {
+  font-family: var(--sans);
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-size: 11px;
+  color: var(--brand-500);
+}
+
+/* Preview card mark — use the brand color */
+.preview-mark {
+  background: var(--brand-50);
+  color: var(--brand-600);
+}
+
+/* Preview button uses brand green */
+.preview-btn {
+  background: var(--brand-500);
+}
+
+/* Nav CTA — deep forest for confidence */
+.landing-nav-cta {
+  background: var(--forest-500);
+}
+.landing-nav-cta:hover {
+  background: var(--forest-700);
+}
+
+/* Brand mark in the nav — match the logo's two-tone */
+.landing-brand-mark {
+  background: linear-gradient(135deg, var(--brand-500) 0%, var(--brand-500) 55%, var(--forest-500) 55%, var(--forest-500) 100%);
+  font-family: var(--display);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+/* ============================================================
+   Replace the preview mark with the real STMDeskly logo shape
+   ------------------------------------------------------------
+   Uses two SVG-friendly pseudo-elements + a base div. The
+   "D" text is hidden. The shape mirrors the logo: bright
+   parallelogram left, deep forest curve right.
+   ============================================================ */
+
+.landing-brand-mark {
+  color: transparent;
+  overflow: hidden;
+  font-size: 0;
+}
+
+.landing-brand-mark::before,
+.landing-brand-mark::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border-radius: 2px;
+}
+
+.landing-brand-mark {
+  position: relative;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: var(--cream-0);
+  border: 1px solid var(--line-2);
+}
+
+.landing-brand-mark::before {
+  left: 6px;
+  width: 8px;
+  height: 14px;
+  background: var(--brand-500);
+  border-radius: 2px 2px 2px 2px;
+  transform: translateY(-50%) skewY(-8deg);
+}
+
+.landing-brand-mark::after {
+  right: 6px;
+  width: 8px;
+  height: 16px;
+  background: var(--forest-500);
+  border-radius: 2px;
+  transform: translateY(-50%) skewY(8deg);
+}
