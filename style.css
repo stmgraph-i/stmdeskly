@@ -6853,3 +6853,155 @@ body:has(.desk-bot-panel[data-open="true"]) {
     display: none;
   }
 }
+/* ============================================================
+   WALL — slide-up sheet
+   ------------------------------------------------------------
+   Hidden by default. A trigger card opens it as a sheet.
+   Mobile: slides up from the bottom, full height.
+   Desktop: centered modal, spring entrance.
+   ============================================================ */
+
+.wall-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  pointer-events: none;
+}
+
+.wall-sheet-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 24, 22, 0.5);
+  opacity: 0;
+  transition: opacity 0.24s ease;
+}
+
+.wall-sheet-inner {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: 92dvh;
+  background: var(--bg);
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.wall-sheet[data-open="true"] {
+  pointer-events: auto;
+}
+.wall-sheet[data-open="true"] .wall-sheet-backdrop {
+  opacity: 1;
+}
+.wall-sheet[data-open="true"] .wall-sheet-inner {
+  transform: translateY(0);
+}
+
+/* Sheet header */
+.wall-sheet-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  background: var(--bg);
+}
+
+.wall-sheet-title {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+}
+
+.wall-sheet-close {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--surface-3);
+  color: var(--ink);
+  display: grid;
+  place-items: center;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+
+.wall-sheet-close:hover {
+  background: var(--line);
+}
+.wall-sheet-close:active {
+  transform: scale(0.94);
+}
+.wall-sheet-close svg {
+  width: 14px;
+  height: 14px;
+}
+
+/* Sheet body — scrolls */
+.wall-sheet-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding: 20px 20px 28px;
+}
+
+/* The wall block inside the sheet has no card chrome */
+.wall-sheet .wall-block {
+  background: transparent;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+
+.wall-sheet .wall-block .desk-block-title {
+  display: none; /* header already says "Wall" */
+}
+
+/* Trigger card sits like any other desk-block */
+#wallTriggerBlock {
+  text-align: left;
+}
+
+#wallTriggerBlock .desk-copy {
+  margin-bottom: 14px;
+}
+
+#wallTriggerBlock .desk-btn {
+  width: auto;
+  display: inline-flex;
+  max-width: 100%;
+}
+
+/* Desktop: centered modal instead of bottom sheet */
+@media (min-width: 720px) {
+  .wall-sheet-inner {
+    left: 50%;
+    right: auto;
+    bottom: 50%;
+    transform: translate(-50%, calc(50% + 24px));
+    width: min(640px, calc(100vw - 40px));
+    max-height: min(760px, calc(100dvh - 80px));
+    border-radius: var(--r-xl);
+    opacity: 0;
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1),
+                opacity 0.2s ease;
+  }
+  .wall-sheet[data-open="true"] .wall-sheet-inner {
+    transform: translate(-50%, 50%);
+    opacity: 1;
+  }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .wall-sheet-inner,
+  .wall-sheet-backdrop {
+    transition: none;
+  }
+}
