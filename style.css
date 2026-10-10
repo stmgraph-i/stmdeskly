@@ -6231,3 +6231,334 @@ body:has(#exploreRoot) .form-shell,
   .link-box { padding: 20px 18px; }
   .link-box-url { font-size: 14px; }
      }
+/* ============================================================
+   GLOBAL WEIGHT — every page, thicker
+   ------------------------------------------------------------
+   Body text 600. Values 700. Labels 800. Headings 800.
+   Nothing thin anywhere. Chunky, confident, content-first.
+   ============================================================ */
+
+/* ---------- Body text — heavier everywhere ---------- */
+
+body,
+p, span, div, li, a,
+.form-input,
+textarea,
+select,
+.desk-copy,
+.dash-value,
+.dash-list li,
+.triple-text,
+.step-text,
+.chat-bubble,
+.chat-bubble-text,
+.chat-row-preview,
+.chat-row-role,
+.notif-preview,
+.explore-role,
+.explore-loc,
+.explore-gig-meta,
+.home-desk-mini-role,
+.home-desk-mini-loc,
+.home-gig-meta,
+.account-email,
+.tab-picker-sub,
+.form-help,
+.landing-foot,
+.dash-footer,
+.home-footer,
+.explore-sub,
+.explore-hint,
+.home-sub,
+.dash-greet,
+.chat-head-status,
+.desk-tagline,
+.preview-tagline {
+  font-weight: 600 !important;
+  letter-spacing: -0.008em !important;
+}
+
+/* ---------- Values / names / content — extra weight ---------- */
+
+.dash-value,
+.chat-row-name,
+.home-desk-mini-name,
+.home-desk-name,
+.explore-name,
+.notif-title,
+.account-name,
+.triple-title,
+.type-title,
+.acc-title,
+.occ-title,
+.desk-name,
+.preview-name,
+.reviews-count,
+.chat-head-name {
+  font-weight: 700 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* ---------- Headings / section labels — heaviest ---------- */
+
+h1, h2, h3, h4,
+.form-head-title,
+.settings-title,
+.chats-title,
+.explore-title,
+.home-hello,
+.dash-headline,
+.section-title,
+.final-title,
+.hero-tagline,
+.confirm-title,
+.logout-modal-title,
+.chat-missing h1,
+.desk-missing h1,
+.tab-picker-title,
+.preview-block-title,
+.dash-section-title,
+.desk-block-title,
+.home-section-title,
+.explore-section-title,
+.accounts-label,
+.link-box-tag,
+.occ-label,
+.dash-label,
+.dash-detail-label,
+.desk-detail-label,
+.acc-sub,
+.chat-row-time,
+.notif-time,
+.notif-day-divider,
+.form-label {
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+}
+
+/* Section labels with tiny caps need tighter tracking */
+.dash-section-title,
+.desk-block-title,
+.home-section-title,
+.explore-section-title,
+.accounts-label,
+.link-box-tag,
+.occ-label,
+.dash-label,
+.dash-detail-label,
+.desk-detail-label,
+.notif-day-divider {
+  letter-spacing: 0.14em !important;
+  font-weight: 900 !important;
+}
+
+/* ---------- Buttons and pills — heavier ---------- */
+
+.btn,
+.form-submit,
+.form-input,
+.desk-btn,
+.chat-send,
+.desk-bot-send,
+.settings-save-btn,
+.option-btn,
+.role-chip,
+.explore-tab,
+.chats-tab,
+.chat-action,
+.link-action,
+.home-quick-btn,
+.dash-edit,
+.dash-invite-btn,
+.avatar-btn,
+.avatar-btn-quiet,
+.account-action,
+.tab-picker-done,
+.tab-picker-save,
+.tab-picker-cancel,
+.confirm-cancel,
+.confirm-delete,
+.logout-modal-cancel,
+.logout-modal-confirm,
+.preview-btn,
+.explore-popular-chip,
+.chats-empty-btn,
+.desk-float-btn,
+.app-menu-btn,
+.chat-menu-btn,
+.chat-search-btn,
+.chat-attach,
+.chat-back,
+.desk-bot-close,
+.home-empty-link,
+.form-alt a,
+.accounts-other,
+.home-see-more {
+  font-weight: 700 !important;
+}
+
+/* Big number displays — extra heavy */
+.dash-view-num,
+.reviews-avg,
+.step-num,
+.explore-section-title,
+.notif-title,
+.dash-headline,
+.home-hello,
+.chats-title,
+.explore-title,
+.settings-title {
+  font-weight: 900 !important;
+  letter-spacing: -0.045em !important;
+}
+
+/* ---------- Bubbles — heavier text ---------- */
+
+.chat-bubble {
+  font-weight: 600 !important;
+  font-size: 15.5px !important;
+}
+
+.chat-bubble-mine {
+  font-weight: 600 !important;
+}
+
+.chat-bubble-deleted-text,
+.chat-bubble-quote-body {
+  font-weight: 500 !important;
+}
+
+.chat-bubble-quote-name {
+  font-weight: 800 !important;
+}
+
+/* Time inside bubbles — small but visible */
+.chat-bubble-meta {
+  font-weight: 600 !important;
+}
+
+/* ---------- Inputs — thick text ---------- */
+
+.form-input,
+textarea.form-input,
+.chat-input,
+.desk-bot-input,
+.tab-picker-input,
+.explore-search input,
+.home-search input,
+.chat-search-input {
+  font-weight: 600 !important;
+  letter-spacing: -0.008em !important;
+}
+
+.form-input::placeholder,
+.chat-input::placeholder,
+.desk-bot-input::placeholder,
+.explore-search input::placeholder,
+.home-search input::placeholder {
+  font-weight: 500 !important;
+  opacity: 0.65 !important;
+}
+
+/* ---------- Link preview (signup) ---------- */
+
+.link-input {
+  font-weight: 800 !important;
+}
+
+.link-prefix {
+  font-weight: 600 !important;
+}
+
+/* ---------- Empty states / helper text ---------- */
+
+.form-help,
+.home-empty,
+.explore-empty-sub,
+.chats-empty-sub,
+.chat-empty,
+.tab-picker-empty,
+.reviews-empty,
+.wall-empty,
+.occ-about,
+.form-alt.form-alt-small,
+.notif-preview {
+  font-weight: 500 !important;
+}
+
+/* ---------- Oversized headings get chunkier ---------- */
+
+.dash-headline,
+.home-hello {
+  font-size: clamp(1.5rem, 5.5vw, 1.85rem) !important;
+}
+
+.chats-title,
+.explore-title,
+.settings-title,
+.form-head-title {
+  font-size: clamp(1.45rem, 5vw, 1.75rem) !important;
+}
+
+/* Values in dashboard rows — bigger */
+.dash-value {
+  font-size: 16.5px !important;
+}
+
+/* List items — bigger and heavier */
+.dash-list li,
+.desk-list li {
+  font-size: 16px !important;
+  font-weight: 600 !important;
+}
+
+/* Chat row name and preview */
+.chat-row-name {
+  font-size: 15.5px !important;
+}
+
+.chat-row-preview {
+  font-size: 14px !important;
+  font-weight: 500 !important;
+}
+
+.chat-row-time {
+  font-size: 12.5px !important;
+  font-weight: 700 !important;
+}
+
+/* Section titles — bring them up */
+.dash-section-title,
+.desk-block-title,
+.home-section-title,
+.explore-section-title {
+  font-size: 12px !important;
+}
+
+/* Greeting + subtitle */
+.home-sub,
+.dash-greet,
+.explore-sub {
+  font-size: 15px !important;
+}
+
+/* Cards border weight — slightly thicker */
+.dash-section,
+.link-box,
+.home-section,
+.explore-section,
+.explore-popular,
+.desk-block,
+.chat-row-menu,
+.notif-card,
+.acc,
+.tab-picker-list,
+.home-greet,
+.home-search,
+.home-quick-actions,
+.explore-head > .explore-title,
+.explore-head > .explore-sub,
+.explore-search,
+.explore-tabs {
+  border-width: 1.5px !important;
+}
