@@ -8968,3 +8968,245 @@ body:has(#exploreRoot) .explore-head,
     height: 26px !important;
   }
 }
+/* ============================================================
+   CHATS TABS — proper segmented control
+   ------------------------------------------------------------
+   Equal-width tabs, uniform pill, smooth slide.
+   Feels like iOS segmented control / Material 3 tab bar.
+   ============================================================ */
+
+.chats-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  margin: 0;
+  background: var(--surface-3);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  position: relative;
+  /* Reset the old padding/margin/scroll */
+  padding-left: 4px;
+  padding-right: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chats-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* The sliding pill — matches the inner tab height exactly */
+.chats-tabs-pill {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: calc(100% - 8px);
+  background: var(--accent);
+  border-radius: var(--r-pill);
+  z-index: 0;
+  transition:
+    transform 0.36s cubic-bezier(0.32, 0.72, 0, 1),
+    width 0.36s cubic-bezier(0.32, 0.72, 0, 1);
+  pointer-events: none;
+  will-change: transform, width;
+}
+
+/* Tabs — equal-width, uniform height, precise padding */
+.chats-tab {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 12px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: color 0.22s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chats-tab:hover {
+  color: var(--ink);
+}
+
+.chats-tab.active {
+  color: var(--n-0);
+}
+
+/* The "+" add-tab button — narrower than the tabs */
+.chats-tab-add {
+  flex: 0 0 36px;
+  min-width: 36px;
+  padding: 9px 0;
+}
+
+.chats-tab-add svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Badge — sits inline with the label */
+.chats-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  border-radius: var(--r-pill);
+  background: rgba(20, 24, 22, 0.10);
+  color: inherit;
+  line-height: 1;
+  transition: background 0.22s ease, color 0.22s ease;
+}
+
+.chats-tab.active .chats-tab-badge {
+  background: rgba(255, 255, 255, 0.30);
+  color: var(--n-0);
+}
+
+/* The head that wraps title + tabs */
+.chats-head {
+  padding: 12px 0 10px !important;
+}
+
+.chats-head-top {
+  margin-bottom: 10px !important;
+}
+/* ============================================================
+   CHATS TABS — proper segmented control
+   ------------------------------------------------------------
+   Equal-width tabs, uniform pill, smooth slide.
+   Feels like iOS segmented control / Material 3 tab bar.
+   ============================================================ */
+
+.chats-tabs {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px;
+  margin: 0;
+  background: var(--surface-3);
+  border-radius: var(--r-pill);
+  overflow: hidden;
+  position: relative;
+  /* Reset the old padding/margin/scroll */
+  padding-left: 4px;
+  padding-right: 4px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chats-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* The sliding pill — matches the inner tab height exactly */
+.chats-tabs-pill {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: calc(100% - 8px);
+  background: var(--accent);
+  border-radius: var(--r-pill);
+  z-index: 0;
+  transition:
+    transform 0.36s cubic-bezier(0.32, 0.72, 0, 1),
+    width 0.36s cubic-bezier(0.32, 0.72, 0, 1);
+  pointer-events: none;
+  will-change: transform, width;
+}
+
+/* Tabs — equal-width, uniform height, precise padding */
+.chats-tab {
+  position: relative;
+  z-index: 1;
+  flex: 1 1 0;
+  min-width: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  padding: 9px 12px;
+  height: 34px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-3);
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: color 0.22s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.chats-tab:hover {
+  color: var(--ink);
+}
+
+.chats-tab.active {
+  color: var(--n-0);
+}
+
+/* The "+" add-tab button — narrower than the tabs */
+.chats-tab-add {
+  flex: 0 0 36px;
+  min-width: 36px;
+  padding: 9px 0;
+}
+
+.chats-tab-add svg {
+  width: 15px;
+  height: 15px;
+}
+
+/* Badge — sits inline with the label */
+.chats-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  border-radius: var(--r-pill);
+  background: rgba(20, 24, 22, 0.10);
+  color: inherit;
+  line-height: 1;
+  transition: background 0.22s ease, color 0.22s ease;
+}
+
+.chats-tab.active .chats-tab-badge {
+  background: rgba(255, 255, 255, 0.30);
+  color: var(--n-0);
+}
+
+/* The head that wraps title + tabs */
+.chats-head {
+  padding: 12px 0 10px !important;
+}
+
+.chats-head-top {
+  margin-bottom: 10px !important;
+   }
