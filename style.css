@@ -938,7 +938,44 @@ textarea.form-input {
   color: var(--danger-deep);
   border: 1px solid rgba(196, 69, 54, 0.18);
 }
+/* ============================================================
+   HERO — logo (real image) + wordmark
+   ============================================================ */
 
+.hero-logo {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 28px;
+}
+
+.hero-logo-img {
+  width: 96px;
+  height: 96px;
+  border-radius: 22px;
+  margin-bottom: 22px;
+  object-fit: contain;
+  display: block;
+}
+
+.hero-logo-word {
+  font-family: var(--sans);
+  font-size: clamp(2.4rem, 11vw, 4rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 0.95;
+  color: var(--brand-800);
+  margin: 0;
+}
+
+@media (max-width: 520px) {
+  .hero-logo-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 18px;
+    margin-bottom: 18px;
+  }
+}
 .form-message.success {
   background: var(--success-soft);
   color: var(--brand-600);
