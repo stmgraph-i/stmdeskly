@@ -4179,3 +4179,55 @@ body:has(#exploreRoot) .form-shell,
   .reveal { opacity: 1; transform: none; transition: none; }
   * { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; }
 }
+/* ============================================================
+   INBOX — locked header, only the list scrolls
+   ============================================================ */
+
+/* Body is a flex column: header + main. Tabbar is fixed, out of flow. */
+body:has(#chatsRoot) {
+  height: 100dvh;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+/* App header — natural height, never moves */
+body:has(#chatsRoot) .app-header {
+  flex: 0 0 auto;
+  position: static;
+}
+
+/* Main takes the rest of the screen */
+body:has(#chatsRoot) .form-shell,
+#chatsRoot.form-shell {
+  flex: 1 1 auto;
+  min-height: 0;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Title + tabs — fixed under the header */
+#chatsRoot .chats-head {
+  position: static;
+  flex: 0 0 auto;
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+}
+
+/* Only this scrolls */
+#chatsRoot .chats-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 90px;
+}
+
+@supports not selector(:has(*)) {
+  body:has(#chatsRoot) { height: auto; overflow: auto; display: block; }
+  body:has(#chatsRoot) .form-shell { height: auto; overflow: visible; }
+}
