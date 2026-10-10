@@ -5617,3 +5617,52 @@ body:has(#exploreRoot) .form-shell,
     overflow: visible;
   }
 }
+/* ============================================================
+   EXPLORE · sticky header, dead simple
+   ------------------------------------------------------------
+   Header sits at the top and never moves.
+   Content scrolls underneath — passes behind the header.
+   No fade. No bounce. No hairline appearing. Just locked.
+   ============================================================ */
+
+body:has(#exploreRoot) {
+  overflow-x: clip;
+}
+
+body:has(#exploreRoot) .form-shell,
+#exploreRoot.form-shell {
+  overflow: visible;
+  max-width: 1080px;
+}
+
+/* Header — sticky, always has its hairline, never moves */
+#exploreRoot .explore-head {
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  background: var(--bg);
+  padding: 16px 0 14px;
+  margin: 0 -20px;
+  padding-left: 20px;
+  padding-right: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+/* Content sits below it, scrolls naturally */
+#exploreRoot .explore-content {
+  padding-top: 24px;
+  padding-bottom: 40px;
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  #exploreRoot .explore-head {
+    padding: 12px 0 10px;
+    margin: 0 -16px;
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+  #exploreRoot .explore-content {
+    padding-top: 18px;
+  }
+}
