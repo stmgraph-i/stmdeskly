@@ -3650,3 +3650,502 @@ body:has(#newPasswordForm) .form-fields {
      Part 11 — Explore + Gigs
      Part 12 — Toasts + misc
    ============================================================ */
+/* ============================================================
+   32. APP HEADER
+   ------------------------------------------------------------
+   The sticky top bar on signed-in pages.
+   Glass background so content scrolls underneath it.
+
+   Used on: dashboard, home, chats, bot (via header.js)
+   Note: most signed-in pages currently hide this and rely on
+   the tabbar instead. Kept here for pages that show it.
+   ============================================================ */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px var(--gutter);
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--line);
+}
+
+.app-brand {
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+}
+
+.app-menu-btn {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: rgba(28, 28, 30, 0.05);
+  color: var(--ink);
+  transition: background 0.18s ease, transform 0.12s ease;
+}
+.app-menu-btn:hover { background: rgba(28, 28, 30, 0.08); }
+.app-menu-btn:active { transform: scale(0.94); }
+.app-menu-btn svg { width: 18px; height: 18px; }
+
+/* Fallback when backdrop-filter isn't supported */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .app-header { background: var(--surface-elevated); }
+}
+
+/* ============================================================
+   33. BOTTOM TAB BAR
+   ------------------------------------------------------------
+   The main navigation on mobile. Fixed to the bottom.
+   Glass background, sits above content.
+
+   Contains 4-5 tab items (Home / Explore / Inbox / Dashboard).
+   Each item is an icon + label stacked vertically.
+
+   Badges:
+     .tabbar-badge        red count pill (unread chats)
+     .tabbar-request-dot  pulsing green dot (new requests)
+   ============================================================ */
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 75;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--line);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+  box-shadow: 0 -4px 20px -8px rgba(28, 28, 30, 0.08);
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .tabbar { background: var(--surface-elevated); }
+}
+
+.tabbar-item {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 2px;
+  min-height: 52px;
+  border-radius: 12px;
+  color: var(--ink-3);
+  text-decoration: none;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+.tabbar-item:hover { color: var(--ink); }
+.tabbar-item:active { background: rgba(28, 28, 30, 0.04); }
+
+/* Active state — brand green */
+.tabbar-item.active { color: var(--accent); }
+.tabbar-item.active svg { stroke: var(--accent); }
+
+.tabbar-item svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+/* ---- Badges ---- */
+
+/* Red count pill — Inbox unread count */
+.tabbar-badge {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(6px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 999px;
+  border: 2px solid var(--bg);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Pulsing green dot — new message request */
+.tabbar-request-dot {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(14px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  pointer-events: none;
+  animation: tabbar-pulse 2.4s ease-in-out infinite;
+  z-index: 4;
+}
+
+@keyframes tabbar-pulse {
+  0%, 100% {
+    transform: translateX(14px) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(14px) scale(1.35);
+    opacity: 0.55;
+  }
+}
+
+/* Hidden attribute always wins for badges */
+.tabbar-badge[hidden],
+.tabbar-request-dot[hidden] {
+  display: none !important;
+}
+
+/* ============================================================
+   34. MENU SHEET
+   ------------------------------------------------------------
+   Slide-down menu from the top-right (opens from header.js).
+   Frosted panel with iOS-style items.
+   ============================================================ */
+
+.menu-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+}
+
+.menu-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(28, 28, 30, 0.18);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.menu-sheet.open .menu-backdrop { opacity: 1; }
+
+.menu-panel {
+  position: absolute;
+  top: 64px;
+  left: 14px;
+  right: 14px;
+  background: var(--surface-elevated);
+  border-radius: var(--r-lg);
+  padding: 8px;
+  box-shadow: var(--shadow-xl);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  transform: translateY(-8px);
+  opacity: 0;
+  transition:
+    transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1),
+    opacity 0.25s ease;
+  display: flex;
+  flex-direction: column;
+}
+.menu-sheet.open .menu-panel {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+/* Wider screens — pin to top-right */
+@media (min-width: 520px) {
+  .menu-panel {
+    left: auto;
+    right: 24px;
+    width: 300px;
+  }
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  border-radius: var(--r-md);
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+.menu-item:hover { background: rgba(28, 28, 30, 0.05); }
+.menu-item svg {
+  width: 20px;
+  height: 20px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+.menu-item-quiet {
+  margin-top: 6px;
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 var(--r-md) var(--r-md);
+  color: var(--ink-2);
+}
+.menu-item-quiet:hover {
+  background: var(--danger-soft);
+  color: var(--danger-ink);
+}
+.menu-item-quiet:hover svg { color: var(--danger-ink); }
+
+/* ============================================================
+   35. DOCK
+   ------------------------------------------------------------
+   Floating glass dock on the Landing page.
+   Slides up from the bottom after the user scrolls.
+   Two icons + "STM Deskly" text in the middle.
+   ============================================================ */
+
+.dock-wrap {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translate(-50%, 160%);
+  z-index: 80;
+  padding: 16px 26px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform 0.45s cubic-bezier(0.2, 0.9, 0.2, 1),
+    opacity 0.3s ease;
+}
+.dock-wrap.visible {
+  transform: translate(-50%, 0);
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.dock {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 6px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(16px) saturate(1.6);
+  -webkit-backdrop-filter: blur(16px) saturate(1.6);
+  border: 1px solid var(--glass-border);
+  box-shadow: var(--shadow-glass);
+}
+
+.dock-brand {
+  font-family: var(--display);
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: var(--ink);
+  padding: 0 16px;
+  white-space: nowrap;
+}
+
+.dock-icon {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: var(--ink);
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.dock-icon:hover { background: rgba(28, 28, 30, 0.05); }
+.dock-icon:active { transform: scale(0.94); }
+.dock-icon svg { width: 18px; height: 18px; }
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .dock-wrap { background: var(--surface-elevated); }
+  .dock { background: var(--surface-elevated); }
+}
+
+/* ============================================================
+   36. FLOATING DESK TOPBAR
+   ------------------------------------------------------------
+   The floating glass buttons at the top of public Desk pages.
+   Contains: back button (left), bot button (right).
+
+   .desk-float-btn     single round button
+   .desk-float-group   wraps a group of buttons
+   ============================================================ */
+
+.desk-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 80;
+  pointer-events: none;
+}
+
+.desk-topbar > * {
+  pointer-events: auto;
+}
+
+.desk-float-btn {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--glass-bg-strong);
+  border: 1px solid var(--glass-border);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  box-shadow: var(--shadow-glass);
+  transition:
+    transform 0.15s ease,
+    background 0.15s ease,
+    color 0.15s ease,
+    box-shadow 0.15s ease;
+}
+
+.desk-float-btn:hover {
+  background: var(--surface-elevated);
+  transform: scale(1.05);
+}
+
+.desk-float-btn:active {
+  transform: scale(0.94);
+}
+
+.desk-float-btn svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+/* Active state — brand green */
+.desk-float-btn.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.desk-float-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* Bot pulse — draws attention on first visit */
+@keyframes bubblePulse {
+  0% {
+    box-shadow:
+      var(--shadow-glass),
+      0 0 0 0 var(--accent);
+  }
+  40% {
+    box-shadow:
+      var(--shadow-glass),
+      0 0 0 12px rgba(1, 118, 76, 0);
+  }
+  100% {
+    box-shadow:
+      var(--shadow-glass),
+      0 0 0 0 rgba(1, 118, 76, 0);
+  }
+}
+
+.desk-float-btn.pulse {
+  animation: bubblePulse 1.6s ease-out 2;
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  .desk-float-btn { background: var(--surface-elevated); }
+}
+
+/* Mobile tweaks */
+@media (max-width: 520px) {
+  .desk-topbar { padding: 12px 12px; }
+  .desk-float-btn { width: 40px; height: 40px; }
+  .desk-float-btn svg { width: 18px; height: 18px; }
+  .desk-float-group { gap: 6px; }
+}
+
+/* ============================================================
+   37. SIDE PADDING (page-form signed-in)
+   ------------------------------------------------------------
+   On mobile, the tabbar sits at the bottom. Content needs
+   padding so it doesn't hide behind it. On desktop, tabbar
+   is hidden so no padding is needed.
+   ============================================================ */
+
+.page-form.signed-in {
+  padding-bottom: 80px;
+}
+
+@media (min-width: 760px) {
+  /* Desktop: hide tabbar, no extra padding needed */
+  .tabbar { display: none; }
+  .page-form.signed-in { padding-bottom: 0; }
+}
+
+/* Hide hamburger on mobile (tabbar handles navigation) */
+@media (max-width: 759px) {
+  .app-menu-btn { display: none !important; }
+}
+
+/* ============================================================
+   END OF PART 4
+   ============================================================
+   Now styled:
+     ✓ App header (glass)
+     ✓ Bottom tab bar (glass)
+     ✓ Tab bar badges + request pulse dot
+     ✓ Menu sheet (glass panel with backdrop)
+     ✓ Landing dock (glass, slides up on scroll)
+     ✓ Floating desk topbar (glass buttons)
+     ✓ Bot pulse animation
+     ✓ Signed-in page padding for tabbar
+
+   Real glass is now visible — anything scrolled under the
+   header or tabbar will blur.
+
+   Next parts:
+     Part 5  — Landing + Home
+     Part 6  — Dashboard + Settings
+     Part 7  — Desk + Profile + Reviews + Wall
+     Part 8  — Bot
+     Part 9  — Chat
+     Part 10 — Chats + Updates + Tab picker
+     Part 11 — Explore + Gigs
+     Part 12 — Toasts + misc
+   ============================================================ */
