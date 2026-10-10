@@ -149,6 +149,32 @@
 <script src="desk.js?v=6"></script>
 <script src="toast.js"></script>
 <script src="ripple.js" defer></script>
+<script>
+  /* Keep the bot panel matching the visible viewport when the
+     keyboard opens. visualViewport tracks what's actually on
+     screen above the keyboard, unlike 100dvh which sometimes
+     lags behind on Android. */
+  (function(){
+    if (!window.visualViewport) return;
+    const vv = window.visualViewport;
+    const panel = document.getElementById('deskBotPanel');
+    if (!panel) return;
 
+    function fit(){
+      if (window.innerWidth > 520) {
+        panel.style.height = '';
+        panel.style.top = '';
+        return;
+      }
+      panel.style.height = vv.height + 'px';
+      panel.style.top = vv.offsetTop + 'px';
+    }
+
+    vv.addEventListener('resize', fit);
+    vv.addEventListener('scroll', fit);
+    window.addEventListener('resize', fit);
+    fit();
+  })();
+</script>
 </body>
   </html>
