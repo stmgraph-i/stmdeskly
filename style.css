@@ -11348,3 +11348,1418 @@ body.compact .desk-block { padding: 24px 22px; margin: 14px 0; }
      Part 12 — Explore + Gigs
      Part 13 — Toasts + misc
    ============================================================ */
+/* ============================================================
+   124. CHATS · page shell
+   ------------------------------------------------------------
+   chats.html. Inbox page.
+   No pattern, no scroll jank — just the list.
+   ============================================================ */
+
+.page-chats {
+  background-color: var(--bg);
+  background-image: none;
+}
+
+.page-chats .form-shell {
+  padding-top: 8px;
+  padding-bottom: 90px;
+}
+
+/* ============================================================
+   125. CHATS · header
+   ------------------------------------------------------------
+   Apple-style: huge title, generous space, no decoration.
+   Sticky so it stays while the list scrolls.
+   ============================================================ */
+
+.chats-head {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  background: var(--bg);
+  padding: 18px 0 0;
+  margin-bottom: 0;
+}
+
+/* Backdrop blur under the header to hide list content during scroll */
+.chats-head::before {
+  content: "";
+  position: absolute;
+  inset: -100px 0 100%;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+.chats-head-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+  padding: 0 2px;
+}
+
+.chats-title {
+  font-family: var(--display);
+  font-size: clamp(1.9rem, 7.5vw, 2.4rem);
+  font-weight: 800;
+  letter-spacing: -0.055em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+/* Optional notification bell (top-right of header) */
+.chats-notify-btn {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: transparent;
+  border: 0;
+  color: var(--ink-3);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.chats-notify-btn:hover {
+  background: rgba(28, 28, 30, 0.05);
+  color: var(--ink);
+}
+.chats-notify-btn.active {
+  color: var(--accent);
+}
+.chats-notify-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================================
+   126. CHATS · tabs (the pill strip)
+   ------------------------------------------------------------
+   The signature gesture. Horizontal scroll strip with a
+   sliding green pill. Feels like an iOS segmented control
+   but scrollable for more options.
+   ============================================================ */
+
+.chats-tabs {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  padding: 4px 0 14px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.chats-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* The sliding pill background */
+.chats-tabs-pill {
+  position: absolute;
+  top: 4px;
+  left: 0;
+  height: 34px;
+  background: linear-gradient(
+    135deg,
+    #018655 0%,
+    #01764C 55%,
+    #015F3D 100%
+  );
+  border-radius: var(--r-pill);
+  z-index: 0;
+  transition:
+    transform 0.4s cubic-bezier(0.34, 1.4, 0.4, 1),
+    width 0.4s cubic-bezier(0.34, 1.4, 0.4, 1);
+  pointer-events: none;
+  will-change: transform, width;
+  /* Subtle glow under the pill — the screen-power trick */
+  box-shadow:
+    0 2px 6px rgba(1, 118, 76, 0.22),
+    0 8px 20px -6px rgba(1, 118, 76, 0.42);
+}
+
+.chats-tab {
+  position: relative;
+  z-index: 1;
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 9px 16px;
+  border: none;
+  background: transparent;
+  color: var(--ink-2);
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  white-space: nowrap;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: color 0.22s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+.chats-tab:hover {
+  color: var(--ink);
+}
+.chats-tab.active {
+  color: #fff;
+}
+
+/* Add-tab button (the "+") */
+.chats-tab-add {
+  padding: 9px 10px;
+  color: var(--ink-3);
+}
+.chats-tab-add svg {
+  width: 16px;
+  height: 16px;
+}
+.chats-tab-add:hover {
+  color: var(--ink);
+}
+.chats-tab-add.has-tabs {
+  color: var(--accent);
+}
+
+/* Badge inside a tab (unread count) */
+.chats-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 6px;
+  font-size: 11px;
+  font-weight: 700;
+  border-radius: var(--r-pill);
+  background: rgba(28, 28, 30, 0.08);
+  color: inherit;
+  transition: background 0.2s ease;
+}
+.chats-tab.active .chats-tab-badge {
+  background: rgba(255, 255, 255, 0.28);
+  color: #fff;
+}
+
+/* ============================================================
+   127. CHATS · body + list
+   ------------------------------------------------------------
+   NO horizontal rules between rows.
+   Separation comes from generous padding and typography.
+   ============================================================ */
+
+.chats-body {
+  min-height: 200px;
+}
+
+.chats-list {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ============================================================
+   128. CHATS · chat row
+   ------------------------------------------------------------
+   The heart of the inbox. Apple-clean.
+
+   Structure:
+     [avatar]   [name · time]
+                [preview line]
+
+   Notes:
+     - No border between rows
+     - Press = subtle background, scaled slightly
+     - Unread = small green dot next to name
+     - Time is top-right, aligned with name
+   ============================================================ */
+
+.chat-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 12px;
+  border-radius: 16px;
+  transition:
+    background 0.18s ease,
+    transform 0.15s var(--spring);
+  position: relative;
+}
+.chat-row:last-child {
+  margin-bottom: 8px;
+}
+
+.chat-row-tappable {
+  cursor: pointer;
+}
+.chat-row-tappable:hover {
+  background: var(--surface);
+}
+.chat-row-tappable:active {
+  background: var(--surface-2);
+  transform: scale(0.988);
+}
+
+/* Avatar — 52px, with soft ring for depth */
+.chat-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  box-shadow:
+    0 0 0 1px rgba(28, 28, 30, 0.05),
+    0 2px 6px rgba(28, 28, 30, 0.06);
+  position: relative;
+}
+
+/* Row body */
+.chat-row-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding-top: 2px;
+}
+
+/* Top line: name + role + time */
+.chat-row-top {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  min-width: 0;
+}
+
+.chat-row-name {
+  font-family: var(--display);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.25;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 60%;
+  flex-shrink: 0;
+}
+
+/* Unread name — not bold, small green dot BEFORE name */
+.chat-row.has-unread .chat-row-name::before {
+  content: "";
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 8px;
+  vertical-align: middle;
+  box-shadow: 0 0 6px rgba(1, 118, 76, 0.6);
+  transform: translateY(-1px);
+}
+
+.chat-row-role {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-3);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+  letter-spacing: -0.005em;
+}
+
+.chat-row-time {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-left: auto;
+  flex-shrink: 0;
+  letter-spacing: -0.005em;
+  padding-left: 8px;
+  line-height: 1.25;
+}
+.chat-row.has-unread .chat-row-time {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Pin + mute icons — tiny, subtle */
+.chat-row-pin,
+.chat-row-mute {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  color: var(--accent);
+  opacity: 0.85;
+  flex-shrink: 0;
+  transform: translateY(-1px);
+}
+.chat-row-pin svg,
+.chat-row-mute svg {
+  width: 100%;
+  height: 100%;
+}
+.chat-row-mute {
+  color: var(--ink-3);
+  opacity: 0.7;
+}
+
+/* Preview line */
+.chat-row-preview {
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink-3);
+  line-height: 1.4;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  letter-spacing: -0.005em;
+  padding-right: 26px; /* room for the unread pill */
+}
+.chat-row.has-unread .chat-row-preview {
+  color: var(--ink-2);
+  font-weight: 500;
+}
+
+.chat-row-preview-quiet {
+  color: var(--ink-3);
+  font-style: italic;
+  opacity: 0.8;
+}
+
+/* "Waiting for reply" indicator for outgoing requests */
+.chat-row-waiting {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+  margin-top: 2px;
+  opacity: 0.85;
+}
+
+/* Unread count pill — bottom right of the row */
+.chat-row-unread {
+  position: absolute;
+  right: 12px;
+  bottom: 16px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 7px;
+  border-radius: 11px;
+  background: linear-gradient(
+    135deg,
+    #018655 0%,
+    #01764C 100%
+  );
+  color: #fff;
+  font-family: var(--sans);
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 22px;
+  text-align: center;
+  letter-spacing: -0.005em;
+  box-shadow:
+    0 1px 2px rgba(1, 118, 76, 0.20),
+    0 4px 10px -3px rgba(1, 118, 76, 0.48);
+}
+
+.chat-row-unread-muted {
+  background: var(--ink-3);
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.10);
+}
+
+/* Actions (Accept / Decline on requests) */
+.chat-row-actions {
+  display: flex;
+  gap: 6px;
+  flex-shrink: 0;
+  align-self: center;
+}
+
+.chat-action {
+  padding: 8px 14px;
+  border-radius: var(--r-pill);
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  border: 0;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s var(--spring),
+    box-shadow 0.15s ease;
+}
+
+.chat-action-accept {
+  background: var(--accent);
+  color: var(--accent-ink);
+  box-shadow:
+    0 1px 2px rgba(1, 118, 76, 0.20),
+    0 6px 14px -4px rgba(1, 118, 76, 0.42);
+}
+.chat-action-accept:hover {
+  background: var(--accent-hover);
+  box-shadow:
+    0 2px 4px rgba(1, 118, 76, 0.24),
+    0 10px 22px -6px rgba(1, 118, 76, 0.52);
+}
+.chat-action-accept:active {
+  transform: scale(0.96);
+}
+.chat-action-accept:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+.chat-action-decline {
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  border: 1px solid var(--line-2);
+  color: var(--ink-3);
+}
+.chat-action-decline:hover {
+  background: var(--danger-soft);
+  color: var(--danger);
+  border-color: var(--danger);
+}
+.chat-action-decline svg {
+  width: 13px;
+  height: 13px;
+}
+
+/* ============================================================
+   129. CHATS · empty state
+   ------------------------------------------------------------
+   The moment of wow when there's nothing. Big soft circle,
+   bold headline, quiet sub, real CTA.
+   ============================================================ */
+
+.chats-empty {
+  text-align: center;
+  padding: 60px 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chats-empty-icon {
+  width: 96px;
+  height: 96px;
+  margin: 0 auto 24px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  position: relative;
+  box-shadow:
+    0 4px 12px -2px rgba(1, 118, 76, 0.15),
+    0 16px 40px -12px rgba(1, 118, 76, 0.28);
+}
+
+/* Outer soft ring — glow */
+.chats-empty-icon::after {
+  content: "";
+  position: absolute;
+  inset: -16px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(1, 118, 76, 0.10) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: -1;
+}
+
+.chats-empty-icon svg {
+  width: 40px;
+  height: 40px;
+  stroke-width: 1.8;
+}
+
+.chats-empty-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.chats-empty-sub {
+  font-size: 14.5px;
+  color: var(--ink-3);
+  line-height: 1.55;
+  margin: 0 auto 28px;
+  max-width: 300px;
+  letter-spacing: -0.005em;
+}
+
+.chats-empty-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 13px 24px;
+  border-radius: var(--r-pill);
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--sans);
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  text-decoration: none;
+  box-shadow: var(--shadow-btn);
+  transition:
+    background 0.2s ease,
+    transform 0.15s var(--spring),
+    box-shadow 0.2s ease;
+}
+.chats-empty-btn:hover {
+  background: var(--accent-hover);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-btn-hover);
+}
+.chats-empty-btn:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================
+   130. CHATS · loading state
+   ------------------------------------------------------------
+   Skeleton rows that mirror the real row layout. Same rhythm.
+   ============================================================ */
+
+.chats-loading {
+  padding: 8px 0;
+}
+
+.chat-row-skeleton {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 12px;
+}
+
+.chat-skel-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: rgba(28, 28, 30, 0.06);
+  flex-shrink: 0;
+  animation: skelPulse 1.4s ease-in-out infinite;
+}
+
+.chat-skel-lines {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.chat-skel-line {
+  height: 12px;
+  border-radius: 6px;
+  background: rgba(28, 28, 30, 0.06);
+  animation: skelPulse 1.4s ease-in-out infinite;
+}
+.chat-skel-line.short {
+  width: 55%;
+}
+
+@keyframes skelPulse {
+  0%, 100% { opacity: 0.65; }
+  50%      { opacity: 1; }
+}
+
+/* ============================================================
+   131. CHATS · row context menu (long-press)
+   ------------------------------------------------------------
+   iOS action sheet style — same language as the chat screen.
+   ============================================================ */
+
+.chat-row-menu-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99;
+  background: rgba(15, 12, 8, 0.18);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  animation: fadeIn 0.16s ease;
+}
+
+.chat-row-menu {
+  position: fixed;
+  z-index: 100;
+  min-width: 220px;
+  padding: 6px;
+  background: var(--surface-elevated);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 1px rgba(28, 28, 30, 0.06),
+    0 8px 24px -8px rgba(28, 28, 30, 0.16),
+    0 24px 50px -16px rgba(28, 28, 30, 0.30);
+  animation: ctxIn 0.2s var(--spring);
+  font-family: var(--sans);
+  overflow: hidden;
+}
+
+.chat-row-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  letter-spacing: -0.005em;
+  transition: background 0.15s ease;
+}
+.chat-row-menu-item:hover {
+  background: rgba(28, 28, 30, 0.05);
+}
+.chat-row-menu-item:active {
+  background: rgba(28, 28, 30, 0.08);
+}
+.chat-row-menu-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.chat-row-menu-item-danger {
+  color: var(--danger);
+}
+.chat-row-menu-item-danger svg {
+  opacity: 0.9;
+}
+.chat-row-menu-item-danger:hover {
+  background: var(--danger-soft);
+}
+
+/* ============================================================
+   132. UPDATES · notification cards
+   ------------------------------------------------------------
+   iOS Notification Center aesthetic:
+     - Soft white card
+     - Colored icon circle (kind-dependent)
+     - Bold title, regular body
+     - Time small, top-right
+     - Unread = subtle tint + soft glow
+     - Almost no separator between cards — spacing does it
+   ============================================================ */
+
+.notif-action-bar {
+  display: flex;
+  justify-content: flex-end;
+  padding: 4px 4px 14px;
+}
+
+.notif-mark-all {
+  padding: 8px 14px;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  border-radius: var(--r-pill);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.notif-mark-all:hover {
+  background: var(--accent-soft);
+}
+.notif-mark-all:disabled {
+  opacity: 0.5;
+  cursor: wait;
+}
+
+.notif-day-divider {
+  font-family: var(--display);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 20px 6px 10px;
+}
+.notif-day-divider:first-child {
+  padding-top: 4px;
+}
+
+/* Card */
+.notif-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line);
+  background: var(--surface-elevated);
+  border-radius: 16px;
+  text-align: left;
+  font-family: inherit;
+  color: var(--ink);
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.04);
+  transition:
+    background 0.18s ease,
+    border-color 0.18s ease,
+    transform 0.15s var(--spring),
+    box-shadow 0.18s ease;
+}
+.notif-card:hover {
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.notif-card:active {
+  transform: scale(0.995);
+}
+
+/* Unread — soft tint + colored glow */
+.notif-card-unread {
+  background: linear-gradient(
+    180deg,
+    rgba(1, 118, 76, 0.04) 0%,
+    rgba(1, 118, 76, 0.02) 100%
+  );
+  border-color: rgba(1, 118, 76, 0.18);
+  box-shadow:
+    0 1px 2px rgba(1, 118, 76, 0.06),
+    0 8px 20px -10px rgba(1, 118, 76, 0.20);
+}
+.notif-card-unread:hover {
+  background: linear-gradient(
+    180deg,
+    rgba(1, 118, 76, 0.06) 0%,
+    rgba(1, 118, 76, 0.03) 100%
+  );
+}
+
+.notif-card-read {
+  opacity: 0.75;
+}
+
+/* Icon circle — kind-colored */
+.notif-icon {
+  width: 38px;
+  height: 38px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  background: var(--surface-2);
+  color: var(--ink-2);
+  transition: background 0.2s ease;
+}
+.notif-icon svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Per-kind color */
+.notif-card[data-kind="review"] .notif-icon {
+  background: var(--pk-50);
+  color: var(--sys-pink);
+}
+.notif-card[data-kind="unanswered"] .notif-icon {
+  background: var(--b-50);
+  color: var(--sys-blue);
+}
+.notif-card[data-kind="whatsapp_tap"] .notif-icon {
+  background: var(--g-50);
+  color: var(--accent);
+}
+.notif-card[data-kind="gig_new"] .notif-icon {
+  background: var(--p-50);
+  color: var(--sys-purple);
+}
+.notif-card[data-kind="view_milestone"] .notif-icon {
+  background: var(--a-50);
+  color: var(--sys-orange);
+}
+
+/* Card body */
+.notif-body {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.notif-top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.notif-title {
+  font-family: var(--display);
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  line-height: 1.3;
+  color: var(--ink);
+  flex: 1;
+  min-width: 0;
+}
+
+.notif-time {
+  font-size: 11.5px;
+  font-weight: 500;
+  color: var(--ink-3);
+  flex-shrink: 0;
+  letter-spacing: -0.005em;
+}
+
+.notif-preview {
+  font-size: 13.5px;
+  color: var(--ink-3);
+  line-height: 1.45;
+  letter-spacing: -0.005em;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Small unread dot — top right corner */
+.notif-dot {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+  border-radius: 50%;
+  box-shadow:
+    0 0 0 2px rgba(1, 118, 76, 0.15),
+    0 0 8px rgba(1, 118, 76, 0.55);
+}
+/* If a dot is present, time shifts left */
+.notif-card:has(.notif-dot) .notif-time {
+  padding-right: 12px;
+}
+
+/* ============================================================
+   133. TAB PICKER · bottom sheet
+   ------------------------------------------------------------
+   iOS Settings aesthetic:
+     - Rounded top corners
+     - Grabber handle
+     - Real iOS-style switches (green when on)
+     - Clean typography
+   ============================================================ */
+
+.tab-picker-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 12, 8, 0.35);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 300;
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+.tab-picker-backdrop.visible {
+  opacity: 1;
+}
+
+.tab-picker-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 301;
+  background: var(--bg);
+  border-top-left-radius: 22px;
+  border-top-right-radius: 22px;
+  padding: 10px 20px calc(24px + env(safe-area-inset-bottom, 0px));
+  transform: translateY(100%);
+  transition: transform 0.32s cubic-bezier(0.32, 0.72, 0, 1);
+  box-shadow:
+    0 -8px 30px rgba(28, 28, 30, 0.12),
+    0 -2px 6px rgba(28, 28, 30, 0.06);
+  max-height: 85vh;
+  overflow-y: auto;
+}
+.tab-picker-sheet.visible {
+  transform: translateY(0);
+}
+
+/* Grabber handle at top */
+.tab-picker-handle {
+  width: 38px;
+  height: 5px;
+  border-radius: 3px;
+  background: rgba(28, 28, 30, 0.18);
+  margin: 4px auto 16px;
+}
+
+.tab-picker-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+
+.tab-picker-sub {
+  font-size: 13.5px;
+  color: var(--ink-3);
+  margin-bottom: 18px;
+  letter-spacing: -0.005em;
+  line-height: 1.5;
+}
+
+/* Toggle rows */
+.tab-picker-list {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-elevated);
+  border-radius: 14px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.03);
+}
+
+.tab-picker-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 14px 16px;
+  border: none;
+  background: transparent;
+  font-family: inherit;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.15s ease;
+  position: relative;
+}
+/* Hairline between rows, iOS-style */
+.tab-picker-row + .tab-picker-row::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 16px;
+  right: 0;
+  height: 1px;
+  background: var(--line);
+}
+.tab-picker-row:hover {
+  background: rgba(28, 28, 30, 0.03);
+}
+.tab-picker-row:active {
+  background: rgba(28, 28, 30, 0.06);
+}
+
+.tab-picker-row-label {
+  font-size: 16px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Real iOS switch */
+.tab-picker-row-toggle {
+  position: relative;
+  width: 51px;
+  height: 31px;
+  border-radius: var(--r-pill);
+  background: rgba(120, 120, 128, 0.16);
+  transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+.tab-picker-row-toggle::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 27px;
+  height: 27px;
+  background: #fff;
+  border-radius: 50%;
+  box-shadow:
+    0 1px 3px rgba(28, 28, 30, 0.2),
+    0 2px 6px rgba(28, 28, 30, 0.10);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-picker-row.on .tab-picker-row-toggle {
+  background: var(--accent);
+}
+.tab-picker-row.on .tab-picker-row-toggle::after {
+  transform: translateX(20px);
+}
+
+/* Done button */
+.tab-picker-done {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow:
+    0 2px 4px rgba(1, 118, 76, 0.20),
+    0 8px 20px -6px rgba(1, 118, 76, 0.42);
+  transition:
+    background 0.15s ease,
+    transform 0.12s var(--spring),
+    box-shadow 0.2s ease;
+  margin-top: 8px;
+}
+.tab-picker-done:hover {
+  background: var(--accent-hover);
+}
+.tab-picker-done:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================
+   134. TAB PICKER · custom tabs section
+   ============================================================ */
+
+.tab-picker-section-title {
+  font-family: var(--display);
+  font-size: 11.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 20px 4px 8px;
+}
+
+.tab-picker-empty {
+  font-size: 13.5px;
+  color: var(--ink-3);
+  padding: 14px 6px;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+.tab-picker-custom-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 12px 14px;
+  background: var(--surface-elevated);
+  border-radius: 12px;
+  margin-bottom: 6px;
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.03);
+}
+
+.tab-picker-custom-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.tab-picker-custom-label {
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.tab-picker-custom-kw {
+  font-size: 12.5px;
+  color: var(--ink-3);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.005em;
+}
+
+.tab-picker-custom-delete {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: var(--danger);
+  border-radius: 50%;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+.tab-picker-custom-delete:hover {
+  background: var(--danger-soft);
+}
+.tab-picker-custom-delete svg {
+  width: 18px;
+  height: 18px;
+}
+
+.tab-picker-new-btn {
+  display: block;
+  width: 100%;
+  padding: 13px;
+  margin-top: 8px;
+  border: 1.5px dashed rgba(1, 118, 76, 0.35);
+  background: transparent;
+  color: var(--accent);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.tab-picker-new-btn:hover {
+  background: rgba(1, 118, 76, 0.05);
+  border-color: var(--accent);
+}
+
+/* ============================================================
+   135. TAB PICKER · new tab form
+   ============================================================ */
+
+.tab-picker-field-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  margin-top: 14px;
+  margin-bottom: 6px;
+  letter-spacing: -0.005em;
+}
+
+.tab-picker-input {
+  display: block;
+  width: 100%;
+  padding: 13px 16px;
+  border: 1.5px solid var(--line);
+  background: var(--surface-2);
+  border-radius: 12px;
+  font-family: inherit;
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease,
+    box-shadow 0.15s ease;
+  box-sizing: border-box;
+}
+.tab-picker-input:focus {
+  background: var(--surface-elevated);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.tab-picker-error {
+  font-size: 13px;
+  color: var(--danger);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+.tab-picker-form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 24px;
+  padding-bottom: 4px;
+}
+
+.tab-picker-cancel {
+  flex: 1;
+  padding: 15px;
+  border: 1px solid var(--line-2);
+  background: transparent;
+  color: var(--ink);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+.tab-picker-cancel:hover {
+  background: rgba(28, 28, 30, 0.04);
+  border-color: var(--ink-3);
+}
+
+.tab-picker-save {
+  flex: 1.6;
+  padding: 15px;
+  border: none;
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow:
+    0 2px 4px rgba(1, 118, 76, 0.20),
+    0 8px 20px -6px rgba(1, 118, 76, 0.42);
+  transition: background 0.15s ease, transform 0.12s var(--spring);
+}
+.tab-picker-save:hover {
+  background: var(--accent-hover);
+}
+.tab-picker-save:active {
+  transform: scale(0.98);
+}
+
+/* ============================================================
+   136. CHATS · responsive
+   ============================================================ */
+
+@media (max-width: 520px) {
+  .chats-head {
+    padding-top: 12px;
+  }
+  .chats-title {
+    font-size: 1.9rem;
+  }
+  .chats-tabs {
+    padding-bottom: 12px;
+  }
+  .chats-tab {
+    padding: 8px 14px;
+    font-size: 13.5px;
+  }
+  .chats-tabs-pill {
+    height: 32px;
+  }
+  .chat-row {
+    padding: 12px 8px;
+    gap: 12px;
+  }
+  .chat-avatar {
+    width: 48px;
+    height: 48px;
+    font-size: 17px;
+  }
+  .chat-row-name {
+    font-size: 15px;
+  }
+  .chat-row-preview {
+    font-size: 13.5px;
+  }
+  .chats-empty-icon {
+    width: 84px;
+    height: 84px;
+  }
+  .chats-empty-icon svg {
+    width: 34px;
+    height: 34px;
+  }
+  .chats-empty-title {
+    font-size: 18px;
+  }
+}
+
+/* ============================================================
+   137. CHATS · reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .chats-tabs-pill {
+    transition: none;
+  }
+  .tab-picker-sheet {
+    transition: none;
+  }
+  .chat-skel-avatar,
+  .chat-skel-line {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   END OF PART 11
+   ============================================================
+   What changed from the old version:
+
+   FROM "2014 Gmail"                   TO "Apple 2024"
+   ──────────────────────────────────────────────────
+   Border between every row            Generous spacing only
+   Time vertically centered            Time top-right, aligned
+   Bold name for unread                Green dot before name
+   Row hover = gray tint               Press = subtle scale + lift
+   Empty state = text only             Big soft circle + real CTA
+
+   FROM "generic"                      TO "considered"
+   ──────────────────────────────────────────────────
+   Tab pill = flat green               Sliding pill with spring
+                                       + colored glow underneath
+   Updates list = cards with borders   iOS Notification Center
+                                       with kind-colored icons
+   Tab picker = custom toggles         Real iOS switches (green,
+                                       spring, proper size)
+
+   Also:
+     ✓ Chat rows have no borders, spacing does the work
+     ✓ Unread state = small green glowing dot + tint
+     ✓ Time aligned top-right like iOS Messages
+     ✓ Pin / mute icons sit next to name, tiny and quiet
+     ✓ Accept/decline buttons rounded, green with glow
+     ✓ Skeleton rows mirror real rows (same rhythm)
+     ✓ Notification cards: kind-colored icon, hairline-free
+     ✓ Tab picker: iOS Settings sheet with real switches
+     ✓ Every press has a spring animation
+     ✓ Every surface has a considered shadow, not flat
+
+   Next parts:
+     Part 12 — Explore + Gigs
+     Part 13 — Toasts + misc
+   ============================================================ */
