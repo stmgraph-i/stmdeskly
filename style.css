@@ -1414,3 +1414,369 @@ body:has(#newPasswordForm) .form-fields {
   gap: 16px;
   margin-top: 4px;
 }
+/* ============================================================
+   PART 4 — SHELL
+   ------------------------------------------------------------
+   App header (desktop), bottom tab bar (mobile),
+   menu sheet, floating desk topbar buttons.
+   ============================================================ */
+
+/* ---------- App header (desktop only) ---------- */
+
+.app-header {
+  position: sticky;
+  top: 0;
+  z-index: 70;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px var(--gutter);
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+
+.app-brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+
+.app-brand-mark {
+  width: 26px;
+  height: 26px;
+  border-radius: 6px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  display: grid;
+  place-items: center;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+}
+
+.app-menu-btn {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  color: var(--ink-2);
+  transition: background 0.15s ease;
+}
+
+.app-menu-btn:hover {
+  background: var(--surface-3);
+}
+
+.app-menu-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ---------- Bottom tab bar ---------- */
+
+.tabbar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 75;
+  display: flex;
+  align-items: stretch;
+  justify-content: space-around;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  padding: 6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+
+.tabbar-item {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 6px 2px;
+  min-height: 50px;
+  border-radius: 10px;
+  color: var(--ink-3);
+  text-decoration: none;
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.tabbar-item:hover {
+  color: var(--ink);
+}
+
+.tabbar-item:active {
+  background: var(--surface-3);
+}
+
+.tabbar-item.active {
+  color: var(--accent);
+}
+
+.tabbar-item.active svg {
+  stroke: var(--accent);
+}
+
+.tabbar-item svg {
+  width: 22px;
+  height: 22px;
+  stroke: currentColor;
+  flex-shrink: 0;
+}
+
+/* Badge — unread count */
+.tabbar-badge {
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(4px);
+  min-width: 16px;
+  height: 16px;
+  padding: 0 5px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--danger);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  border-radius: 999px;
+  border: 2px solid var(--surface);
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Pulsing dot — new request */
+.tabbar-request-dot {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(12px);
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: 2px solid var(--surface);
+  pointer-events: none;
+  animation: tabbar-pulse 2.4s ease-in-out infinite;
+  z-index: 4;
+}
+
+@keyframes tabbar-pulse {
+  0%, 100% {
+    transform: translateX(12px) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(12px) scale(1.3);
+    opacity: 0.55;
+  }
+}
+
+.tabbar-badge[hidden],
+.tabbar-request-dot[hidden] {
+  display: none !important;
+}
+
+/* ---------- Menu sheet ---------- */
+
+.menu-sheet {
+  position: fixed;
+  inset: 0;
+  z-index: 90;
+}
+
+.menu-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(20, 24, 22, 0.20);
+  opacity: 0;
+  transition: opacity 0.22s ease;
+}
+
+.menu-sheet.open .menu-backdrop {
+  opacity: 1;
+}
+
+.menu-panel {
+  position: absolute;
+  top: 62px;
+  left: 14px;
+  right: 14px;
+  background: var(--surface);
+  border-radius: var(--r-lg);
+  border: 1px solid var(--line);
+  padding: 6px;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-6px);
+  opacity: 0;
+  transition: transform 0.22s ease, opacity 0.22s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-sheet.open .menu-panel {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+@media (min-width: 520px) {
+  .menu-panel {
+    left: auto;
+    right: 24px;
+    width: 280px;
+  }
+}
+
+.menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  text-decoration: none;
+  transition: background 0.15s ease;
+}
+
+.menu-item:hover {
+  background: var(--surface-3);
+}
+
+.menu-item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+.menu-item-quiet {
+  margin-top: 4px;
+  border-top: 1px solid var(--line);
+  border-radius: 0 0 10px 10px;
+  color: var(--ink-2);
+}
+
+.menu-item-quiet:hover {
+  background: var(--danger-soft);
+  color: var(--danger-deep);
+}
+
+.menu-item-quiet:hover svg {
+  color: var(--danger-deep);
+}
+
+/* ---------- Floating Desk topbar (public desk pages) ---------- */
+
+.desk-topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 80;
+  pointer-events: none;
+}
+
+.desk-topbar > * {
+  pointer-events: auto;
+}
+
+.desk-float-btn {
+  width: 42px;
+  height: 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: var(--shadow-xs);
+  transition: background 0.15s ease,
+              border-color 0.15s ease,
+              transform 0.12s ease;
+}
+
+.desk-float-btn:hover {
+  background: var(--surface-3);
+  border-color: var(--line-2);
+}
+
+.desk-float-btn:active {
+  transform: scale(0.96);
+}
+
+.desk-float-btn svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+
+.desk-float-btn.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-color: var(--accent);
+}
+
+.desk-float-group {
+  display: flex;
+  gap: 8px;
+}
+
+/* ---------- Signed-in page padding ---------- */
+
+.page-form.signed-in {
+  padding-bottom: 76px;
+}
+
+@media (min-width: 760px) {
+  .tabbar { display: none; }
+  .page-form.signed-in { padding-bottom: 0; }
+}
+
+@media (max-width: 759px) {
+  .app-menu-btn { display: none !important; }
+}
+
+/* ---------- Mobile tightening ---------- */
+
+@media (max-width: 520px) {
+  .desk-topbar {
+    padding: 10px 10px;
+  }
+
+  .desk-float-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .desk-float-btn svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .desk-float-group {
+    gap: 6px;
+  }
+   }
