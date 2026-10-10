@@ -1059,3 +1059,29 @@ a:focus:not(:focus-visible) {
     transition: none;
   }
      }
+/* ============================================================
+   FIX · Home selectors
+   ------------------------------------------------------------
+   Correcting the two selectors from the previous Home block.
+   The HTML uses .form-shell on #homeRoot (not .home-shell)
+   and .home-quick-actions (not .home-quick).
+   ============================================================ */
+
+#homeRoot.form-shell {
+  max-width: 620px;
+  margin: 0 auto;
+  padding: 24px var(--gutter) 100px;
+}
+
+.home-quick-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+
+@media (max-width: 520px) {
+  #homeRoot.form-shell {
+    padding: 18px 16px 90px;
+  }
+}
