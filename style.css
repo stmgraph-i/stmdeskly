@@ -1239,3 +1239,178 @@ body {
 .form-head-title {
   letter-spacing: -0.03em;
 }
+/* ============================================================
+   PART 3 — AUTH PAGES
+   ------------------------------------------------------------
+   Login fits one screen. Signup fields enter with a soft
+   stagger. Forgot + new-password share the same rhythm.
+   ============================================================ */
+
+/* ---------- Login no-scroll ---------- */
+
+body:has(#loginForm) {
+  height: 100dvh;
+  overflow: hidden;
+}
+
+body:has(#loginForm) .form-shell {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding-top: 16px;
+  padding-bottom: 16px;
+}
+
+body:has(#loginForm) .form-head {
+  margin: 16px 0 20px;
+}
+
+body:has(#loginForm) .form-head-title {
+  font-size: 24px;
+}
+
+body:has(#loginForm) .form-head-sub {
+  font-size: 14px;
+}
+
+body:has(#loginForm) .form {
+  gap: 12px;
+}
+
+body:has(#loginForm) .form-fields {
+  gap: 12px;
+  margin-top: 0;
+}
+
+body:has(#loginForm) .form-submit {
+  padding: 14px 22px;
+  margin-top: 2px;
+}
+
+body:has(#loginForm) .form-alt {
+  margin-top: 10px;
+  font-size: 13.5px;
+}
+
+body:has(#loginForm) .accounts-box {
+  margin-bottom: 12px;
+}
+
+body:has(#loginForm) .accounts-list {
+  gap: 5px;
+  margin-bottom: 8px;
+}
+
+body:has(#loginForm) .account-card {
+  padding: 10px 12px;
+}
+
+@supports not selector(:has(*)) {
+  body:has(#loginForm) {
+    height: auto;
+    overflow: auto;
+  }
+}
+
+/* ---------- Signup entrance animations ---------- */
+
+.type-list .type-card {
+  opacity: 0;
+  transform: translateY(8px);
+  animation: cardIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.type-list .type-card:nth-child(1) { animation-delay: 0.03s; }
+.type-list .type-card:nth-child(2) { animation-delay: 0.09s; }
+.type-list .type-card:nth-child(3) { animation-delay: 0.15s; }
+
+@keyframes cardIn {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-fields {
+  animation: fieldsIn 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+@keyframes fieldsIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.form-fields > .form-group {
+  animation: fieldIn 0.35s cubic-bezier(0.2, 0.8, 0.2, 1) backwards;
+}
+
+.form-fields > .form-group:nth-child(1) { animation-delay: 0.05s; }
+.form-fields > .form-group:nth-child(2) { animation-delay: 0.09s; }
+.form-fields > .form-group:nth-child(3) { animation-delay: 0.13s; }
+.form-fields > .form-group:nth-child(4) { animation-delay: 0.17s; }
+.form-fields > .form-group:nth-child(5) { animation-delay: 0.21s; }
+.form-fields > .form-group:nth-child(6) { animation-delay: 0.25s; }
+.form-fields > .form-group:nth-child(7) { animation-delay: 0.29s; }
+
+@keyframes fieldIn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.color-grid .color-dot {
+  animation: dotIn 0.3s cubic-bezier(0.34, 1.4, 0.64, 1) backwards;
+}
+.color-grid .color-dot:nth-child(1)  { animation-delay: 0.28s; }
+.color-grid .color-dot:nth-child(2)  { animation-delay: 0.31s; }
+.color-grid .color-dot:nth-child(3)  { animation-delay: 0.34s; }
+.color-grid .color-dot:nth-child(4)  { animation-delay: 0.37s; }
+.color-grid .color-dot:nth-child(5)  { animation-delay: 0.40s; }
+.color-grid .color-dot:nth-child(6)  { animation-delay: 0.43s; }
+.color-grid .color-dot:nth-child(7)  { animation-delay: 0.46s; }
+.color-grid .color-dot:nth-child(8)  { animation-delay: 0.49s; }
+.color-grid .color-dot:nth-child(9)  { animation-delay: 0.52s; }
+.color-grid .color-dot:nth-child(10) { animation-delay: 0.55s; }
+.color-grid .color-dot:nth-child(11) { animation-delay: 0.58s; }
+.color-grid .color-dot:nth-child(12) { animation-delay: 0.61s; }
+
+@keyframes dotIn {
+  0%   { opacity: 0; transform: scale(0.7); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .type-list .type-card,
+  .form-fields,
+  .form-fields > .form-group,
+  .color-grid .color-dot {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/* ---------- Forgot + new-password rhythm ---------- */
+
+body:has(#forgotForm) .form-head,
+body:has(#newPasswordForm) .form-head {
+  margin: 28px 0 24px;
+}
+
+body:has(#forgotForm) .form-fields,
+body:has(#newPasswordForm) .form-fields {
+  gap: 16px;
+  margin-top: 4px;
+}
