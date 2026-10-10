@@ -13654,3 +13654,755 @@ body.compact .desk-block { padding: 24px 22px; margin: 14px 0; }
    Next part:
      Part 13 — Toasts + misc pages (start, how, terms, demo, test)
    ============================================================ */
+
+
+/* ============================================================
+   151. CONFIDENTIAL · design language
+   ------------------------------------------------------------
+   Reserved for surfaces that need to feel official, formal,
+   or private:
+     - Legal (terms.html)
+     - Internal tools (test.html)
+     - Destructive flows (delete account)
+     - Privacy controls
+     - System messages (toasts)
+
+   Rules:
+     - Dark, near-black surfaces instead of warm cream
+     - Serif for headings (contract feel)
+     - Monospace for technical content (ledger feel)
+     - No glows, no bright accents, no decorative gradients
+     - Minimal shadows — ink on paper, not floating glass
+   ============================================================ */
+
+:root {
+  /* Ink document palette */
+  --ink-900: #121215;
+  --ink-800: #1C1C1F;
+  --ink-700: #2A2A2E;
+  --ink-600: #3A3A3F;
+  --ink-500: #5A5A60;
+  --ink-400: #85858D;
+  --ink-300: #B0B0B8;
+  --ink-200: #D5D5DB;
+  --ink-100: #EBEBEF;
+  --ink-50:  #F5F5F7;
+
+  --paper:    #FBFBFD;
+  --paper-2:  #F2F2F5;
+
+  /* Serif stack for legal headings */
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+  /* Mono for code / ledger content */
+  --mono: ui-monospace, "SF Mono", "Menlo", "Consolas", monospace;
+}
+
+/* ============================================================
+   152. TERMS + LEGAL PAGE
+   ------------------------------------------------------------
+   terms.html. Reads like a document, not an app page.
+
+   Changes from before:
+     - No dot pattern background
+     - White paper surface (not warm cream)
+     - Serif for section headings
+     - Monospace for the "last updated" tag
+     - Left rule on the lead paragraph
+     - Zero rounded pills
+   ============================================================ */
+
+body:has(.legal) {
+  background: var(--paper);
+  background-image: none;
+}
+
+body:has(.legal) .form-shell {
+  max-width: 680px;
+  padding-top: 20px;
+}
+
+/* Legal page heading */
+body:has(.legal) .form-head-title {
+  font-family: var(--serif);
+  font-size: clamp(1.65rem, 5.5vw, 2.1rem);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+}
+
+body:has(.legal) .form-head-sub {
+  font-family: var(--mono);
+  font-size: 11.5px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin-top: 8px;
+}
+
+/* The legal article */
+.legal {
+  padding: 8px 0 60px;
+  color: var(--ink-700);
+  font-family: var(--sans);
+  font-size: 15.5px;
+  line-height: 1.7;
+  letter-spacing: -0.003em;
+}
+
+/* Lead paragraph — the "contract stamp" */
+.legal-lead {
+  font-family: var(--sans);
+  font-size: 15.5px;
+  color: var(--ink-700);
+  padding: 18px 0 18px 20px;
+  background: transparent;
+  border-left: 3px solid var(--ink-900);
+  border-radius: 0;
+  margin-bottom: 36px;
+  line-height: 1.65;
+}
+
+.legal-lead strong {
+  color: var(--ink-900);
+  font-weight: 700;
+}
+
+/* Section headings — serif for weight */
+.legal h2 {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--ink-900);
+  margin: 40px 0 14px;
+  line-height: 1.25;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--ink-200);
+}
+
+.legal h3 {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-600);
+  margin: 26px 0 10px;
+  line-height: 1.3;
+}
+
+.legal p {
+  margin-bottom: 16px;
+}
+
+.legal p.legal-sub {
+  color: var(--ink-500);
+  font-size: 14.5px;
+  margin-bottom: 10px;
+  font-style: italic;
+}
+
+/* Lists — no dots, indented with a thin rule */
+.legal ul {
+  list-style: none;
+  margin: 0 0 20px;
+  padding: 0 0 0 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-left: 1px solid var(--ink-200);
+}
+
+.legal ul li {
+  font-size: 15px;
+  line-height: 1.65;
+  padding: 0;
+  position: relative;
+}
+
+.legal ul li strong {
+  color: var(--ink-900);
+  font-weight: 700;
+}
+
+/* Links — monospace, bracketed, formal */
+.legal a {
+  color: var(--ink-900);
+  font-family: var(--mono);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  border-bottom: 1px solid var(--ink-400);
+  padding-bottom: 1px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+.legal a:hover {
+  border-color: var(--ink-900);
+  color: var(--ink-900);
+}
+
+.legal strong {
+  color: var(--ink-900);
+  font-weight: 700;
+}
+
+/* End mark */
+.legal-end {
+  margin-top: 48px;
+  padding-top: 28px;
+  border-top: 1px solid var(--ink-200);
+  color: var(--ink-500);
+  font-family: var(--serif);
+  font-size: 15px;
+  font-style: italic;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Back pill on legal page — plain, no glass */
+body:has(.legal) .back-pill {
+  background: transparent;
+  border: 1px solid var(--ink-200);
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--ink-700);
+}
+body:has(.legal) .back-pill:hover {
+  background: var(--ink-50);
+  border-color: var(--ink-400);
+}
+
+/* ============================================================
+   153. TEST PAGE (internal tool)
+   ------------------------------------------------------------
+   test.html — developer page. Should feel off-grid, not
+   part of the shipped product.
+
+   Changes:
+     - Monospace everywhere
+     - Muted, cold grays
+     - No green brand accent — replaced with muted blue
+     - Sharp-ish corners
+     - No glows, no gradients
+   ============================================================ */
+
+body:has(#q):has(#result) {
+  background: #F7F7F9;
+  background-image: none;
+}
+
+body:has(#q):has(#result) .form-shell {
+  max-width: 640px;
+}
+
+body:has(#q):has(#result) .form-head-title {
+  font-family: var(--mono);
+  font-size: 1.35rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink-800);
+}
+
+body:has(#q):has(#result) .form-head-sub {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  color: var(--ink-500);
+  margin-top: 6px;
+}
+
+/* Input on test page — sharp, monospace, technical */
+body:has(#q):has(#result) .form-input {
+  font-family: var(--mono);
+  font-size: 14px;
+  background: #fff;
+  border: 1px solid var(--ink-300);
+  border-radius: 6px;
+  padding: 12px 14px;
+  color: var(--ink-800);
+  box-shadow: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+body:has(#q):has(#result) .form-input:focus {
+  border-color: var(--ink-800);
+  box-shadow: 0 0 0 3px rgba(28, 28, 31, 0.08);
+  background: #fff;
+}
+
+body:has(#q):has(#result) .form-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-500);
+  margin-bottom: 6px;
+}
+
+/* Result card on test page — like a terminal output */
+body:has(#q):has(#result) .link-box {
+  background: #FFFFFF;
+  border: 1px solid var(--ink-200);
+  border-radius: 8px;
+  padding: 20px 20px;
+  box-shadow: none;
+  font-family: var(--mono);
+  font-size: 13px;
+}
+
+body:has(#q):has(#result) .link-box-tag {
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--ink-500);
+  text-transform: uppercase;
+  margin-bottom: 12px;
+}
+
+body:has(#q):has(#result) .form-help {
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--ink-500);
+}
+
+/* ============================================================
+   154. DELETE ACCOUNT · serious modal
+   ------------------------------------------------------------
+   Overrides the standard confirm-modal for the delete flow.
+   Makes it feel like signing a legal document.
+   ============================================================ */
+
+/* When the delete modal is open, dim the whole page deeper */
+.confirm-backdrop {
+  background: rgba(15, 12, 8, 0.82);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+/* The sheet itself gets a paper feel */
+.confirm-sheet {
+  background: var(--paper);
+  border: 1px solid var(--ink-200);
+  border-radius: 14px;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.5),
+    0 30px 80px -24px rgba(0, 0, 0, 0.55);
+}
+
+/* Danger title — serif, formal */
+.confirm-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--ink-900);
+  margin-bottom: 16px;
+}
+
+.confirm-copy {
+  font-size: 14.5px;
+  color: var(--ink-700);
+  line-height: 1.6;
+  letter-spacing: -0.003em;
+}
+
+.confirm-copy[style*="font-weight:600"] {
+  font-weight: 700 !important;
+  color: var(--danger);
+}
+
+/* Bullet list — this is what they lose */
+.confirm-list {
+  list-style: none;
+  padding: 0 0 0 20px;
+  margin: 0 0 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border-left: 2px solid var(--danger);
+}
+.confirm-list li {
+  font-size: 14px;
+  color: var(--ink-700);
+  line-height: 1.5;
+  padding: 0;
+  position: relative;
+}
+.confirm-list li::before {
+  content: none;
+}
+
+/* Fields — sharp, official */
+.confirm-field .form-input {
+  border: 1.5px solid var(--ink-300);
+  border-radius: 8px;
+  background: #fff;
+  padding: 13px 15px;
+  font-size: 15px;
+}
+.confirm-field .form-input:focus {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(255, 59, 48, 0.10);
+  background: #fff;
+}
+
+.confirm-label {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-600);
+  margin-bottom: 6px;
+}
+
+/* Actions */
+.confirm-cancel {
+  border-radius: 8px;
+  border-color: var(--ink-300);
+  color: var(--ink-700);
+  font-weight: 600;
+}
+.confirm-cancel:hover {
+  border-color: var(--ink-800);
+  color: var(--ink-900);
+  background: var(--ink-50);
+}
+
+.confirm-delete {
+  border-radius: 8px;
+  background: var(--ink-900);
+  color: #fff;
+  font-weight: 700;
+  box-shadow: none;
+}
+.confirm-delete:hover {
+  background: #000;
+  box-shadow: 0 6px 14px -6px rgba(0, 0, 0, 0.4);
+}
+
+/* ============================================================
+   155. PRIVACY SECTION (settings accordion)
+   ------------------------------------------------------------
+   The "Who can see when I'm online" area. Should feel like
+   a real privacy control — serious, direct.
+   ============================================================ */
+
+.acc[data-section="privacy"] .acc-body {
+  border-top-color: var(--ink-200);
+}
+
+.acc[data-section="privacy"] .form-label {
+  font-weight: 700;
+  color: var(--ink-900);
+}
+
+.acc[data-section="privacy"] .form-help {
+  font-size: 12.5px;
+  color: var(--ink-600);
+  line-height: 1.55;
+}
+
+/* Privacy option buttons — sharper, formal */
+.acc[data-section="privacy"] .option-btn {
+  border-radius: 10px;
+  padding: 11px 18px;
+  background: var(--ink-50);
+  border-color: var(--ink-200);
+  color: var(--ink-700);
+}
+.acc[data-section="privacy"] .option-btn.active {
+  background: var(--ink-900);
+  border-color: var(--ink-900);
+  color: #fff;
+  box-shadow: none;
+}
+
+/* ============================================================
+   156. TOASTS · official notifications
+   ------------------------------------------------------------
+   System messages. Should feel like confirmations from the
+   platform, not chat banter.
+   ============================================================ */
+
+.toast-container {
+  position: fixed;
+  bottom: calc(84px + env(safe-area-inset-bottom, 0px));
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 0 16px;
+  z-index: 500;
+  pointer-events: none;
+}
+
+/* Toast base — floating dark card, no gradients, no glow */
+.toast {
+  max-width: 480px;
+  width: 100%;
+  padding: 14px 18px;
+  background: rgba(18, 18, 21, 0.96);
+  backdrop-filter: blur(14px) saturate(1.4);
+  -webkit-backdrop-filter: blur(14px) saturate(1.4);
+  color: #fff;
+  border-radius: 12px;
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.06) inset,
+    0 8px 24px rgba(0, 0, 0, 0.28),
+    0 2px 6px rgba(0, 0, 0, 0.16);
+  opacity: 0;
+  transform: translateY(12px);
+  transition:
+    opacity 0.22s ease,
+    transform 0.3s cubic-bezier(0.32, 0.72, 0, 1);
+  pointer-events: auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.toast.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.toast.leaving {
+  opacity: 0;
+  transform: translateY(8px);
+}
+
+/* Success — deep green, still dark and formal */
+.toast-success {
+  background: rgba(1, 95, 61, 0.96);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 8px 24px rgba(1, 60, 38, 0.32),
+    0 2px 6px rgba(0, 0, 0, 0.16);
+}
+
+/* Error — deep red */
+.toast-error {
+  background: rgba(150, 30, 24, 0.96);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
+    0 8px 24px rgba(120, 20, 16, 0.34),
+    0 2px 6px rgba(0, 0, 0, 0.16);
+}
+
+.toast-text {
+  flex: 1;
+  min-width: 0;
+  word-break: break-word;
+}
+
+/* Action button — inverted, subtle */
+.toast-action {
+  padding: 6px 12px;
+  border: none;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  border-radius: 6px;
+  font-family: var(--sans);
+  font-size: 12.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.toast-action:hover,
+.toast-action:active {
+  background: rgba(255, 255, 255, 0.24);
+}
+
+/* ============================================================
+   157. START + HOW PAGES · supportive, quiet
+   ------------------------------------------------------------
+   start.html and how.html. Not confidential per se, but
+   shouldn't fight for attention. Restrained, editorial.
+   ============================================================ */
+
+/* Start page — uses type cards, already styled. Just
+   tighten the intro spacing. */
+body:has(.type-list):not(:has(.form-fields)) .form-head {
+  margin-bottom: 36px;
+}
+
+/* How page — numbered steps */
+.how-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 8px;
+}
+
+.how-item {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 18px;
+  align-items: flex-start;
+  padding: 22px 24px;
+  background: var(--surface-elevated);
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 1px 2px rgba(28, 28, 30, 0.03),
+    0 8px 20px -14px rgba(28, 28, 30, 0.10);
+  transition: transform 0.18s var(--spring), box-shadow 0.2s ease;
+}
+.how-item:hover {
+  transform: translateY(-1px);
+  box-shadow:
+    0 4px 10px rgba(28, 28, 30, 0.05),
+    0 14px 28px -14px rgba(28, 28, 30, 0.16);
+}
+
+.how-num {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+  background: linear-gradient(
+    135deg,
+    #018655 0%,
+    #01764C 55%,
+    #015F3D 100%
+  );
+  color: #fff;
+  font-family: var(--display);
+  font-size: 18px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  box-shadow:
+    0 2px 4px rgba(1, 118, 76, 0.20),
+    0 8px 16px -6px rgba(1, 118, 76, 0.42);
+}
+
+.how-title {
+  font-family: var(--display);
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+
+.how-text {
+  font-size: 14.5px;
+  font-weight: 400;
+  color: var(--ink-2);
+  line-height: 1.6;
+  letter-spacing: -0.005em;
+}
+
+/* ============================================================
+   158. DEMO PAGE · showcase treatment
+   ------------------------------------------------------------
+   demo.html is essentially a fake Desk. Same language as a
+   real Desk, plus a small "Demo" ribbon to clarify.
+   ============================================================ */
+
+/* Nothing special needed — .page-desk handles it. Just add
+   a subtle demo indicator to the footer. */
+body:has(#demoWhatsApp) .desk-footer::before {
+  content: "Demo · Not a real Desk";
+  display: block;
+  font-family: var(--mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  opacity: 0.7;
+  margin-bottom: 14px;
+}
+
+/* ============================================================
+   159. REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .how-item {
+    transition: none;
+  }
+  .toast {
+    transition: opacity 0.15s linear;
+    transform: none;
+  }
+  .toast.visible {
+    transform: none;
+  }
+}
+
+/* ============================================================
+   END OF PART 13
+   ============================================================
+   What's new:
+
+   TERMS / LEGAL:
+     ✓ Reads like a real document
+     ✓ Serif headings (contract feel)
+     ✓ Monospace for the "last updated" tag and links
+     ✓ Left rule on the lead paragraph
+     ✓ Lists indented with a vertical rule (no dots)
+     ✓ No dot pattern background — clean paper
+     ✓ Back pill becomes a plain outlined button
+
+   TEST PAGE:
+     ✓ Monospace everywhere
+     ✓ Cold grays, muted blue accent (no brand green)
+     ✓ Sharp corners, no glows
+     ✓ Feels like an internal dev tool, not part of the app
+     ✓ Result card looks like terminal output
+
+   DELETE ACCOUNT MODAL:
+     ✓ Serif title (signed document feel)
+     ✓ Deeper backdrop blur
+     ✓ Red left rule on the "what you'll lose" list
+     ✓ Sharp fields, mono labels
+     ✓ Dark confirm button, no glow
+     ✓ Feels irreversible, serious
+
+   PRIVACY SETTINGS:
+     ✓ Sharper option buttons
+     ✓ Active state = solid black (formal, not brand green)
+     ✓ Reads like a real privacy control
+
+   TOASTS:
+     ✓ Dark, no gradients
+     ✓ Formal shadows
+     ✓ Success = deep green (not bright brand green)
+     ✓ Error = deep red
+     ✓ Reads like a system confirmation, not chat
+
+   START + HOW:
+     ✓ Restrained, quiet
+     ✓ Gradient number badges on How page
+     ✓ Editorial spacing
+
+   DEMO:
+     ✓ Footer carries a "Demo · Not a real Desk" tag
+       in monospace, so nobody mistakes it for a real Desk
+
+   The confidential surfaces now FEEL confidential.
+
+   ═══════════════════════════════════════════════════════
+   ALL 13 PARTS DELIVERED. The stylesheet is complete.
+   ═══════════════════════════════════════════════════════
+   ============================================================ */
