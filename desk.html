@@ -123,6 +123,11 @@
       <div class="desk-bot-head-name" id="deskBotName">Assistant</div>
       <div class="desk-bot-head-status">Online</div>
     </div>
+    <button type="button" class="desk-bot-close" id="deskBotClose" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 6L6 18M6 6l12 12"/>
+      </svg>
+    </button>
   </header>
 
   <div class="desk-bot-log" id="deskBotLog" role="log" aria-live="polite"></div>
@@ -154,10 +159,17 @@
 <script src="ripple.js" defer></script>
 
 <script>
-  /* Keep the bot panel exactly as tall as the visible area.
-     visualViewport.height shrinks the moment the keyboard opens,
-     so we resize the panel with it. This is what keeps the
-     input row visible above the keyboard. */
+  /* Bot close button — mirrors the toggle in desk.js */
+  (function(){
+    const closeBtn = document.getElementById('deskBotClose');
+    const botBtn   = document.getElementById('deskBotBtn');
+    if (!closeBtn || !botBtn) return;
+    closeBtn.addEventListener('click', () => {
+      botBtn.click();
+    });
+  })();
+
+  /* Keep the bot panel exactly as tall as the visible area. */
   (function(){
     if (!window.visualViewport) return;
     const vv = window.visualViewport;
