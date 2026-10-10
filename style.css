@@ -5368,3 +5368,474 @@ a,
 .home-quick-btn:hover {
   background: var(--line);
 }
+/* ============================================================
+   EXPLORE — let it breathe
+   ------------------------------------------------------------
+   Break the page into soft cards, add generous spacing.
+   ============================================================ */
+
+body:has(#exploreRoot) .form-shell,
+#exploreRoot.form-shell {
+  max-width: 640px;
+  padding: 20px 20px 100px;
+}
+
+/* Whole head becomes a stack of soft cards */
+.explore-head {
+  padding: 0;
+  margin: 0 0 12px;
+  background: transparent;
+  border: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Title card */
+.explore-head > .explore-title {
+  margin: 0;
+  padding: 22px 20px 4px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-bottom: 0;
+  border-radius: var(--r-xl) var(--r-xl) 0 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+.explore-head > .explore-sub {
+  margin: 0;
+  padding: 0 20px 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 var(--r-xl) var(--r-xl);
+  font-size: 14.5px;
+  font-weight: 400;
+  color: var(--ink-3);
+  margin-bottom: 12px;
+}
+
+/* Search — its own soft card */
+.explore-search {
+  margin: 0;
+  padding: 14px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.explore-search:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.explore-search input {
+  font-weight: 400;
+  font-size: 15px;
+}
+
+.explore-search input::placeholder {
+  color: var(--ink-4);
+  font-weight: 400;
+}
+
+/* Hint sits inside the search card as helper text */
+.explore-hint {
+  margin: -8px 0 0;
+  padding: 0 20px 4px;
+  font-size: 12.5px;
+  color: var(--ink-3);
+  line-height: 1.5;
+  order: 3;
+}
+
+.explore-hint strong {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Tabs row — becomes its own soft card, evenly spaced pills */
+.explore-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  margin: 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.explore-tabs::-webkit-scrollbar { display: none; }
+
+.explore-tab {
+  flex: 1 1 0;
+  padding: 10px 16px;
+  border-radius: var(--r-md);
+  background: transparent;
+  border: 0;
+  color: var(--ink-3);
+  font-size: 13.5px;
+  font-weight: 600;
+  text-align: center;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.explore-tab:hover {
+  background: var(--surface-3);
+  color: var(--ink);
+}
+
+.explore-tab.active {
+  background: var(--accent);
+  color: var(--accent-ink);
+}
+
+/* Content area — stack of cards */
+.explore-content {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+}
+
+/* Popular searches card */
+.explore-popular {
+  margin: 0;
+  padding: 20px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+}
+
+.explore-popular-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.explore-popular-label::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--c-explore);
+  flex-shrink: 0;
+}
+
+.explore-popular-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.explore-popular-chip {
+  padding: 10px 16px;
+  border-radius: var(--r-pill);
+  background: var(--surface-3);
+  border: 0;
+  color: var(--ink-2);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.explore-popular-chip:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+
+/* Results wrapper */
+.explore-results {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Each results section is a soft card */
+.explore-section {
+  padding: 20px 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.explore-section-title {
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+}
+
+.explore-section-title::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+#exploreDesksSection .explore-section-title::before { background: var(--accent); }
+#exploreGigsSection .explore-section-title::before { background: var(--c-gigs); }
+
+/* Grid inside a section card uses a lighter tint */
+.explore-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+@media (min-width: 720px) {
+  .explore-grid { grid-template-columns: repeat(3, 1fr); gap: 12px; }
+}
+
+/* Desk cards inside the section become tinted tiles */
+.explore-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--surface-3);
+  border: 0;
+  border-radius: var(--r-md);
+  padding: 12px;
+  text-decoration: none;
+  color: var(--ink);
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+
+.explore-card:hover {
+  background: var(--surface);
+  transform: translateY(-1px);
+  box-shadow: 0 1px 3px rgba(20, 24, 22, 0.06);
+}
+
+.explore-avatar {
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: var(--r-md);
+  background-color: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-size: 28px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 10px;
+  flex-shrink: 0;
+}
+
+.explore-name {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 2px;
+}
+
+.explore-role {
+  font-size: 12px;
+  font-weight: 400;
+  color: var(--ink-3);
+  line-height: 1.35;
+  margin-bottom: 3px;
+}
+
+.explore-handle {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.explore-loc {
+  font-size: 11.5px;
+  font-weight: 400;
+  color: var(--ink-3);
+  padding-left: 12px;
+  position: relative;
+  margin-top: 2px;
+}
+
+.explore-loc::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.7;
+}
+
+/* Gig list inside a section — soft tiles */
+.explore-gigs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.explore-gig {
+  display: block;
+  padding: 16px 18px 16px 22px;
+  background: var(--surface-3);
+  border: 0;
+  border-radius: var(--r-md);
+  text-decoration: none;
+  color: var(--ink);
+  position: relative;
+  overflow: hidden;
+  transition: background 0.15s ease;
+}
+
+.explore-gig:hover {
+  background: var(--surface);
+}
+
+.explore-gig::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 3px;
+  background: var(--c-gigs);
+}
+
+.explore-gig-type {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: var(--r-pill);
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 10px;
+  background: var(--c-gigs-soft);
+  color: var(--c-gigs-deep);
+}
+
+.explore-gig-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  line-height: 1.35;
+  margin-bottom: 4px;
+}
+
+.explore-gig-meta {
+  font-size: 12.5px;
+  font-weight: 400;
+  color: var(--ink-3);
+  line-height: 1.5;
+}
+
+/* Status + empty states sit in their own soft card */
+.explore-status,
+.explore-empty {
+  padding: 20px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--r-xl);
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--ink-3);
+  line-height: 1.5;
+}
+
+.explore-empty-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 6px;
+}
+
+.explore-empty-sub {
+  font-size: 13.5px;
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+/* Footer — remove the stray border-top */
+#exploreRoot .home-footer {
+  padding: 24px 0 8px;
+  border-top: 0;
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+/* Mobile tightening */
+@media (max-width: 520px) {
+  body:has(#exploreRoot) .form-shell,
+  #exploreRoot.form-shell {
+    padding: 16px 16px 90px;
+  }
+
+  .explore-head > .explore-title {
+    font-size: 1.5rem;
+    padding: 20px 18px 4px;
+  }
+
+  .explore-head > .explore-sub {
+    padding: 0 18px 18px;
+    font-size: 14px;
+  }
+
+  .explore-search {
+    padding: 13px 16px;
+  }
+
+  .explore-tabs {
+    padding: 6px;
+  }
+
+  .explore-tab {
+    padding: 9px 12px;
+    font-size: 13px;
+  }
+
+  .explore-popular,
+  .explore-section,
+  .explore-status,
+  .explore-empty {
+    padding: 18px 16px;
+  }
+
+  .explore-avatar {
+    font-size: 24px;
+    margin-bottom: 8px;
+  }
+}
