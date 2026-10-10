@@ -6783,3 +6783,102 @@ body {
 .home-desk-card {
   background-color: var(--brand-800);
 }
+
+/* ============================================================
+   PAPER TEXTURE — engineering grid
+   ------------------------------------------------------------
+   Fine 22px grid at 5% opacity. Reads like quality stationery
+   or a technical notebook. Applies to every signed-in page.
+   Never competes with content — you feel it more than you see it.
+   ============================================================ */
+
+:root {
+  /* The pattern lives as a variable so it's easy to tweak */
+  --paper-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='22' height='22' viewBox='0 0 22 22'%3E%3Cpath d='M22 0H0V22' fill='none' stroke='%231E1B16' stroke-opacity='0.055' stroke-width='0.6'/%3E%3C/svg%3E");
+}
+
+/* ---------- Apply to every signed-in page ---------- */
+
+body:has(.app-header),
+body.page-chat,
+body.page-chats,
+body.page-settings,
+body.page-bot {
+  background-color: var(--bg);
+  background-image: var(--paper-pattern);
+  background-attachment: fixed;
+  background-size: 22px 22px;
+  background-position: 0 0;
+}
+
+/* ---------- Let the pattern show through the scroll areas ---------- */
+
+.chat-log,
+.desk-bot-log,
+.owner-bot-wrap .desk-bot-log {
+  background-color: transparent;
+  background-image: none;
+}
+
+/* Chat panel + composer keep their own surfaces */
+.chat-composer,
+.chat-reply-bar {
+  background-color: var(--surface);
+}
+
+/* ---------- Header sits above the pattern ---------- */
+
+.app-header,
+.chat-head,
+.chats-head {
+  background-color: var(--bg);
+}
+
+/* ---------- Cards sit on top of the pattern with warm paper ---------- */
+
+.dash-section,
+.link-box,
+.home-section,
+.home-greet,
+.home-search,
+.home-quick-actions,
+.explore-head > .explore-title,
+.explore-head > .explore-sub,
+.explore-search,
+.explore-tabs,
+.explore-popular,
+.explore-section,
+.desk-block,
+.acc,
+.chat-row-menu,
+.notif-card,
+.tab-picker-list,
+.tab-picker-custom-row,
+.menu-panel,
+.preview-sheet,
+.logout-sheet,
+.confirm-sheet,
+.desk-bot-panel,
+.owner-bot-wrap {
+  background-color: var(--surface);
+}
+
+/* ---------- Landing + auth pages: no pattern ---------- */
+
+body.page-landing,
+body:has(#loginForm),
+body:has(#signupForm),
+body:has(#forgotForm),
+body:has(#newPasswordForm),
+body:has(#startRoot),
+body:has(.legal),
+body:has(#q):has(#result) {
+  background-image: none;
+  background-color: var(--bg);
+}
+
+/* ---------- Public desk: user controls their own pattern ---------- */
+
+body.page-desk {
+  background-image: none;
+}
