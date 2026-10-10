@@ -7465,3 +7465,205 @@ body:has(.desk-bot-panel[data-open="true"]) {
     font-size: 1.4rem;
   }
 }
+/* ============================================================
+   SCALE RESET — match the STMDeskly design reference
+   ------------------------------------------------------------
+   Sizes and radii dialed back to reference values.
+   Titles smaller, corners tighter. iOS-clean, not editorial.
+   Colors and shadows already match — not touched.
+   ============================================================ */
+
+:root {
+  /* Radius — down from 14/20/26 to reference scale */
+  --r-xs:   4px;
+  --r-sm:   6px;
+  --r-md:   10px;
+  --r-lg:   14px;
+  --r-xl:   18px;
+  --r-2xl:  22px;
+  --r-pill: 999px;
+}
+
+/* ---------- Titles — down to reference scale ---------- */
+
+.explore-title,
+.chats-title,
+.home-hello,
+.dash-headline,
+.settings-title,
+.form-head-title,
+.section-title {
+  font-size: clamp(1.35rem, 5vw, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.028em;
+  line-height: 1.15;
+}
+
+/* Landing hero keeps its brand moment — that's the one exception */
+.hero-logo-word,
+.hero-title,
+.final-title {
+  font-size: inherit;   /* untouched by this reset */
+}
+
+/* Section titles */
+.triple-title,
+.step-title,
+.desk-name,
+.preview-name,
+.section-head {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+/* The small-label styles stay as-is */
+
+/* Dashboard headline sits in a hero row — special case */
+.dash-headline {
+  font-size: clamp(1.25rem, 4.5vw, 1.55rem);
+}
+
+/* Chats header title (inbox) — reference shows medium, not huge */
+.chats-title {
+  font-size: clamp(1.5rem, 5.5vw, 1.85rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+/* Explore page title matches */
+.explore-title {
+  font-size: clamp(1.5rem, 5.5vw, 1.85rem);
+}
+
+/* Home greeting */
+.home-hello {
+  font-size: clamp(1.35rem, 5vw, 1.65rem);
+  letter-spacing: -0.03em;
+}
+
+/* ---------- Cards — 12px corner, subtle shadow ---------- */
+
+.dash-section,
+.link-box,
+.acc,
+.triple-card,
+.home-desk-mini,
+.home-gig-card,
+.preview-block,
+.confirm-sheet,
+.logout-sheet,
+.explore-card,
+.explore-gig,
+.desk-block,
+.chat-row-menu,
+.wall-sheet-inner,
+.notif-card {
+  border-radius: var(--r-lg);
+}
+
+/* Tighter card corners in the sheet modals */
+.confirm-sheet,
+.logout-sheet {
+  border-radius: var(--r-xl);
+}
+
+/* ---------- Inputs — 8-10px, not pill except search ---------- */
+
+.form-input,
+.link-preview,
+.tab-picker-input,
+.chat-search-input {
+  border-radius: var(--r-md);
+}
+
+/* Pill-shaped things that stay pill: buttons, chips, badges,
+   search bar, send buttons, avatar circles */
+.btn,
+.form-submit,
+.option-btn,
+.role-chip,
+.chat-action,
+.tabbar-item,
+.explore-tab,
+.explore-popular-chip,
+.explore-search,
+.home-search,
+.chats-tab,
+.chat-send,
+.desk-btn,
+.desk-bot-send,
+.tab-picker-done,
+.tab-picker-save,
+.tab-picker-cancel,
+.settings-save-btn {
+  border-radius: var(--r-pill);
+}
+
+/* ---------- Section titles in cards ---------- */
+
+.dash-section-title,
+.acc-title,
+.chats-section-title,
+.explore-section-title,
+.home-section-title,
+.desk-block-title {
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* Body/paragraph text stays as-is */
+
+/* ---------- Tighten sidebar/dashboard rows ---------- */
+
+.dash-value,
+.dash-copy,
+.dash-list li {
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+
+.dash-label,
+.dash-detail-label {
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+/* ---------- Chat rows — tighter like reference ---------- */
+
+.chat-row-name {
+  font-size: 15px;
+}
+
+.chat-row-preview {
+  font-size: 13.5px;
+}
+
+.chat-row-time {
+  font-size: 12px;
+}
+
+/* ---------- Mobile tightening ---------- */
+
+@media (max-width: 520px) {
+  .chats-title,
+  .explore-title,
+  .settings-title {
+    font-size: 1.55rem;
+  }
+
+  .home-hello,
+  .dash-headline {
+    font-size: 1.35rem;
+  }
+
+  .form-head-title {
+    font-size: 1.4rem;
+  }
+}
