@@ -6804,3 +6804,52 @@ body:has(.desk-bot-panel[data-open="true"]) {
     }
   }
 }
+/* ============================================================
+   BOT PANEL — mobile (keyboard-aware, input always visible)
+   ============================================================ */
+
+@media (max-width: 520px) {
+  .desk-bot-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100dvh;
+    max-height: none;
+    bottom: auto;
+    border-radius: 0;
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: 0;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    z-index: 200;
+  }
+
+  .desk-bot-panel[data-open="true"] {
+    transform: none;
+    opacity: 1;
+  }
+
+  .desk-bot-log {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .desk-bot-chips {
+    flex: 0 0 auto;
+  }
+
+  .desk-bot-input-row {
+    flex: 0 0 auto;
+    padding: 10px 12px;
+    padding-bottom: calc(10px + env(safe-area-inset-bottom));
+  }
+
+  .desk-float-btn#deskBotBtn[data-open="true"] {
+    display: none;
+  }
+}
