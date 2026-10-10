@@ -1,7 +1,8 @@
 /* ============================================================
    STMDESKLY · SIGNED-IN HEADER
    Deskly on left, menu button on right. Works on all screens.
-   Menu contains Settings ("Edit my Desk") and everything else.
+   Menu contains things the tabbar doesn't already reach:
+   View public Desk, Settings, My bot, How it works, Log out.
    ============================================================ */
 
 (function initHeader(){
@@ -29,22 +30,6 @@
   sheet.innerHTML = `
     <div class="menu-backdrop" id="menuBackdrop"></div>
     <div class="menu-panel" role="dialog" aria-label="Menu">
-
-      <a class="menu-item ripple" href="home.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M3 12l9-9 9 9"/>
-          <path d="M5 10v10h14V10"/>
-        </svg>
-        <span>Home</span>
-      </a>
-
-      <a class="menu-item ripple" href="dashboard.html">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="3" y="4" width="18" height="16" rx="2"/>
-          <path d="M3 10h18"/>
-        </svg>
-        <span>My Desk</span>
-      </a>
 
       <a class="menu-item ripple" id="menuViewDesk" href="#" target="_blank" rel="noopener">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
