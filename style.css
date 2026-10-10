@@ -9932,3 +9932,1419 @@ body.compact .desk-block { padding: 24px 22px; margin: 14px 0; }
      Part 12 — Explore + Gigs
      Part 13 — Toasts + misc
    ============================================================ */
+
+
+/* ============================================================
+   106. CHAT · page shell
+   ------------------------------------------------------------
+   chat.html. Flex column: header at top, log in middle,
+   composer at bottom. Only the log scrolls.
+   ============================================================ */
+
+.page-chat {
+  background-color: var(--bg);
+  background-image: none;
+  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  overflow: hidden;
+}
+
+/* ============================================================
+   107. CHAT · header
+   ------------------------------------------------------------
+   Sticky at the top. Frosted glass. Contains back, avatar,
+   name + status, search, menu.
+   ============================================================ */
+
+.chat-head {
+  position: relative;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 10px 10px 8px;
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+  padding-top: max(10px, env(safe-area-inset-top));
+}
+
+.chat-back {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: transparent;
+  color: var(--accent);
+  text-decoration: none;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.chat-back:hover {
+  background: rgba(1, 118, 76, 0.08);
+}
+.chat-back:active {
+  transform: scale(0.94);
+}
+.chat-back svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.4;
+}
+
+/* User info clickable — goes to their profile */
+.chat-head-user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: 1;
+  min-width: 0;
+  text-decoration: none;
+  color: inherit;
+  padding: 4px 6px;
+  border-radius: 12px;
+  transition: background 0.15s ease;
+}
+.chat-head-user:hover {
+  background: rgba(28, 28, 30, 0.04);
+}
+.chat-head-user:active {
+  background: rgba(28, 28, 30, 0.06);
+}
+
+/* Avatar with optional presence dot */
+.chat-head-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: grid;
+  place-items: center;
+  font-family: var(--display);
+  font-size: 15px;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  flex-shrink: 0;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+}
+
+/* Presence dot (green when online) */
+.chat-head-avatar.presence-avatar .presence-dot,
+.chat-head-avatar .presence-dot {
+  position: absolute;
+  bottom: -1px;
+  right: -1px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--sys-green);
+  border: 2.5px solid var(--surface-elevated);
+  z-index: 2;
+  box-shadow: 0 0 8px rgba(52, 199, 89, 0.5);
+}
+
+.chat-head-text {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+  flex: 1;
+}
+
+.chat-head-name {
+  font-family: var(--display);
+  font-size: 15.5px;
+  font-weight: 700;
+  letter-spacing: -0.025em;
+  color: var(--ink);
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.chat-head-status {
+  font-size: 12px;
+  color: var(--ink-3);
+  letter-spacing: -0.005em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  line-height: 1.2;
+}
+.chat-head-status.presence-text {
+  color: var(--sys-green);
+  font-weight: 600;
+}
+.chat-head-status.presence-text.offline {
+  color: var(--ink-3);
+  font-weight: 400;
+}
+
+/* Header icon buttons */
+.chat-search-btn,
+.chat-menu-btn {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.chat-search-btn:hover,
+.chat-menu-btn:hover {
+  background: rgba(28, 28, 30, 0.05);
+}
+.chat-search-btn:active,
+.chat-menu-btn:active {
+  transform: scale(0.94);
+}
+.chat-search-btn svg,
+.chat-menu-btn svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================================
+   108. CHAT · menu dropdown (three-dot menu)
+   ------------------------------------------------------------
+   Floating card that opens below the header.
+   Each item: icon + label. Danger items are red.
+   ============================================================ */
+
+.chat-menu {
+  position: fixed;
+  top: 62px;
+  right: 14px;
+  z-index: 50;
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow:
+    0 4px 12px -4px rgba(28, 28, 30, 0.10),
+    0 20px 50px -12px rgba(28, 28, 30, 0.28);
+  padding: 6px;
+  min-width: 220px;
+  animation: menuDrop 0.22s var(--spring);
+  transform-origin: top right;
+}
+
+@keyframes menuDrop {
+  from {
+    opacity: 0;
+    transform: scale(0.94) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.chat-menu-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  background: transparent;
+  border: 0;
+  border-radius: 10px;
+  text-align: left;
+  font-family: var(--sans);
+  font-size: 14.5px;
+  font-weight: 500;
+  color: var(--ink);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+.chat-menu-item:hover {
+  background: rgba(28, 28, 30, 0.05);
+}
+.chat-menu-item svg {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+.chat-menu-item-danger {
+  color: var(--danger);
+}
+.chat-menu-item-danger svg {
+  color: var(--danger);
+}
+.chat-menu-item-danger:hover {
+  background: var(--danger-soft);
+}
+
+/* ============================================================
+   109. CHAT · search panel
+   ------------------------------------------------------------
+   Full-screen panel that slides down from the top when
+   the search icon is tapped. Renders results live.
+   ============================================================ */
+
+.chat-search-panel {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg);
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  animation: searchSlide 0.24s var(--ease-out);
+}
+
+@keyframes searchSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.chat-search-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  flex-shrink: 0;
+  padding-top: max(12px, env(safe-area-inset-top));
+}
+
+.chat-search-bar-icon {
+  width: 18px;
+  height: 18px;
+  color: var(--ink-3);
+  flex-shrink: 0;
+}
+
+.chat-search-input {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1.5px solid var(--line);
+  background: var(--surface-2);
+  border-radius: var(--r-md);
+  font-family: var(--sans);
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.chat-search-input:focus {
+  background: var(--surface-elevated);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.chat-search-close {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease;
+}
+.chat-search-close:hover {
+  background: rgba(28, 28, 30, 0.05);
+}
+.chat-search-close svg {
+  width: 18px;
+  height: 18px;
+}
+
+.chat-search-results {
+  flex: 1;
+  overflow-y: auto;
+  padding: 10px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.chat-search-result {
+  display: block;
+  width: 100%;
+  text-align: left;
+  padding: 12px 14px;
+  margin-bottom: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface-elevated);
+  border-radius: 14px;
+  cursor: pointer;
+  font-family: var(--sans);
+  box-shadow: var(--shadow-xs);
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    transform 0.12s var(--spring),
+    box-shadow 0.15s ease;
+}
+.chat-search-result:hover {
+  background: var(--surface);
+  border-color: var(--accent);
+  box-shadow: var(--shadow-sm);
+  transform: translateY(-1px);
+}
+.chat-search-result:active {
+  transform: scale(0.995);
+}
+
+.chat-search-result-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 4px;
+}
+
+.chat-search-result-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.01em;
+}
+
+.chat-search-result-time {
+  font-size: 11px;
+  color: var(--ink-3);
+}
+
+.chat-search-result-body {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.4;
+  word-break: break-word;
+}
+
+.chat-search-result-body mark {
+  background: var(--accent-soft);
+  color: var(--accent);
+  border-radius: 3px;
+  padding: 0 3px;
+  font-weight: 700;
+}
+
+.chat-search-empty {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--ink-3);
+  font-size: 14px;
+  font-style: italic;
+  opacity: 0.85;
+}
+
+/* ============================================================
+   110. CHAT · message log
+   ------------------------------------------------------------
+   Scrollable area with messages. Flex column, so bubbles
+   stack from top. Padding-bottom leaves room for the
+   composer without overlap.
+   ============================================================ */
+
+.chat-log {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 16px 14px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+  background-image:
+    radial-gradient(circle at 50% 50%, rgba(28, 28, 30, 0.025) 0.5px, transparent 1px);
+  background-size: 22px 22px;
+}
+
+.chat-log::-webkit-scrollbar {
+  width: 0;
+}
+
+/* Invisible spacer so the last message isn't hidden by composer */
+.chat-log::after {
+  content: "";
+  display: block;
+  height: 4px;
+  width: 1px;
+  opacity: 0;
+  pointer-events: none;
+  flex-shrink: 0;
+}
+
+/* Empty chat */
+.chat-empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--ink-3);
+  font-size: 14px;
+}
+
+/* ---- Loading state (three pulsing dots) ---- */
+.chat-loading-inline {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  padding: 80px 20px;
+  flex: 1;
+}
+
+.chat-loading-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.25;
+  animation: chatLoadingPulse 1.4s ease-in-out infinite;
+}
+.chat-loading-dot:nth-child(1) { animation-delay: 0s; }
+.chat-loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.chat-loading-dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes chatLoadingPulse {
+  0%, 80%, 100% {
+    opacity: 0.25;
+    transform: scale(1);
+  }
+  40% {
+    opacity: 1;
+    transform: scale(1.28);
+  }
+}
+
+/* ============================================================
+   111. CHAT · day dividers
+   ------------------------------------------------------------
+   Small pill above a group of messages from the same day.
+   "Today", "Yesterday", "Mar 14".
+   ============================================================ */
+
+.chat-day-divider {
+  align-self: center;
+  margin: 16px 0 10px;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  background: var(--glass-bg-strong);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--line);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.04);
+}
+
+/* ============================================================
+   112. CHAT · bubble wrap
+   ------------------------------------------------------------
+   Container around a bubble + its reactions.
+   Aligns left (theirs) or right (mine).
+   ============================================================ */
+
+.chat-bubble-wrap {
+  display: flex;
+  flex-direction: column;
+  max-width: 78%;
+  margin-top: 2px;
+  position: relative;
+}
+.chat-bubble-wrap-mine {
+  align-self: flex-end;
+  align-items: flex-end;
+}
+.chat-bubble-wrap-theirs {
+  align-self: flex-start;
+  align-items: flex-start;
+}
+
+/* ============================================================
+   113. CHAT · bubbles
+   ------------------------------------------------------------
+   Mine:    deep green gradient, subtle glow (screen-power trick)
+   Theirs:  white surface with soft border
+   Both:    big radius, no tail — iOS Group chat / Samsung style
+   ============================================================ */
+
+.chat-bubble {
+  max-width: 100%;
+  padding: 9px 14px;
+  border-radius: 20px;
+  font-size: 15px;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  position: relative;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
+  animation: bubbleIn 0.22s var(--ease-out);
+}
+
+@keyframes bubbleIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Mine — deep green gradient with subtle glow */
+.chat-bubble-mine {
+  background: linear-gradient(
+    135deg,
+    #018655 0%,
+    #01764C 55%,
+    #015F3D 100%
+  );
+  color: #fff;
+  border-bottom-right-radius: 6px;
+  box-shadow:
+    0 1px 2px rgba(1, 118, 76, 0.20),
+    0 6px 14px -6px rgba(1, 118, 76, 0.45);
+}
+
+/* Theirs — white surface with soft border */
+.chat-bubble-theirs {
+  background: var(--surface-elevated);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-bottom-left-radius: 6px;
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.03);
+}
+
+/* Consecutive messages from the same sender — tighter grouping */
+.chat-bubble-wrap + .chat-bubble-wrap .chat-bubble-mine,
+.chat-bubble-wrap + .chat-bubble-wrap .chat-bubble-theirs {
+  border-radius: 20px;
+}
+
+/* Text within bubble */
+.chat-bubble-text {
+  white-space: pre-wrap;
+  display: block;
+}
+
+/* Meta row — time + delivery inside bubble */
+.chat-bubble-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 8px;
+  font-size: 10.5px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  opacity: 0.72;
+  vertical-align: bottom;
+  float: right;
+  margin-top: 4px;
+}
+
+.chat-bubble-mine .chat-bubble-meta {
+  color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-bubble-theirs .chat-bubble-meta {
+  color: var(--ink-3);
+}
+
+/* ---- Delivery status dots ---- */
+.chat-delivery {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-left: 4px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  box-sizing: border-box;
+  transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+/* Seen — filled solid white */
+.chat-delivery-seen {
+  background: rgba(255, 255, 255, 0.98);
+  border: none;
+}
+
+/* Online — bright ring */
+.chat-delivery-online {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.98);
+}
+
+/* Offline — faint ring */
+.chat-delivery-offline {
+  background: transparent;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+}
+
+/* ---- Photo message ---- */
+.chat-bubble-photo {
+  display: block !important;
+  max-height: 340px !important;
+  max-width: 260px !important;
+  width: auto !important;
+  height: auto !important;
+  border-radius: 14px !important;
+  object-fit: cover !important;
+  cursor: pointer !important;
+  margin-bottom: 6px;
+}
+
+.chat-bubble-mine .chat-bubble-photo {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+/* ---- Deleted message placeholder ---- */
+.chat-bubble-deleted {
+  opacity: 0.75;
+}
+.chat-bubble-deleted-text {
+  font-style: italic;
+  font-weight: 400;
+  color: rgba(28, 28, 30, 0.55);
+}
+.chat-bubble-mine .chat-bubble-deleted-text {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ============================================================
+   114. CHAT · quoted reply inside a bubble
+   ------------------------------------------------------------
+   Small block above the message text showing what's being
+   replied to. Tapping jumps to that message.
+   ============================================================ */
+
+.chat-bubble-quote {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: rgba(0, 0, 0, 0.08);
+  border: none;
+  border-left: 3px solid currentColor;
+  border-radius: 8px;
+  padding: 6px 10px;
+  margin-bottom: 6px;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+  opacity: 0.92;
+}
+
+.chat-bubble-mine .chat-bubble-quote {
+  background: rgba(255, 255, 255, 0.18);
+  border-left-color: rgba(255, 255, 255, 0.85);
+}
+
+.chat-bubble-quote-name {
+  font-size: 11.5px;
+  font-weight: 700;
+  opacity: 0.95;
+  margin-bottom: 2px;
+  letter-spacing: -0.005em;
+}
+
+.chat-bubble-quote-body {
+  font-size: 12.5px;
+  opacity: 0.85;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.005em;
+}
+
+/* Highlight when jumping to a quoted message */
+.chat-bubble-highlight {
+  animation: chatHighlight 1.8s ease-out;
+}
+@keyframes chatHighlight {
+  0%   { box-shadow: 0 0 0 3px rgba(1, 118, 76, 0.35); }
+  100% { box-shadow: 0 0 0 3px rgba(1, 118, 76, 0); }
+}
+
+/* ============================================================
+   115. CHAT · reactions
+   ------------------------------------------------------------
+   Pills under a bubble. Colored green when the current user
+   has reacted. Tap to toggle.
+   ============================================================ */
+
+.chat-reactions-bar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+  padding: 0 2px;
+}
+
+.chat-reaction-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 9px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  font-size: 12.5px;
+  font-family: inherit;
+  font-weight: 600;
+  color: var(--ink-2);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.05);
+  transition:
+    transform 0.15s var(--spring),
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
+}
+.chat-reaction-pill:active {
+  transform: scale(0.94);
+}
+.chat-reaction-pill.mine {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+  color: var(--accent);
+  box-shadow:
+    0 1px 2px rgba(1, 118, 76, 0.10),
+    0 4px 10px -4px rgba(1, 118, 76, 0.28);
+}
+
+/* ============================================================
+   116. CHAT · reply bar (above composer)
+   ------------------------------------------------------------
+   Signal-style. Accent stripe on the left, name + quoted
+   body in the middle, X on the right.
+   ============================================================ */
+
+.chat-reply-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  animation: replyBarIn 0.2s var(--ease-out);
+}
+
+@keyframes replyBarIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.chat-reply-bar-accent {
+  width: 3px;
+  height: 36px;
+  background: linear-gradient(
+    180deg,
+    var(--accent) 0%,
+    var(--accent-hover) 100%
+  );
+  border-radius: 2px;
+  flex-shrink: 0;
+  box-shadow: 0 0 8px rgba(1, 118, 76, 0.4);
+}
+
+.chat-reply-bar-text {
+  flex: 1;
+  min-width: 0;
+}
+
+.chat-reply-bar-name {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 2px;
+  letter-spacing: -0.005em;
+}
+
+.chat-reply-bar-body {
+  font-size: 13px;
+  color: var(--ink-2);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  letter-spacing: -0.005em;
+}
+
+.chat-reply-bar-close {
+  width: 30px;
+  height: 30px;
+  border: none;
+  background: transparent;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-3);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+.chat-reply-bar-close:hover {
+  background: rgba(28, 28, 30, 0.05);
+  color: var(--ink);
+}
+.chat-reply-bar-close svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ============================================================
+   117. CHAT · composer
+   ------------------------------------------------------------
+   Sticky at the bottom. Attach button, rounded input, send.
+   ============================================================ */
+
+.chat-composer {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  padding: 10px 12px;
+  padding-bottom: max(10px, env(safe-area-inset-bottom));
+  background: var(--glass-bg-strong);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border-top: 1px solid var(--line);
+  flex-shrink: 0;
+}
+
+.chat-attach {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  color: var(--ink-2);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease,
+    transform 0.12s ease;
+}
+.chat-attach:hover {
+  background: var(--surface);
+  border-color: var(--line-2);
+  color: var(--ink);
+}
+.chat-attach:active {
+  transform: scale(0.94);
+}
+.chat-attach svg {
+  width: 20px;
+  height: 20px;
+}
+
+.chat-input-wrap {
+  flex: 1;
+  min-width: 0;
+  background: var(--surface-elevated);
+  border: 1.5px solid var(--line);
+  border-radius: 22px;
+  padding: 8px 16px;
+  transition:
+    border-color 0.15s ease,
+    box-shadow 0.15s ease,
+    background 0.15s ease;
+}
+.chat-input-wrap:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-soft);
+}
+
+.chat-input {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  font-family: var(--sans);
+  font-size: 15.5px;
+  line-height: 1.4;
+  color: var(--ink);
+  outline: none;
+  resize: none;
+  max-height: 140px;
+  padding: 4px 0;
+  letter-spacing: -0.005em;
+}
+.chat-input::placeholder {
+  color: #A29B8E;
+}
+
+/* Send button — deep green gradient with glow */
+.chat-send {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(
+    135deg,
+    #018655 0%,
+    #01764C 55%,
+    #015F3D 100%
+  );
+  color: #fff;
+  border: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition:
+    background 0.15s ease,
+    transform 0.15s var(--spring),
+    opacity 0.15s ease,
+    box-shadow 0.2s ease;
+  box-shadow:
+    0 2px 4px rgba(1, 118, 76, 0.20),
+    0 8px 18px -6px rgba(1, 118, 76, 0.48);
+}
+.chat-send:hover:not(:disabled) {
+  box-shadow:
+    0 4px 8px rgba(1, 118, 76, 0.24),
+    0 12px 22px -8px rgba(1, 118, 76, 0.58);
+}
+.chat-send:active:not(:disabled) {
+  transform: scale(0.92);
+}
+.chat-send:disabled {
+  opacity: 0.35;
+  cursor: default;
+  box-shadow: none;
+  background: var(--line-2);
+  color: var(--surface-elevated);
+}
+.chat-send svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* ============================================================
+   118. CHAT · photo preview overlay
+   ------------------------------------------------------------
+   Full-screen overlay when the user attaches a photo.
+   ============================================================ */
+
+.chat-photo-preview {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: rgba(8, 8, 10, 0.88);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  animation: fadeIn 0.2s ease;
+}
+
+.chat-photo-preview-inner {
+  position: relative;
+  max-width: 100%;
+  max-height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.chat-photo-preview img {
+  max-width: 100%;
+  max-height: 68vh;
+  border-radius: 16px;
+  display: block;
+  box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
+}
+
+.chat-photo-remove {
+  position: absolute;
+  top: -14px;
+  right: -14px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+  border: 0;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.15s ease, transform 0.12s ease;
+}
+.chat-photo-remove:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+.chat-photo-remove:active {
+  transform: scale(0.92);
+}
+.chat-photo-remove svg {
+  width: 14px;
+  height: 14px;
+}
+
+.chat-photo-send {
+  padding: 14px 40px;
+  border-radius: var(--r-pill);
+  background: #fff;
+  color: var(--accent);
+  border: 0;
+  font-family: var(--sans);
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  cursor: pointer;
+  box-shadow:
+    0 6px 20px -6px rgba(255, 255, 255, 0.4),
+    0 2px 4px rgba(0, 0, 0, 0.15);
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
+}
+.chat-photo-send:hover {
+  box-shadow:
+    0 8px 24px -6px rgba(255, 255, 255, 0.5),
+    0 4px 8px rgba(0, 0, 0, 0.2);
+}
+.chat-photo-send:active {
+  transform: scale(0.97);
+}
+.chat-photo-send:disabled {
+  opacity: 0.7;
+  cursor: wait;
+}
+
+/* ============================================================
+   119. CHAT · long-press context menu (THE STAR)
+   ------------------------------------------------------------
+   Opens on long-press of a bubble.
+   iOS action-sheet style:
+     - Reactions row at the top (6 emoji, large tap targets)
+     - Separator
+     - Action rows (Reply, Copy, Delete for me, Delete for all)
+     - Spring entrance, real shadow, frosted background
+   ============================================================ */
+
+.chat-ctx-menu {
+  position: fixed;
+  z-index: 1000;
+  min-width: 260px;
+  padding: 8px;
+  background: var(--surface-elevated);
+  border-radius: 18px;
+  box-shadow:
+    0 0 0 1px rgba(28, 28, 30, 0.06),
+    0 8px 24px -8px rgba(28, 28, 30, 0.16),
+    0 28px 60px -20px rgba(28, 28, 30, 0.32);
+  animation: ctxIn 0.22s var(--spring);
+  transform-origin: var(--ctx-origin, center);
+  font-family: var(--sans);
+  overflow: hidden;
+}
+
+@keyframes ctxIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9) translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+/* Reactions row at top — big emoji, tappable */
+.chat-ctx-reactions {
+  display: flex;
+  gap: 2px;
+  padding: 6px 4px 10px;
+  margin-bottom: 4px;
+  border-bottom: 1px solid var(--line);
+}
+
+.chat-ctx-emoji {
+  flex: 1;
+  padding: 8px 4px;
+  background: transparent;
+  border: none;
+  border-radius: 12px;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.15s var(--spring);
+}
+.chat-ctx-emoji:hover {
+  background: rgba(28, 28, 30, 0.06);
+  transform: scale(1.15);
+}
+.chat-ctx-emoji:active {
+  transform: scale(1.05);
+}
+
+/* Action rows below */
+.chat-ctx-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+  text-align: left;
+  cursor: pointer;
+  letter-spacing: -0.005em;
+  transition: background 0.15s ease;
+}
+.chat-ctx-item:hover {
+  background: rgba(28, 28, 30, 0.05);
+}
+.chat-ctx-item:active {
+  background: rgba(28, 28, 30, 0.08);
+}
+.chat-ctx-item svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  opacity: 0.7;
+}
+.chat-ctx-item-danger {
+  color: var(--danger);
+}
+.chat-ctx-item-danger svg {
+  opacity: 0.9;
+}
+.chat-ctx-item-danger:hover {
+  background: var(--danger-soft);
+}
+
+/* ============================================================
+   120. CHAT · missing state (conversation not found)
+   ============================================================ */
+
+.chat-missing {
+  max-width: 440px;
+  margin: 100px auto;
+  text-align: center;
+  padding: 0 20px;
+}
+.chat-missing h1 {
+  font-family: var(--display);
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.chat-missing p {
+  font-size: 15px;
+  color: var(--ink-3);
+  margin-bottom: 26px;
+}
+
+/* ============================================================
+   121. CHAT · typing indicator (in header status)
+   ------------------------------------------------------------
+   When the other person is typing, their status shows three
+   animated dots. Handled inline via chat.js, styled here.
+   ============================================================ */
+
+.chat-head-status.typing {
+  color: var(--accent);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.chat-head-status.typing::after {
+  content: "•••";
+  letter-spacing: 1px;
+  animation: typingDots 1.4s ease-in-out infinite;
+}
+
+@keyframes typingDots {
+  0%, 100% { opacity: 0.3; }
+  50%      { opacity: 1; }
+}
+
+/* ============================================================
+   122. CHAT · responsive
+   ============================================================ */
+
+@media (max-width: 520px) {
+  .chat-bubble {
+    max-width: 100%;
+    font-size: 15px;
+    padding: 9px 13px;
+  }
+  .chat-bubble-wrap {
+    max-width: 82%;
+  }
+  .chat-log {
+    padding: 14px 12px 16px;
+  }
+  .chat-composer {
+    padding: 8px 10px;
+    padding-bottom: max(8px, env(safe-area-inset-bottom));
+    gap: 6px;
+  }
+  .chat-attach,
+  .chat-send {
+    width: 42px;
+    height: 42px;
+  }
+  .chat-input-wrap {
+    padding: 7px 14px;
+    border-radius: 20px;
+  }
+  .chat-input {
+    font-size: 15px;
+  }
+  .chat-ctx-menu {
+    min-width: 240px;
+    padding: 6px;
+  }
+  .chat-ctx-emoji {
+    font-size: 22px;
+    padding: 6px 2px;
+  }
+  .chat-ctx-item {
+    padding: 11px 10px;
+    font-size: 14.5px;
+  }
+  .chat-bubble-photo {
+    max-height: 280px !important;
+    max-width: 220px !important;
+  }
+}
+
+/* ============================================================
+   123. CHAT · reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-bubble,
+  .chat-ctx-menu,
+  .chat-search-panel,
+  .chat-photo-preview {
+    animation: none;
+  }
+  .chat-loading-dot {
+    animation: none;
+    opacity: 1;
+  }
+}
+
+/* ============================================================
+   END OF PART 10
+   ============================================================
+   What this delivers:
+
+   HEADER:
+     ✓ Frosted glass, sticky at top
+     ✓ Green back button (brand)
+     ✓ Avatar with glowing presence dot
+     ✓ Name + status (Online in green, "typing..." animated)
+     ✓ Search + menu icon buttons
+
+   MENU:
+     ✓ iOS-style dropdown with spring entrance
+     ✓ Icon + label rows, danger items in red
+
+   SEARCH:
+     ✓ Full-screen overlay with slide-in
+     ✓ Rounded search input, green focus ring
+     ✓ Result cards with green match highlights
+     ✓ Real card elevation
+
+   MESSAGES:
+     ✓ Mine: deep green gradient with soft glow
+     ✓ Theirs: white surface, subtle border
+     ✓ Big radius (20px), tiny tail on last (6px)
+     ✓ Bubbles stagger in with fade + lift
+     ✓ Day dividers as frosted pills
+     ✓ Delivery status: three-state dots
+     ✓ Photos in bubbles (max 260×340, tap to zoom)
+     ✓ Deleted messages styled as italic
+     ✓ Quote blocks inside bubbles (tap to jump)
+     ✓ Highlight animation on jump
+
+   REACTIONS:
+     ✓ Pills under bubble, green when yours
+     ✓ Spring press animation
+
+   REPLY:
+     ✓ Signal-style bar above composer
+     ✓ Accent stripe with glow
+     ✓ Name in green, body truncated
+     ✓ Slide-in animation
+
+   COMPOSER:
+     ✓ Frosted glass bar at bottom
+     ✓ Round attach button
+     ✓ Rounded input with green focus glow
+     ✓ Deep green send button with gradient + glow
+     ✓ Disabled state (grey, no glow)
+
+   LONG-PRESS MENU (the star):
+     ✓ iOS action sheet style
+     ✓ Reactions row at top (6 emoji, big tap)
+     ✓ Separator line
+     ✓ Action rows below with icons
+     ✓ Danger items (Delete) in red
+     ✓ Spring entrance from tap point
+     ✓ Real depth (three-layer shadow)
+
+   PHOTO PREVIEW:
+     ✓ Full-screen dark overlay
+     ✓ Rounded image, remove button top-right
+     ✓ White "Send" pill at bottom
+
+   Everything aligns with Signal / iMessage / Samsung / WhatsApp
+   while staying true to the brand green.
+
+   Next parts:
+     Part 11 — Chats (inbox) + Updates + Tab picker
+     Part 12 — Explore + Gigs
+     Part 13 — Toasts + misc
+   ============================================================ */
