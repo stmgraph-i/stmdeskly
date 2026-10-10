@@ -3,18 +3,17 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#F2F0EA">
+<meta name="theme-color" content="#F8F9F7">
 <title>Profile | STMDeskly</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=11">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-<meta name="theme-color" content="#01764C">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="STMDeskly">
@@ -25,9 +24,12 @@
 <body class="page-desk">
 
 <div class="desk-topbar" id="deskTopbar">
-  <button type="button" class="desk-float-btn ripple" id="deskBotBtn" aria-label="Ask the bot">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <button type="button" class="desk-float-btn ripple" id="deskBotBtn" data-open="false" aria-label="Ask the bot">
+    <svg class="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-5.5A8 8 0 0 1 11 4h2a8 8 0 0 1 8 8z"/>
+    </svg>
+    <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L6 18M6 6l12 12"/>
     </svg>
   </button>
 </div>
@@ -130,9 +132,7 @@
       </div>
 
       <div class="review-form" id="reviewForm">
-
         <div class="review-form-title" id="reviewFormTitle">Leave a review</div>
-
         <div class="review-stars" id="reviewStars">
           <button type="button" class="review-star" data-value="1" aria-label="1 star">★</button>
           <button type="button" class="review-star" data-value="2" aria-label="2 stars">★</button>
@@ -140,95 +140,22 @@
           <button type="button" class="review-star" data-value="4" aria-label="4 stars">★</button>
           <button type="button" class="review-star" data-value="5" aria-label="5 stars">★</button>
         </div>
-
-        <input
-          type="text"
-          class="form-input review-name"
-          id="reviewName"
-          placeholder="Your name (optional)"
-          maxlength="60"
-          autocomplete="off"
-        >
-
-        <textarea
-          class="form-input review-text"
-          id="reviewText"
-          placeholder="Say something about your experience (optional)"
-          maxlength="600"
-          rows="3"
-        ></textarea>
-
+        <input type="text" class="form-input review-name" id="reviewName" placeholder="Your name (optional)" maxlength="60" autocomplete="off">
+        <textarea class="form-input review-text" id="reviewText" placeholder="Say something about your experience (optional)" maxlength="600" rows="3"></textarea>
         <div class="form-message" id="reviewMessage" hidden></div>
-
-        <button type="button" class="review-submit ripple" id="reviewSubmit">
-          Post review
-        </button>
-
-        <button type="button" class="review-cancel" id="reviewCancel" hidden>
-          Cancel
-        </button>
-
+        <button type="button" class="review-submit ripple" id="reviewSubmit">Post review</button>
+        <button type="button" class="review-cancel" id="reviewCancel" hidden>Cancel</button>
       </div>
 
     </section>
 
-    <section class="desk-block wall-block" id="wallBlock" hidden>
-
+    <!-- Wall trigger card — opens the wall sheet -->
+    <section class="desk-block" id="wallTriggerBlock" hidden>
       <h2 class="desk-block-title">Wall</h2>
-
-      <form class="wall-composer" id="wallForm">
-
-        <div class="wall-composer-row">
-          <input
-            type="text"
-            class="form-input wall-name"
-            id="wallName"
-            placeholder="Your name (optional)"
-            maxlength="60"
-            autocomplete="off"
-          >
-        </div>
-
-        <textarea
-          class="form-input wall-body"
-          id="wallBody"
-          placeholder="Say something..."
-          maxlength="500"
-          rows="3"
-        ></textarea>
-
-        <div class="wall-photo-preview" id="wallPhotoPreview" hidden>
-          <img id="wallPhotoPreviewImg" alt="">
-          <button type="button" class="wall-photo-remove" id="wallPhotoRemove" aria-label="Remove photo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M18 6L6 18M6 6l12 12"/>
-            </svg>
-          </button>
-        </div>
-
-        <input type="file" id="wallPhotoInput" accept="image/*" hidden>
-
-        <div class="wall-composer-actions">
-          <button type="button" class="wall-attach-btn ripple" id="wallAttachBtn" aria-label="Attach photo">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="16" rx="2"/>
-              <circle cx="8.5" cy="9.5" r="1.5"/>
-              <path d="M21 15l-5-5-9 9"/>
-            </svg>
-            <span>Photo</span>
-          </button>
-          <div class="form-message wall-message" id="wallMessage" hidden></div>
-          <button type="submit" class="wall-submit ripple" id="wallSubmit">Post</button>
-        </div>
-
-      </form>
-
-      <div class="wall-list" id="wallList"></div>
-
-      <div class="wall-empty" id="wallEmpty" hidden>
-        No messages yet. Be the first.
-      </div>
-
+      <p class="desk-copy">See what visitors have said, and leave your own message.</p>
+      <button type="button" class="desk-btn desk-btn-primary ripple" id="wallOpenBtn">
+        Open wall
+      </button>
     </section>
 
   </div>
@@ -246,6 +173,64 @@
   <a class="btn btn-primary ripple" href="explore.html">Explore STMDeskly</a>
 </div>
 
+<!-- ============================================================
+     WALL SHEET
+     ============================================================ -->
+<div class="wall-sheet" id="wallSheet" data-open="false">
+  <div class="wall-sheet-backdrop" id="wallSheetBackdrop"></div>
+  <div class="wall-sheet-inner">
+    <header class="wall-sheet-head">
+      <h2 class="wall-sheet-title">Wall</h2>
+      <button type="button" class="wall-sheet-close" id="wallSheetClose" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+    </header>
+    <div class="wall-sheet-body">
+
+      <section class="desk-block wall-block" id="wallBlock" hidden>
+
+        <form class="wall-composer" id="wallForm">
+          <div class="wall-composer-row">
+            <input type="text" class="form-input wall-name" id="wallName" placeholder="Your name (optional)" maxlength="60" autocomplete="off">
+          </div>
+          <textarea class="form-input wall-body" id="wallBody" placeholder="Say something..." maxlength="500" rows="3"></textarea>
+          <div class="wall-photo-preview" id="wallPhotoPreview" hidden>
+            <img id="wallPhotoPreviewImg" alt="">
+            <button type="button" class="wall-photo-remove" id="wallPhotoRemove" aria-label="Remove photo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 6L6 18M6 6l12 12"/>
+              </svg>
+            </button>
+          </div>
+          <input type="file" id="wallPhotoInput" accept="image/*" hidden>
+          <div class="wall-composer-actions">
+            <button type="button" class="wall-attach-btn ripple" id="wallAttachBtn" aria-label="Attach photo">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                <circle cx="8.5" cy="9.5" r="1.5"/>
+                <path d="M21 15l-5-5-9 9"/>
+              </svg>
+              <span>Photo</span>
+            </button>
+            <div class="form-message wall-message" id="wallMessage" hidden></div>
+            <button type="submit" class="wall-submit ripple" id="wallSubmit">Post</button>
+          </div>
+        </form>
+
+        <div class="wall-list" id="wallList"></div>
+
+        <div class="wall-empty" id="wallEmpty" hidden>
+          No messages yet. Be the first.
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+</div>
+
 <div class="desk-bot-panel" id="deskBotPanel" data-open="false" style="display:none">
 
   <header class="desk-bot-head">
@@ -261,14 +246,7 @@
   <div class="desk-bot-chips" id="deskBotChips"></div>
 
   <form class="desk-bot-input-row" id="deskBotForm">
-    <input
-      type="text"
-      class="desk-bot-input"
-      id="deskBotInput"
-      placeholder="Type your question..."
-      aria-label="Your question"
-      autocomplete="off"
-    >
+    <input type="text" class="desk-bot-input" id="deskBotInput" placeholder="Type your question..." aria-label="Your question" autocomplete="off">
     <button type="submit" class="desk-bot-send" aria-label="Send">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <path d="M5 12h14M13 5l7 7-7 7"/>
@@ -284,8 +262,85 @@
 <script src="presence.js"></script>
 <script src="profile.js?v=3"></script>
 <script src="tabbar.js?v=8" defer></script>
-  <script src="toast.js"></script>
+<script src="toast.js"></script>
 <script src="ripple.js" defer></script>
+
+<script>
+  /* ============================================================
+     WALL SHEET · open/close + visibility mirror
+     ============================================================ */
+  (function(){
+    const sheet    = document.getElementById('wallSheet');
+    const openBtn  = document.getElementById('wallOpenBtn');
+    const closeBtn = document.getElementById('wallSheetClose');
+    const backdrop = document.getElementById('wallSheetBackdrop');
+    const wallBlock = document.getElementById('wallBlock');
+    const trigger   = document.getElementById('wallTriggerBlock');
+
+    if (!sheet || !openBtn) return;
+
+    /* Mirror wall availability.
+       profile.js unhides #wallBlock when the owner enabled the wall.
+       We keep #wallTriggerBlock in sync so the trigger card only
+       appears when there is actually a wall to open. */
+    if (wallBlock && trigger) {
+      const sync = () => { trigger.hidden = wallBlock.hidden; };
+      try {
+        const obs = new MutationObserver(sync);
+        obs.observe(wallBlock, { attributes: true, attributeFilter: ['hidden'] });
+      } catch(e) {}
+      /* Fallback checks — profile.js loads async */
+      setTimeout(sync, 400);
+      setTimeout(sync, 1200);
+      setTimeout(sync, 2500);
+    }
+
+    function open(){
+      sheet.setAttribute('data-open', 'true');
+      document.body.style.overflow = 'hidden';
+    }
+    function close(){
+      sheet.setAttribute('data-open', 'false');
+      document.body.style.overflow = '';
+    }
+
+    openBtn.addEventListener('click', open);
+    closeBtn.addEventListener('click', close);
+    if (backdrop) backdrop.addEventListener('click', close);
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && sheet.getAttribute('data-open') === 'true') close();
+    });
+  })();
+</script>
+
+<script>
+  /* Keep the bot panel exactly as tall as the visible area. */
+  (function(){
+    if (!window.visualViewport) return;
+    const vv = window.visualViewport;
+    const panel = document.getElementById('deskBotPanel');
+    if (!panel) return;
+
+    function fit(){
+      if (window.innerWidth > 520) {
+        panel.style.height = '';
+        panel.style.top = '';
+        return;
+      }
+      const h = vv.height;
+      const top = vv.offsetTop || 0;
+      panel.style.height = h + 'px';
+      panel.style.top = top + 'px';
+    }
+
+    vv.addEventListener('resize', fit);
+    vv.addEventListener('scroll', fit);
+    window.addEventListener('resize', fit);
+    window.addEventListener('orientationchange', fit);
+    fit();
+  })();
+</script>
 
 </body>
   </html>
