@@ -4544,3 +4544,67 @@ body:has(#chatsRoot) .form-shell,
   .home-desk-name { font-size: 16px; }
   .home-desk-arrow { width: 30px; height: 30px; }
    }
+
+/* ============================================================
+   HOME — multi-column
+   ============================================================ */
+
+/* Mini desk rows → grid */
+.home-section-body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 8px;
+}
+
+@media (min-width: 480px) {
+  #homeLane .home-section-body,
+  #homeAlso .home-section-body {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 720px) {
+  #homeLane .home-section-body,
+  #homeAlso .home-section-body {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  #homeGigs .home-section-body {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mini desk card — vertical layout for grid */
+.home-desk-mini {
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+}
+
+.home-desk-mini-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+}
+
+.home-desk-mini-info {
+  width: 100%;
+  gap: 1px;
+}
+
+.home-desk-mini-name {
+  font-size: 14px;
+}
+
+.home-desk-mini-role,
+.home-desk-mini-handle,
+.home-desk-mini-loc {
+  font-size: 12px;
+}
+
+/* Gig cards stay stacked but wider look */
+@media (min-width: 720px) {
+  .home-gig-card {
+    padding: 18px 20px;
+  }
+}
