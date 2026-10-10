@@ -10737,3 +10737,384 @@ body:has(#exploreRoot) .explore-head,
   ) !important;
   background-size: 200% 100% !important;
 }
+/* ============================================================
+   REVERT SAGE — back to brand green everywhere in chat
+   ------------------------------------------------------------
+   The sage override was a mistake. Undoing it. Keeping only
+   the layout structure. Brand green returns.
+   ============================================================ */
+
+/* ---------- Chat page shell ---------- */
+
+.page-chat {
+  background: var(--bg) !important;
+}
+
+.chat-log {
+  background: var(--bg) !important;
+  background-image: none !important;
+}
+
+/* ---------- Header — back to white with brand green accents ---------- */
+
+.chat-head {
+  background: var(--surface) !important;
+  border-bottom: 1px solid var(--line) !important;
+}
+
+.chat-back {
+  color: var(--accent) !important;
+}
+
+.chat-back:hover {
+  background: var(--accent-soft) !important;
+}
+
+.chat-head-avatar {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  border: 0 !important;
+}
+
+.chat-head-name {
+  color: var(--ink) !important;
+}
+
+.chat-head-status {
+  color: var(--ink-3) !important;
+}
+
+.chat-head-status.presence-text {
+  color: var(--online) !important;
+}
+
+.chat-head-status.presence-text.offline {
+  color: var(--ink-3) !important;
+}
+
+.chat-search-btn,
+.chat-menu-btn {
+  color: var(--ink-2) !important;
+}
+
+.chat-search-btn:hover,
+.chat-menu-btn:hover {
+  background: var(--surface-3) !important;
+  color: var(--ink) !important;
+}
+
+.chat-head-avatar .presence-dot,
+.chat-head-avatar.presence-avatar .presence-dot {
+  border-color: var(--surface) !important;
+}
+
+/* ---------- Bubbles — brand green ---------- */
+
+.chat-bubble-mine {
+  background: var(--accent) !important;
+  color: var(--accent-ink) !important;
+  border: 0 !important;
+}
+
+.chat-bubble-theirs {
+  background: var(--surface) !important;
+  color: var(--ink) !important;
+  border: 1px solid var(--line) !important;
+  box-shadow: none !important;
+}
+
+.chat-bubble-mine .chat-bubble-meta {
+  color: rgba(255, 255, 255, 0.85) !important;
+}
+
+.chat-bubble-theirs .chat-bubble-meta {
+  color: var(--ink-3) !important;
+}
+
+.chat-bubble-mine .chat-bubble-quote {
+  background: rgba(255, 255, 255, 0.16) !important;
+  border-left-color: rgba(255, 255, 255, 0.85) !important;
+}
+
+/* ---------- Reply bar ---------- */
+
+.chat-reply-bar {
+  background: var(--surface) !important;
+  border-top: 1px solid var(--line) !important;
+}
+
+.chat-reply-bar-accent {
+  background: var(--accent) !important;
+}
+
+.chat-reply-bar-name {
+  color: var(--accent) !important;
+}
+
+/* ---------- Composer ---------- */
+
+.chat-composer {
+  background: var(--surface) !important;
+  border-top: 1px solid var(--line) !important;
+}
+
+.chat-attach {
+  background: var(--surface-3) !important;
+  color: var(--ink-2) !important;
+}
+
+.chat-attach:hover {
+  background: var(--line) !important;
+  color: var(--ink) !important;
+}
+
+.chat-input-wrap {
+  background: var(--surface-3) !important;
+}
+
+.chat-input-wrap:focus-within {
+  background: var(--surface) !important;
+  box-shadow: inset 0 0 0 1.5px var(--accent) !important;
+}
+
+.chat-input::placeholder {
+  color: var(--ink-4) !important;
+  opacity: 1 !important;
+}
+
+.chat-send {
+  background: var(--accent) !important;
+}
+
+.chat-send:hover:not(:disabled) {
+  background: var(--accent-hover) !important;
+}
+
+.chat-send:disabled {
+  background: var(--line-2) !important;
+  color: var(--surface) !important;
+  opacity: 1 !important;
+}
+
+/* ---------- Reactions ---------- */
+
+.chat-reaction-pill.mine {
+  background: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+/* ---------- Search + menus + context ---------- */
+
+.chat-menu-item:hover,
+.chat-ctx-item:hover,
+.chat-row-menu-item:hover {
+  background: var(--surface-3) !important;
+}
+
+.chat-search-input:focus {
+  border-color: var(--accent) !important;
+}
+
+.chat-search-result-name {
+  color: var(--accent) !important;
+}
+
+.chat-search-result-body mark {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+}
+
+.chat-ctx-emoji:hover {
+  background: var(--surface-3) !important;
+}
+
+.chat-photo-send {
+  color: var(--accent) !important;
+}
+
+.chat-loading-dot {
+  background: var(--accent) !important;
+}
+
+/* ============================================================
+   INBOX (chats) — back to brand green
+   ============================================================ */
+
+.page-chats {
+  background: var(--bg) !important;
+}
+
+.chats-head {
+  background: var(--bg) !important;
+}
+
+.chats-tabs {
+  background: var(--surface-3) !important;
+}
+
+.chats-tabs-pill {
+  background: var(--accent) !important;
+}
+
+.chat-row-unread {
+  background: var(--accent) !important;
+}
+
+.chat-row.has-unread .chat-row-name::before {
+  background: var(--accent) !important;
+}
+
+.chat-row.has-unread .chat-row-time {
+  color: var(--accent) !important;
+}
+
+.chat-row-tappable:hover {
+  background: var(--surface) !important;
+}
+
+.chat-row-tappable:active {
+  background: var(--surface-3) !important;
+}
+
+.chat-avatar {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+}
+
+.chats-empty-icon {
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+}
+
+.chats-empty-btn {
+  background: var(--accent) !important;
+}
+
+.chats-empty-btn:hover {
+  background: var(--accent-hover) !important;
+}
+
+.chat-action-accept {
+  background: var(--accent) !important;
+}
+
+.chat-action-accept:hover {
+  background: var(--accent-hover) !important;
+}
+
+.notif-mark-all {
+  color: var(--accent) !important;
+}
+
+.notif-mark-all:hover {
+  background: var(--accent-soft) !important;
+}
+
+.notif-card-unread {
+  background: var(--accent-soft) !important;
+}
+
+.notif-dot {
+  background: var(--accent) !important;
+}
+
+.tab-picker-row.on .tab-picker-row-toggle {
+  background: var(--accent) !important;
+}
+
+.tab-picker-done,
+.tab-picker-save {
+  background: var(--accent) !important;
+}
+
+.tab-picker-done:hover,
+.tab-picker-save:hover {
+  background: var(--accent-hover) !important;
+}
+
+.tab-picker-new-btn {
+  border-color: var(--accent) !important;
+  color: var(--accent) !important;
+}
+
+.tab-picker-new-btn:hover {
+  background: var(--accent-soft) !important;
+}
+
+.tab-picker-input:focus {
+  border-color: var(--accent) !important;
+}
+
+/* ============================================================
+   FIXES — the real issues
+   ============================================================ */
+
+/* ---------- 1. Chat rows — force preview to show ---------- */
+
+.chat-row-preview {
+  display: block !important;
+  font-size: 13.5px !important;
+  line-height: 1.4 !important;
+  color: var(--ink-3) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  padding-right: 26px !important;
+  min-height: 1.4em !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.chat-row.has-unread .chat-row-preview {
+  color: var(--ink-2) !important;
+  font-weight: 500 !important;
+}
+
+/* Ensure the row body has enough room */
+.chat-row-body {
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+  min-width: 0 !important;
+  flex: 1 !important;
+}
+
+/* ---------- 2. Stronger background — less washed out ---------- */
+
+:root {
+  --bg: #F0F2ED;      /* warmer, slightly deeper than #F8F9F7 */
+}
+
+body,
+.page-form,
+.page-form.signed-in,
+.page-chat,
+.page-chats {
+  background-color: var(--bg) !important;
+}
+
+/* Restore flat surfaces above the deeper page bg */
+.chats-head,
+.chat-head {
+  background: var(--bg) !important;
+}
+
+.chat-composer,
+.chat-reply-bar {
+  background: var(--surface) !important;
+}
+
+.chat-bubble-theirs {
+  background: var(--surface) !important;
+}
+
+/* Slightly softer bubble shadow so it stands out on the deeper bg */
+.chat-bubble-theirs {
+  box-shadow: 0 1px 2px rgba(20, 24, 22, 0.04) !important;
+}
+
+/* Inbox rows stand out against the deeper bg */
+.chat-row-tappable:hover {
+  background: var(--surface) !important;
+     }
