@@ -31,11 +31,15 @@
 
 <main class="landing-wrap">
 
+  <!-- ============================================================
+       HERO — full brand logo, one message, one action
+       ============================================================ -->
   <section class="hero">
-    <div class="hero-logo">
-      <img src="/icon-192.png" alt="STMDeskly" class="hero-logo-img">
-      <h1 class="hero-logo-word">STMDeskly</h1>
-    </div>
+    <img
+      src="/deskly-logo.png"
+      alt="STMDeskly"
+      class="hero-logo"
+    >
 
     <p class="hero-tagline">Your own place on the internet.</p>
 
@@ -43,6 +47,9 @@
     <a href="login.html" class="hero-login">Already have one? Log in</a>
   </section>
 
+  <!-- ============================================================
+       WHAT IT IS
+       ============================================================ -->
   <section class="landing-section reveal">
     <p class="section-eyebrow">What it is</p>
     <h2 class="section-title">A Desk for anyone<br>who needs to be found.</h2>
@@ -106,6 +113,9 @@
     </div>
   </section>
 
+  <!-- ============================================================
+       HOW IT WORKS
+       ============================================================ -->
   <section class="landing-section reveal">
     <p class="section-eyebrow">How it works</p>
     <h2 class="section-title">Ready in a minute.</h2>
@@ -142,6 +152,9 @@
     </div>
   </section>
 
+  <!-- ============================================================
+       FINAL CTA
+       ============================================================ -->
   <section class="final-block reveal">
     <h2 class="final-title">Your Desk is one minute away.</h2>
     <a href="signup.html" class="final-btn">
@@ -152,6 +165,9 @@
     </a>
   </section>
 
+  <!-- ============================================================
+       FOOTER
+       ============================================================ -->
   <footer class="landing-foot">
     <span>© 2026 STMGraph</span>
     <a href="terms.html">Terms &amp; Privacy</a>
@@ -168,6 +184,7 @@
 <script src="ripple.js" defer></script>
 
 <script>
+  /* Deleted account banner */
   (function showDeletedMessage(){
     const params = new URLSearchParams(location.search);
     if (params.get('deleted') !== '1') return;
@@ -192,6 +209,7 @@
     }, 5000);
   })();
 
+  /* Scroll reveal */
   (function revealOnScroll(){
     const els = document.querySelectorAll('.reveal');
     if (!els.length) return;
