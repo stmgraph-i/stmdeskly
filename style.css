@@ -14406,3 +14406,501 @@ body:has(#demoWhatsApp) .desk-footer::before {
    ALL 13 PARTS DELIVERED. The stylesheet is complete.
    ═══════════════════════════════════════════════════════
    ============================================================ */
+/* ============================================================
+   160. CHAT · OVERRIDE — softer, dustier, matte
+   ------------------------------------------------------------
+   Replaces the glossy/gradient look with a matte, dusty feel
+   closer to Signal + iMessage.
+
+   What changes:
+     - Bubbles: flat matte colors, no gradients, no glow
+     - Green: dusty forest instead of vivid brand
+     - Receiver: dusty cream instead of sterile white
+     - Reactions: pill overlapping the bubble bottom (reference)
+     - Spacing: tighter, less empty air
+     - No 3D: shadows are barely there, no inner highlights
+   ============================================================ */
+
+:root {
+  /* Dusty bubble palette — matte, muted, warm-neutral */
+  --bubble-mine:      #2E5F42;   /* dusty forest green */
+  --bubble-mine-deep: #265138;   /* slightly deeper for pressed state */
+  --bubble-mine-ink:  #F2F0E9;   /* warm off-white text */
+  --bubble-theirs:    #ECE9E0;   /* dusty cream, not white */
+  --bubble-theirs-ink:#1C1C1E;
+  --bubble-theirs-border: rgba(28, 28, 30, 0.06);
+  --bubble-time-mine:    rgba(242, 240, 233, 0.55);
+  --bubble-time-theirs:  rgba(28, 28, 30, 0.40);
+}
+
+/* ============================================================
+   160a. Bubbles — flat, matte, dusty
+   ============================================================ */
+
+.chat-bubble {
+  padding: 8px 13px 7px;
+  border-radius: 18px;
+  font-size: 15px;
+  line-height: 1.35;
+  letter-spacing: -0.005em;
+  font-weight: 400;
+  /* Kill the entrance lift slightly — softer */
+  animation: bubbleInSoft 0.18s ease-out;
+}
+
+@keyframes bubbleInSoft {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Mine — flat dusty green, NO gradient, NO glow */
+.chat-bubble-mine {
+  background: var(--bubble-mine);
+  color: var(--bubble-mine-ink);
+  border-bottom-right-radius: 4px;
+  box-shadow: none;   /* kill the 3D */
+}
+
+/* Theirs — dusty cream, thin border, no shadow */
+.chat-bubble-theirs {
+  background: var(--bubble-theirs);
+  color: var(--bubble-theirs-ink);
+  border: 0;
+  border-bottom-left-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--bubble-theirs-border);
+}
+
+/* ============================================================
+   160b. Time + delivery inside bubble — quieter
+   ============================================================ */
+
+.chat-bubble-meta {
+  font-size: 10.5px;
+  font-weight: 500;
+  margin-left: 10px;
+  margin-top: 3px;
+  letter-spacing: 0.01em;
+  opacity: 1;
+  float: right;
+  vertical-align: bottom;
+}
+
+.chat-bubble-mine .chat-bubble-meta {
+  color: var(--bubble-time-mine);
+}
+
+.chat-bubble-theirs .chat-bubble-meta {
+  color: var(--bubble-time-theirs);
+}
+
+/* Delivery dots — much quieter */
+.chat-delivery {
+  width: 7px;
+  height: 7px;
+  margin-left: 4px;
+}
+
+.chat-delivery-seen {
+  background: rgba(242, 240, 233, 0.9);
+}
+
+.chat-delivery-online {
+  background: transparent;
+  border: 1.5px solid rgba(242, 240, 233, 0.75);
+}
+
+.chat-delivery-offline {
+  background: transparent;
+  border: 1.5px solid rgba(242, 240, 233, 0.30);
+}
+
+/* ============================================================
+   160c. Reactions — pill overlapping the bubble bottom
+   ------------------------------------------------------------
+   Matches the reference: a small pill that sits on the
+   lower edge of the bubble with emoji + count.
+   ============================================================ */
+
+.chat-reactions-bar {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: -10px;
+  margin-left: 6px;
+  padding: 0 6px;
+  position: relative;
+  z-index: 2;
+  align-self: flex-start;
+}
+
+.chat-bubble-wrap-mine .chat-reactions-bar {
+  align-self: flex-end;
+  margin-left: 0;
+  margin-right: 6px;
+}
+
+.chat-reaction-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 3px 8px;
+  background: var(--surface-elevated);
+  border: 1px solid var(--line);
+  border-radius: var(--r-pill);
+  font-size: 12px;
+  font-family: inherit;
+  font-weight: 500;
+  color: var(--ink-2);
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(28, 28, 30, 0.06);
+  transition:
+    transform 0.15s var(--spring),
+    background 0.15s ease,
+    border-color 0.15s ease;
+}
+
+.chat-reaction-pill:active {
+  transform: scale(0.94);
+}
+
+/* Mine — subtle tint, not bright green */
+.chat-reaction-pill.mine {
+  background: var(--accent-soft);
+  border-color: rgba(1, 118, 76, 0.22);
+  color: var(--accent);
+  box-shadow: 0 1px 2px rgba(1, 118, 76, 0.06);
+}
+
+/* ============================================================
+   160d. Tighter spacing — kill the empty air
+   ============================================================ */
+
+.chat-log {
+  padding: 12px 14px 16px;
+  gap: 0;   /* controlled per-bubble below */
+  background-image: none;   /* remove the dot grid, feels noisy */
+  background-color: var(--bg);
+}
+
+/* Stack consecutive messages tightly */
+.chat-bubble-wrap {
+  margin-top: 2px;
+}
+
+.chat-bubble-wrap + .chat-bubble-wrap-mine,
+.chat-bubble-wrap + .chat-bubble-wrap-theirs {
+  margin-top: 2px;
+}
+
+/* Slightly more gap between "runs" of messages (different senders) */
+.chat-bubble-wrap-theirs + .chat-bubble-wrap-mine,
+.chat-bubble-wrap-mine + .chat-bubble-wrap-theirs {
+  margin-top: 8px;
+}
+
+/* Day divider — smaller, tighter, closer to messages */
+.chat-day-divider {
+  margin: 14px 0 10px;
+  padding: 3px 10px;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  background: transparent;
+  border: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  color: var(--ink-3);
+  opacity: 0.75;
+  box-shadow: none;
+}
+
+/* Remove the loading area's extra space */
+.chat-loading-inline {
+  padding: 40px 20px;
+}
+
+/* ============================================================
+   160e. Header — softer, tighter, no cut-off
+   ============================================================ */
+
+.chat-head {
+  padding: 8px 10px 8px 6px;
+  background: var(--bg);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid rgba(28, 28, 30, 0.06);
+}
+
+.chat-head-name {
+  font-size: 15px;
+  letter-spacing: -0.02em;
+}
+
+.chat-head-status {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  line-height: 1.1;
+  padding-bottom: 1px;   /* prevents cut-off */
+}
+
+.chat-head-avatar {
+  width: 36px;
+  height: 36px;
+  font-size: 14px;
+}
+
+.chat-back {
+  width: 36px;
+  height: 36px;
+  color: var(--ink);   /* not bright green — softer */
+}
+
+.chat-back:hover {
+  background: rgba(28, 28, 30, 0.05);
+}
+
+.chat-search-btn,
+.chat-menu-btn {
+  width: 36px;
+  height: 36px;
+}
+
+.chat-search-btn svg,
+.chat-menu-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Presence dot — smaller, quieter */
+.chat-head-avatar .presence-dot,
+.chat-head-avatar.presence-avatar .presence-dot {
+  width: 11px;
+  height: 11px;
+  border-width: 2px;
+  box-shadow: none;   /* kill the glow */
+}
+
+/* ============================================================
+   160f. Composer — softer, matte, dusty
+   ============================================================ */
+
+.chat-composer {
+  padding: 8px 10px;
+  padding-bottom: max(8px, env(safe-area-inset-bottom));
+  background: var(--bg);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-top: 1px solid rgba(28, 28, 30, 0.06);
+  gap: 6px;
+}
+
+.chat-input-wrap {
+  background: var(--surface-2);
+  border: 0;
+  border-radius: 20px;
+  padding: 9px 15px;
+  box-shadow: inset 0 0 0 1px rgba(28, 28, 30, 0.06);
+}
+
+.chat-input-wrap:focus-within {
+  box-shadow: inset 0 0 0 1px rgba(1, 118, 76, 0.35);
+  background: var(--surface-elevated);
+}
+
+.chat-input {
+  font-size: 15px;
+  padding: 2px 0;
+}
+
+.chat-input::placeholder {
+  color: var(--ink-3);
+  opacity: 0.6;
+}
+
+.chat-attach {
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: 0;
+  color: var(--ink-3);
+}
+
+.chat-attach:hover {
+  background: rgba(28, 28, 30, 0.05);
+  color: var(--ink);
+}
+
+.chat-attach svg {
+  width: 20px;
+  height: 20px;
+}
+
+/* Send — matte green, no glow */
+.chat-send {
+  width: 38px;
+  height: 38px;
+  background: var(--bubble-mine);
+  box-shadow: none;
+  transition:
+    background 0.15s ease,
+    transform 0.12s var(--spring),
+    opacity 0.15s ease;
+}
+
+.chat-send:hover:not(:disabled) {
+  background: var(--bubble-mine-deep);
+}
+
+.chat-send:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.chat-send:disabled {
+  background: var(--line-2);
+  color: var(--surface-elevated);
+  opacity: 1;
+  box-shadow: none;
+}
+
+.chat-send svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ============================================================
+   160g. Reply bar — softer
+   ============================================================ */
+
+.chat-reply-bar {
+  padding: 9px 14px;
+  background: var(--surface-2);
+  border-top: 1px solid rgba(28, 28, 30, 0.06);
+}
+
+.chat-reply-bar-accent {
+  width: 3px;
+  height: 30px;
+  background: var(--bubble-mine);
+  box-shadow: none;
+}
+
+.chat-reply-bar-name {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--bubble-mine);
+}
+
+.chat-reply-bar-body {
+  font-size: 12.5px;
+  color: var(--ink-3);
+}
+
+/* ============================================================
+   160h. Long-press menu — matte paper, softer
+   ============================================================ */
+
+.chat-ctx-menu {
+  background: var(--surface-elevated);
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 1px rgba(28, 28, 30, 0.06),
+    0 10px 30px -10px rgba(28, 28, 30, 0.22);
+  padding: 6px;
+}
+
+.chat-ctx-emoji {
+  font-size: 22px;
+  padding: 8px 2px;
+}
+
+/* ============================================================
+   160i. Mobile — tighter still
+   ============================================================ */
+
+@media (max-width: 520px) {
+  .chat-log {
+    padding: 10px 12px 14px;
+  }
+
+  .chat-bubble {
+    padding: 7px 12px 6px;
+    font-size: 14.5px;
+    max-width: 78%;
+  }
+
+  .chat-bubble-wrap {
+    max-width: 82%;
+  }
+
+  .chat-head {
+    padding: 6px 8px 6px 4px;
+  }
+
+  .chat-head-name {
+    font-size: 14.5px;
+  }
+
+  .chat-composer {
+    padding: 6px 8px;
+    padding-bottom: max(6px, env(safe-area-inset-bottom));
+  }
+
+  .chat-attach,
+  .chat-send {
+    width: 36px;
+    height: 36px;
+  }
+
+  .chat-attach svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  .chat-send svg {
+    width: 15px;
+    height: 15px;
+  }
+}
+
+/* ============================================================
+   160j. Reduced motion
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .chat-bubble {
+    animation: none;
+  }
+}
+
+/* ============================================================
+   END OF CHAT OVERRIDE
+   ============================================================
+   What this fixes:
+
+   ✗ Glossy green bubble with gradient + glow
+   ✓ Flat dusty forest green, matte, no shadow
+
+   ✗ Sterile white receiver bubble
+   ✓ Dusty cream with a hairline inner ring
+
+   ✗ Big empty gap at the top of the log
+   ✓ Tighter padding, no dot grid, no air
+
+   ✗ Time + delivery too prominent
+   ✓ Smaller, muted, quieter
+
+   ✗ "Active 12h ago" cut off in header
+   ✓ Padding-bottom on status line prevents it
+
+   ✗ Reactions rendered as separate pills below the bubble
+   ✓ Pills overlap the bubble bottom edge (like reference)
+
+   ✗ Composer had a bright green send with glow
+   ✓ Matte green send, no glow
+
+   ✗ Message entrance animation had a lift
+   ✓ Just a soft fade
+
+   The chat now feels like a real messaging app — dusty,
+   matte, connected, quietly confident.
+   ============================================================ */
