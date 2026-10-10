@@ -3,14 +3,14 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<meta name="theme-color" content="#F5F5F7">
-<title>Create a Desk | Deskly</title>
+<meta name="theme-color" content="#F8F9F7">
+<title>Create a Desk | STMDeskly</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
-  <link rel="manifest" href="/manifest.json">
+<link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png">
 <link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png">
 <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -26,15 +26,15 @@
 
 <main class="form-shell">
 
-  <a class="back-pill ripple" href="index.html" aria-label="Back">
+  <a class="back-pill ripple" href="start.html" aria-label="Back">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
       <path d="M15 18l-6-6 6-6"/>
     </svg>
   </a>
 
   <header class="form-head">
-    <h1 class="form-head-title" id="headTitle">Create a Desk</h1>
-    <p class="form-head-sub" id="headSub">Pick what this Desk is for. Everything else can be added later.</p>
+    <h1 class="form-head-title" id="headTitle">Let's create your Desk.</h1>
+    <p class="form-head-sub" id="headSub">First, tell us what kind of Desk you need.</p>
   </header>
 
   <form class="form" id="signupForm" novalidate>
@@ -44,21 +44,21 @@
         <span class="type-badge">M</span>
         <span class="type-info">
           <span class="type-title">Myself</span>
-          <span class="type-sub">I offer a service or work on my own.</span>
+          <span class="type-sub">For independent workers and individuals.</span>
         </span>
       </button>
       <button type="button" class="type-card ripple" data-type="business">
         <span class="type-badge">B</span>
         <span class="type-info">
           <span class="type-title">My business</span>
-          <span class="type-sub">I run a shop, brand or business.</span>
+          <span class="type-sub">For shops, brands and companies.</span>
         </span>
       </button>
       <button type="button" class="type-card ripple" data-type="organisation">
         <span class="type-badge">O</span>
         <span class="type-info">
           <span class="type-title">A place or organisation</span>
-          <span class="type-sub">A church, venue, school or organisation.</span>
+          <span class="type-sub">For churches, schools, venues and organisations.</span>
         </span>
       </button>
     </div>
@@ -106,7 +106,7 @@
       <div class="form-group">
         <label class="form-label" for="link">Your link</label>
         <div class="link-preview">
-          <span class="link-prefix" id="linkPrefix">deskly.pages.dev/</span>
+          <span class="link-prefix" id="linkPrefix">stmdeskly.pages.dev/</span>
           <input class="link-input" type="text" id="link" placeholder="utibe" required>
         </div>
         <p class="form-help">This is generated from your name. You can change it.</p>
@@ -167,8 +167,8 @@
 <script src="chip-lookup.js"></script>
 
 <script src="signup.js" defer></script>
-  <script src="toast.js"></script>
+<script src="toast.js"></script>
 <script src="ripple.js" defer></script>
 
 </body>
-</html>
+  </html>
