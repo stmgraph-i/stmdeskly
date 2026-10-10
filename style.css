@@ -6562,3 +6562,224 @@ textarea.form-input,
 .explore-tabs {
   border-width: 1.5px !important;
 }
+/* ============================================================
+   SURFACE REBALANCE — warm paper, quiet cards
+   ------------------------------------------------------------
+   The page gets a warm cream base. Cards stay soft off-white,
+   not pure white. Text sits on top and leads. The surface
+   supports, it never shines.
+   ============================================================ */
+
+:root {
+  /* Warm paper base — not cool grey, not pure white */
+  --bg:               #F4F1EA;   /* warm oat — page */
+  --bg-sunken:        #EDE9E0;   /* deeper inset */
+
+  /* Cards — warm off-white, NOT pure white */
+  --surface:          #FBF9F4;   /* soft paper */
+  --surface-2:        #F7F4ED;   /* slightly deeper */
+  --surface-3:        #F0ECE3;   /* tints, chips, insets */
+
+  /* Text — deeper so contrast reads richer on the warm base */
+  --ink:              #1E1B16;   /* deeper than #242A27 */
+  --ink-2:            #3A352C;
+  --ink-3:            #6E6656;
+  --ink-4:            #A39B89;
+
+  /* Borders — warm and quiet */
+  --line:             #E4DFD2;
+  --line-2:           #CFC8B7;
+}
+
+/* Body — warm base */
+body {
+  background-color: var(--bg);
+  color: var(--ink);
+}
+
+/* Every white-ish surface gets warmth too */
+.page-form,
+.page-landing,
+.page-chat,
+.page-chats,
+.page-desk,
+.page-settings {
+  background-color: var(--bg);
+}
+
+/* Inputs — warm paper, not cool white */
+.form-input,
+.link-preview,
+.chat-search-input,
+.tab-picker-input,
+.explore-search,
+.home-search {
+  background-color: var(--surface);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.form-input:focus,
+.explore-search:focus-within,
+.home-search:focus-within {
+  background-color: var(--surface-2);
+  border-color: var(--accent);
+}
+
+/* Cards — warm paper */
+.dash-section,
+.link-box,
+.home-section,
+.explore-section,
+.explore-popular,
+.desk-block,
+.acc,
+.chat-row-menu,
+.notif-card,
+.tab-picker-list,
+.home-greet,
+.home-search,
+.home-quick-actions,
+.explore-head > .explore-title,
+.explore-head > .explore-sub,
+.explore-search,
+.explore-tabs,
+.tab-picker-custom-row,
+.menu-panel,
+.preview-sheet,
+.logout-sheet,
+.confirm-sheet,
+.desk-bot-panel,
+.owner-bot-wrap {
+  background-color: var(--surface);
+  border-color: var(--line);
+}
+
+/* Header — warm, not pure */
+.app-header,
+.chat-head,
+.chats-head {
+  background-color: var(--bg);
+  border-color: var(--line);
+}
+
+/* Tabbar — warm */
+.tabbar {
+  background-color: var(--surface);
+  border-color: var(--line);
+}
+
+/* Bubbles — theirs gets warmth too */
+.chat-bubble-theirs {
+  background-color: var(--surface);
+  color: var(--ink);
+  border-color: var(--line);
+}
+
+/* Chat log / bot log — warm page underneath */
+.chat-log,
+.desk-bot-log,
+.owner-bot-wrap .desk-bot-log {
+  background-color: var(--bg);
+}
+
+/* Tinted tiles inside section cards — warm tints */
+.explore-card,
+.explore-gig,
+.home-desk-mini,
+.home-gig-card,
+.photo-cell,
+.dash-photo,
+.work-cell,
+.notif-icon,
+.chat-avatar,
+.home-desk-mini-avatar,
+.explore-avatar,
+.account-avatar,
+.dash-avatar,
+.desk-mark,
+.chat-head-avatar,
+.desk-bot-avatar,
+.avatar-preview {
+  background-color: var(--surface-3);
+}
+
+/* Search inputs and pop chips — soft warm fill */
+.explore-popular-chip,
+.role-chip,
+.option-btn,
+.chat-ctx-emoji,
+.chat-ctx-item,
+.menu-item,
+.menu-item-quiet {
+  background-color: transparent;
+}
+
+.explore-popular-chip:hover,
+.role-chip:hover,
+.option-btn:hover,
+.menu-item:hover {
+  background-color: var(--surface-3);
+}
+
+/* Chat composer — warm */
+.chat-composer {
+  background-color: var(--surface);
+  border-color: var(--line);
+}
+
+.chat-input-wrap {
+  background-color: var(--surface-3);
+}
+
+.chat-input-wrap:focus-within {
+  background-color: var(--surface-2);
+}
+
+/* Replies + reply bar */
+.chat-reply-bar {
+  background-color: var(--surface-2);
+  border-color: var(--line);
+}
+
+/* Settings accordion — warm */
+.acc {
+  background-color: var(--surface);
+}
+
+.acc-head:hover {
+  background-color: var(--surface-3);
+}
+
+/* Footer stays page colored */
+.dash-footer,
+.home-footer,
+.landing-foot,
+.desk-footer {
+  background-color: transparent;
+  border-color: var(--line);
+}
+
+/* Preview modal chrome */
+.preview-body,
+.preview-sheet {
+  background-color: var(--surface);
+}
+
+.preview-band {
+  background-color: var(--bg);
+}
+
+/* Dashboard avatars keep warm ring */
+.dash-avatar,
+.desk-mark,
+.chat-head-avatar,
+.chat-avatar {
+  border-color: var(--line);
+}
+
+/* The green feature card stands stronger now, no more washed look */
+.final-block,
+.home-desk-card {
+  background-color: var(--brand-800);
+}
