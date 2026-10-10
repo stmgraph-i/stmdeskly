@@ -12683,3 +12683,26 @@ body,
 .explore-avatar {
   font-weight: 800 !important;
 }
+/* ============================================================
+   AVATAR IMAGE OVERRIDE
+   ------------------------------------------------------------
+   Beats the earlier `background:` shorthand rules so the
+   inline background-image set by JS can actually show.
+   ============================================================ */
+
+.chat-avatar.chat-avatar,
+.chat-head-avatar.chat-head-avatar,
+.dash-avatar.dash-avatar,
+.desk-mark.desk-mark,
+.home-desk-avatar.home-desk-avatar,
+.home-desk-mini-avatar.home-desk-mini-avatar,
+.explore-avatar.explore-avatar,
+.desk-bot-avatar.desk-bot-avatar,
+.account-avatar.account-avatar,
+.avatar-preview.avatar-preview,
+.preview-mark.preview-mark {
+  background-image: var(--av, none) !important;
+  background-size: cover !important;
+  background-position: center !important;
+  background-repeat: no-repeat !important;
+}
