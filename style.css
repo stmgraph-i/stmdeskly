@@ -6882,3 +6882,98 @@ body:has(#q):has(#result) {
 body.page-desk {
   background-image: none;
 }
+/* ============================================================
+   PAPER TEXTURE — concentric rings
+   ------------------------------------------------------------
+   Soft concentric circles, 32px spacing, 5% opacity.
+   Reads like a watermark or security paper. Not childish,
+   not noisy. Just quiet order behind everything.
+   ============================================================ */
+
+:root {
+  --paper-pattern: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='32' height='32' viewBox='0 0 32 32'%3E%3Cg fill='none' stroke='%231E1B16' stroke-opacity='0.05' stroke-width='0.7'%3E%3Ccircle cx='16' cy='16' r='4'/%3E%3Ccircle cx='16' cy='16' r='10'/%3E%3Ccircle cx='16' cy='16' r='15.5'/%3E%3C/g%3E%3C/svg%3E");
+}
+
+/* ---------- Signed-in pages ---------- */
+
+body:has(.app-header),
+body.page-chat,
+body.page-chats,
+body.page-settings,
+body.page-bot {
+  background-color: var(--bg);
+  background-image: var(--paper-pattern);
+  background-attachment: fixed;
+  background-size: 32px 32px;
+  background-position: 0 0;
+}
+
+/* Chat + bot logs show the pattern through */
+.chat-log,
+.desk-bot-log,
+.owner-bot-wrap .desk-bot-log {
+  background-color: transparent;
+  background-image: none;
+}
+
+/* Headers, tabbar, cards sit above */
+.app-header,
+.chat-head,
+.chats-head,
+.tabbar,
+.chat-composer,
+.chat-reply-bar {
+  background-color: var(--bg);
+}
+
+.chat-composer,
+.chat-reply-bar {
+  background-color: var(--surface);
+}
+
+/* Cards stack on top with warm paper */
+.dash-section,
+.link-box,
+.home-section,
+.home-greet,
+.home-search,
+.home-quick-actions,
+.explore-head > .explore-title,
+.explore-head > .explore-sub,
+.explore-search,
+.explore-tabs,
+.explore-popular,
+.explore-section,
+.desk-block,
+.acc,
+.chat-row-menu,
+.notif-card,
+.tab-picker-list,
+.tab-picker-custom-row,
+.menu-panel,
+.preview-sheet,
+.logout-sheet,
+.confirm-sheet,
+.desk-bot-panel,
+.owner-bot-wrap {
+  background-color: var(--surface);
+}
+
+/* ---------- Landing + auth pages: clean, no pattern ---------- */
+
+body.page-landing,
+body:has(#loginForm),
+body:has(#signupForm),
+body:has(#forgotForm),
+body:has(#newPasswordForm),
+body:has(#startRoot),
+body:has(.legal),
+body:has(#q):has(#result) {
+  background-image: none;
+  background-color: var(--bg);
+}
+
+/* Public desk: user controls their own */
+body.page-desk {
+  background-image: none;
+}
