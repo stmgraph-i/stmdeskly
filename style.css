@@ -12650,3 +12650,36 @@ body,
 .chats-empty-btn:hover {
   background: var(--accent-hover) !important;
 }
+/* ============================================================
+   CHAT AVATARS — visible fallback
+   ============================================================ */
+
+.chat-avatar {
+  width: 50px !important;
+  height: 50px !important;
+  border-radius: 50% !important;
+  background: var(--accent-soft) !important;
+  color: var(--accent) !important;
+  display: grid !important;
+  place-items: center !important;
+  font-family: var(--sans) !important;
+  font-size: 16px !important;
+  font-weight: 800 !important;
+  letter-spacing: -0.02em !important;
+  flex-shrink: 0 !important;
+  overflow: hidden !important;
+  /* Slightly deeper tint so initials are readable */
+  background-color: #DCE6D9 !important;
+  color: #4E6E4E !important;
+}
+
+.chat-avatar.has-image {
+  background-color: var(--accent-soft) !important;
+  color: transparent !important;
+}
+
+/* Same treatment for the mini avatars on home / explore */
+.home-desk-mini-avatar,
+.explore-avatar {
+  font-weight: 800 !important;
+}
