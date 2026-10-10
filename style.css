@@ -5984,3 +5984,250 @@ body:has(#exploreRoot) .form-shell,
     padding: 18px 20px 18px 22px;
   }
 }
+/* ============================================================
+   DASHBOARD — bold & heavy
+   ------------------------------------------------------------
+   Thicker type, heavier cards, stronger contrast. Same layout,
+   more weight everywhere.
+   ============================================================ */
+
+/* Welcome header — bigger, bolder */
+.dash-welcome {
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.dash-avatar {
+  width: 60px;
+  height: 60px;
+  font-size: 22px;
+  font-weight: 800;
+  border: 2px solid var(--line);
+}
+
+.dash-greet {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+
+.dash-headline {
+  font-size: clamp(1.6rem, 6vw, 2rem);
+  font-weight: 800;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
+  color: var(--ink);
+}
+
+/* Link box — heavier */
+.link-box {
+  padding: 22px 22px;
+  border-radius: var(--r-xl);
+  border: 1.5px solid var(--line);
+}
+
+.link-box-tag {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  color: var(--ink-2);
+  margin-bottom: 10px;
+}
+
+.link-box-url {
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 16px;
+}
+
+.link-action {
+  padding: 12px 14px;
+  font-size: 13px;
+  font-weight: 700;
+  border-width: 1.5px;
+}
+
+.link-action-primary {
+  border-width: 1.5px;
+}
+
+/* Edit button — thicker */
+.dash-edit {
+  padding: 18px 24px;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 22px;
+}
+
+.dash-edit svg {
+  width: 20px;
+  height: 20px;
+  stroke-width: 2.4;
+}
+
+/* Section cards — heavier */
+.dash-section {
+  padding: 24px 22px;
+  margin-bottom: 14px;
+  border-radius: var(--r-xl);
+  border: 1.5px solid var(--line);
+}
+
+.dash-section-title {
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  margin-bottom: 18px;
+}
+
+.dash-section-title::before {
+  width: 8px;
+  height: 8px;
+}
+
+/* Views stats — bigger numbers */
+.dash-view-stats {
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.dash-view-stat {
+  padding: 20px 10px;
+  border-radius: var(--r-md);
+}
+
+.dash-view-num {
+  font-size: 32px;
+  font-weight: 800;
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.dash-view-lbl {
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+}
+
+/* Chart — thicker bars */
+.dash-view-chart {
+  height: 72px;
+  gap: 8px;
+  padding: 8px 0 0;
+}
+
+.dash-view-bar {
+  min-height: 6px;
+  border-radius: 4px 4px 0 0;
+  opacity: 1;
+}
+
+/* Invite card — heavier */
+.dash-invite {
+  background: var(--c-reviews-soft);
+  border: 0;
+  padding: 26px 22px;
+}
+
+.dash-invite-copy {
+  font-size: 14.5px;
+  font-weight: 500;
+  line-height: 1.55;
+  margin-bottom: 16px;
+}
+
+.dash-invite-btn {
+  padding: 14px 24px;
+  font-size: 14.5px;
+  font-weight: 700;
+  letter-spacing: -0.005em;
+}
+
+/* Identity / rows — heavier labels and values */
+.dash-label {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  color: var(--ink-3);
+  margin-bottom: 4px;
+}
+
+.dash-value {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+}
+
+.dash-row {
+  padding: 14px 0;
+}
+
+/* Lists — bold bullets, heavier text */
+.dash-list {
+  gap: 10px;
+}
+
+.dash-list li {
+  font-size: 15.5px;
+  font-weight: 600;
+  color: var(--ink);
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  padding-left: 20px;
+}
+
+.dash-list li::before {
+  width: 7px;
+  height: 7px;
+  top: 8px;
+}
+
+/* About copy — heavier */
+.dash-copy {
+  font-size: 15.5px;
+  font-weight: 500;
+  color: var(--ink-2);
+  line-height: 1.65;
+}
+
+/* Photos grid — bigger tiles */
+.dash-photos {
+  gap: 10px;
+}
+
+.dash-photo {
+  border-radius: 14px;
+}
+
+/* Footer */
+.dash-footer {
+  padding: 32px 20px 24px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.dash-footer-brand {
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.dash-footer-copy {
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Mobile */
+@media (max-width: 520px) {
+  .dash-avatar { width: 54px; height: 54px; font-size: 20px; }
+  .dash-headline { font-size: 1.5rem; }
+  .dash-section { padding: 22px 18px; }
+  .dash-view-num { font-size: 28px; }
+  .link-box { padding: 20px 18px; }
+  .link-box-url { font-size: 14px; }
+     }
