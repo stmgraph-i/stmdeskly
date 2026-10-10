@@ -26,9 +26,12 @@
 <body class="page-desk">
 
 <div class="desk-topbar" id="deskTopbar">
-  <button type="button" class="desk-float-btn ripple" id="deskBotBtn" aria-label="Ask the bot">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <button type="button" class="desk-float-btn ripple" id="deskBotBtn" data-open="false" aria-label="Ask the bot">
+    <svg class="icon-chat" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
       <path d="M21 12a8 8 0 0 1-8 8H7l-4 3v-5.5A8 8 0 0 1 11 4h2a8 8 0 0 1 8 8z"/>
+    </svg>
+    <svg class="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 6L6 18M6 6l12 12"/>
     </svg>
   </button>
 </div>
@@ -149,11 +152,12 @@
 <script src="desk.js?v=6"></script>
 <script src="toast.js"></script>
 <script src="ripple.js" defer></script>
+
 <script>
-  /* Keep the bot panel matching the visible viewport when the
-     keyboard opens. visualViewport tracks what's actually on
-     screen above the keyboard, unlike 100dvh which sometimes
-     lags behind on Android. */
+  /* Keep the bot panel exactly as tall as the visible area.
+     visualViewport.height shrinks the moment the keyboard opens,
+     so we resize the panel with it. This is what keeps the
+     input row visible above the keyboard. */
   (function(){
     if (!window.visualViewport) return;
     const vv = window.visualViewport;
@@ -166,15 +170,19 @@
         panel.style.top = '';
         return;
       }
-      panel.style.height = vv.height + 'px';
-      panel.style.top = vv.offsetTop + 'px';
+      const h = vv.height;
+      const top = vv.offsetTop || 0;
+      panel.style.height = h + 'px';
+      panel.style.top = top + 'px';
     }
 
     vv.addEventListener('resize', fit);
     vv.addEventListener('scroll', fit);
     window.addEventListener('resize', fit);
+    window.addEventListener('orientationchange', fit);
     fit();
   })();
 </script>
+
 </body>
-  </html>
+</html>
